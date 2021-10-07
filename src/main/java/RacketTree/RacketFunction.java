@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 
 import static RacketTree.RacketTree.function_open;
+import static RacketTree.RacketTree.string_chars;
 
 public class RacketFunction implements RacketAtom {
     private ArrayList<RacketAtom> parameters;
@@ -36,6 +37,9 @@ public class RacketFunction implements RacketAtom {
             }
             if (function_open.indexOf(lastChar) != -1) {
                 this.parameters.add(new RacketFunction(fin, lastChar));
+            }
+            if (string_chars.indexOf(lastChar) != -1) {
+                this.parameters.add(new RacketString(fin, lastChar));
             }
             else {
                 this.parameters.add(new RacketKeyword(fin, lastChar));

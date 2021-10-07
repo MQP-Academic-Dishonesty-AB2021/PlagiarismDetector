@@ -45,10 +45,12 @@ public class RacketKeyword implements RacketAtom {
                 throw new InvalidFormatException("Error: Randomly Terminated File");
             }
             if (RacketTree.function_open.indexOf(lastChar) != -1 ||
-                    RacketTree.function_close.indexOf(lastChar) != -1) {
+                    RacketTree.function_close.indexOf(lastChar) != -1 ||
+                    RacketTree.string_chars.indexOf(lastChar) != -1) {
                 fin.unread(lastChar);
                 break;
             }
+
             keyword.append((char)lastChar);
         }
         this.keyword = keyword.toString();

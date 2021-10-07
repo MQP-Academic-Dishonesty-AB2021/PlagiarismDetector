@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class RacketTree {
     static public String function_open = "([{";
     static public String function_close = ")]}";
+    static public String string_chars = "\"";
     static public String comment_chars = ";";
     static public String hash_delimeter = "#";
     static public String symbol_delimeter = "'";
@@ -31,6 +32,9 @@ public class RacketTree {
             }
             if (function_open.indexOf(lastChar) != -1) {
                 this.children.add(new RacketFunction(fin, lastChar));
+            }
+            else if (string_chars.indexOf(lastChar) != -1) {
+                this.children.add(new RacketString(fin, lastChar));
             }
             else {
                 this.children.add(new RacketKeyword(fin, lastChar));

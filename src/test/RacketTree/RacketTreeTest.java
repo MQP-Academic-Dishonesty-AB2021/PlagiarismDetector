@@ -3,6 +3,8 @@ package RacketTree;
 import RacketTree.RacketTree;
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RacketTreeTest {
@@ -12,13 +14,15 @@ public class RacketTreeTest {
      */
     @Test
     void RacketTreeCompletes() {
-        try {
-            RacketTree test = new RacketTree("test_files/1153273.txt");
-            assertTrue(true);
+        for (File fin : new File("test_files").listFiles()) {
+            try {
+                RacketTree test = new RacketTree(new PushbackReader(new FileReader(fin)));
+            }
+            catch (Exception e) {
+                fail();
+            }
         }
-        catch (Exception e) {
-            fail();
-        }
+        assertTrue(true);
     }
 
     /**
