@@ -540,7 +540,7 @@
 (check-expect (handle-key
                (make-ws (ws-ticks START) (ws-autos START) LOB2) "prior") 
               (make-ws (ws-ticks START) (ws-autos START)
-                       (list "Please make it go away. >:(")))  
+                       (list "Please make it go away. >:(")))
 (define (main ws)
   (big-bang ws
     (on-tick advance)
