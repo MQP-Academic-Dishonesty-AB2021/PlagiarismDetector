@@ -1,0 +1,162 @@
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname part_2) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(define-struct widget(name quantity time price parts))
+(define Wire (make-widget "Wire" 3 5 5 empty))
+(define Cord (make-widget "Cord" 7 5 5 (list Wire)))
+(define Numbers (make-widget "Numbers" 9 5 5 empty))
+(define Buttons (make-widget "Buttons" 8 5 5 (list Numbers)))
+(define Receiver (make-widget "Receiver" 10 5 7 empty))
+(define Telephone (make-widget "Telephone" 5 20 15
+                               (list Receiver Buttons Cord)))
+(define Glass (make-widget "Glass" 6 9 4 empty))
+(define Beads (make-widget "Beads" 25 12 7 (list Glass)))
+(define Bracelet (make-widget "Bracelet" 5 3 5 (list Beads)))
+(define Chain (make-widget "Chain" 7 2 1 empty))
+(define Pendant (make-widget "Pendant" 4 3 1 empty))
+(define Necklace (make-widget "Necklace" 10 7 3
+                              (list Chain Pendant)))
+(define Rings (make-widget "Rings" 15 8 11 empty))
+(define Jewelry (make-widget "Jewelry set" 4 17 30
+                             (list Rings Necklace Bracelet)))
+#
+(define (find-widgets wid fn)
+  (local [(define (fn-for-widget wid fn)
+            (if (fn wid)
+                (cons wid (fn-for-low(widget-parts wid)))))
+          (define (fn-for-low low)
+            (cond [(empty? low)...]
+                  [else
+                   (... (fn-for-widget (first low))
+                        (fn-for-low (rest low)))]))]
+    (fn-for-widget wid fn)))
+(define (find-widgets wid fn)
+  (local [(define (fn-for-widget wid fn)
+            (if (fn wid)
+                (cons wid (fn-for-low(widget-parts wid))) 
+                (fn-for-low(widget-parts wid))))
+          (define (fn-for-low low)
+            (cond [(empty? low) empty]
+                  [else
+                   (append (fn-for-widget (first low) fn)
+                           (fn-for-low (rest low)))]))]
+    (fn-for-widget wid fn)))
+(define (find-widget-name-longer-than wid number) 
+  (find-widgets wid
+                (λ(w)
+                  (> (string-length (widget-name w)) number)))) 
+    
+(check-expect (find-widget-name-longer-than (make-widget "Empty" 0 0 0 empty) 5) empty)
+(check-expect (find-widget-name-longer-than Wire 3) (list Wire))
+(check-expect (find-widget-name-longer-than Cord 5) empty)
+(check-expect (find-widget-name-longer-than Telephone 5)
+              (list Telephone Receiver Buttons Numbers))
+(check-expect (find-widget-name-longer-than Telephone 3)
+              (list Telephone Receiver Buttons Numbers Cord Wire))           
+(check-expect (find-widget-name-longer-than Cord 4) empty)
+(define (find-widget-quantity-over wid number)
+  (find-widgets wid
+                (λ(w)
+                  (> (widget-quantity w) number))))
+(check-expect(find-widget-quantity-over (make-widget "empty" 0 0 0 empty) 0) empty)
+(check-expect(find-widget-quantity-over Wire 5) empty)
+(check-expect(find-widget-quantity-over Buttons 8) (list Numbers))
+(check-expect(find-widget-quantity-over Telephone 4)
+             (list Telephone Receiver Buttons Numbers Cord))
+(check-expect(find-widget-quantity-over Telephone 9) (list Receiver))
+(define (find-widgets-cheaper-than wid number)
+  (find-widgets wid
+                (λ(w)
+                  (< (widget-price w) number))))
+(check-expect (find-widgets-cheaper-than (make-widget "Empty" 0 0 0 empty) 0) empty)
+(check-expect (find-widgets-cheaper-than Wire 4) empty)
+(check-expect (find-widgets-cheaper-than Cord 5) empty)
+(check-expect (find-widgets-cheaper-than Telephone 14.50)
+              (list Receiver Buttons Numbers Cord Wire))
+(check-expect (find-widgets-cheaper-than Jewelry 10)
+              (list Necklace Chain Pendant Bracelet Beads Glass))
+(check-expect (find-widgets-cheaper-than Bracelet 8)
+              (list Bracelet Beads Glass))
+(define (find-widget-hard-make wid quant price)
+  (find-widgets wid
+                (λ(w)
+                  (or ( <(widget-quantity w) quant) (> (widget-price w) price)))))
+(check-expect (find-widget-hard-make (make-widget "Empty" 0 0 0 empty) 0 0) empty)
+(check-expect (find-widget-hard-make Wire 10 4.5)
+              (list Wire))
+(check-expect (find-widget-hard-make Buttons 10 4.5)
+              (list Buttons Numbers))
+(check-expect (find-widget-hard-make Telephone 7 6)
+              (list Telephone Receiver Wire))
+(check-expect (convert-to-string Bracelet) (list "Bracelet" "Beads" "Glass"))
+(check-expect (convert-to-string Telephone)
+              (list "Telephone" "Receiver" "Buttons" "Numbers" "Cord" "Wire"))
+(define (convert-to-string wid)
+  (local [(define (fn-for-widget wid)
+            (cons (widget-name wid) (fn-for-low(widget-parts wid))))
+          (define (fn-for-low low)
+            (cond [(empty? low) empty]
+                  [else
+                   (append (fn-for-widget (first low))
+                           (fn-for-low (rest low)))]))]
+    (fn-for-widget wid)))
+ 
+(check-expect (convert-to-low Bracelet) (list Bracelet Beads Glass))
+(check-expect (convert-to-low Telephone)
+              (list Telephone Receiver Buttons Numbers Cord Wire))
+(define (convert-to-low wid)
+  (local [(define (fn-for-widget wid)
+            (cons wid (fn-for-low(widget-parts wid))))
+          (define (fn-for-low low)
+            (cond [(empty? low) empty]
+                  [else
+                   (append (fn-for-widget (first low))
+                           (fn-for-low (rest low)))]))]
+    (fn-for-widget wid)))
+  
+(check-expect (smaller-than
+               string<?  "b" (list "dog" "banana" "apple" "carrot")) (list "apple"))
+(check-expect (smaller-than string<? "d" (list "dog" "banana" "apple" "carrot")) (list "banana" "apple" "carrot"))
+(define (smaller-than fn? cut alos)
+  (cond
+    [(empty? alos) empty]
+    [(fn? (first alos) cut)
+     (cons
+      (first alos)
+      (smaller-than fn? cut (rest alos)))]
+    [else 
+     (smaller-than fn? cut (rest alos))]))
+(check-expect (larger-than string<?  "b" (list "dog" "banana" "apple" "carrot")) (list "dog" "banana" "carrot"))
+(check-expect (larger-than string<? "c" (list "dog" "banana" "apple" "carrot")) (list "dog" "carrot"))
+(define (larger-than fn? cut alos)
+  (cond
+    [(empty? alos) empty]
+    [(not (fn? (first alos) cut))
+     ( cons
+       (first alos)
+       (larger-than fn? cut (rest alos)))]
+    [else
+     (larger-than fn? cut (rest alos))]))
+`
+(check-expect (qsort string<?
+                     (list "apple" "banana" "carrot" "dog"))
+              (list "apple" "banana" "carrot" "dog"))
+(check-expect (qsort string<?
+                     (list "dog" "banana" "apple" "carrot"))
+              (list "apple" "banana" "carrot" "dog"))
+(define (qsort fn? alos) 
+  (cond
+    [(empty? alos) empty]
+    [else 
+     (local
+       [(define pivot (first alos))]
+       (append
+        (qsort fn? (smaller-than fn? pivot (rest alos))) 
+      
+        (list pivot)
+        (qsort fn? (larger-than fn? pivot (rest alos)))))]))
+(check-expect (sort-strings qsort string<? Telephone)
+              (list "Buttons" "Cord" "Numbers" "Receiver" "Telephone" "Wire"))
+(check-expect (sort-strings qsort string<? Wire) (list "Wire"))
+(check-expect (sort-strings qsort string<? Necklace)
+              (list "Chain" "Necklace" "Pendant"))
+(define (sort-strings qsort string<? wid)
+  (qsort string<? (convert-to-string wid)))

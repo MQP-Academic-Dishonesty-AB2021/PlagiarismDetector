@@ -1,0 +1,244 @@
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname |Traffic signal|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require 2htdp/image)
+(require 2htdp/universe)
+(define LIGHT-RADIUS 40) 
+(define GREEN-LENGTH 5) 
+(define YELLOW-LENGTH 2) 
+(define RED-LENGTH 4) 
+(define SPAWN-CHANCE 0.05) 
+(define MIN-SPEED 3) 
+(define RANGE-SPEED 10) 
+(define Ad-COUNT 6) 
+(define Ad-GRID-LENGTH 2) 
+(define Ad-SCALE .55) 
+(define Ad-SPEED 2.5) 
+(define WIDTH 800)
+(define HEIGHT 600)
+(define MTS (empty-scene WIDTH HEIGHT))
+(define X-POS (/ WIDTH 2)) 
+(define Y-POS (/ HEIGHT 4)) 
+(define TICKS-SECOND 28) 
+(define CYCLE-TIME (+ GREEN-LENGTH YELLOW-LENGTH RED-LENGTH))
+(define (bulbs tick)
+  (let ([type (current-light tick)])
+    (above
+     (circle LIGHT-RADIUS (is-on type 2) "red")
+     (circle LIGHT-RADIUS (is-on type 1) "yellow")
+     (circle LIGHT-RADIUS (is-on type 0) "green"))))
+(define (current-light tick)
+  (let ([cycle  (modulo (ticks->seconds tick) CYCLE-TIME)])
+    (if (< cycle GREEN-LENGTH) 0 (if (< cycle (+ GREEN-LENGTH YELLOW-LENGTH)) 1 2))))
+(check-expect (current-light 0) 0) 
+(check-expect (current-light (* 5 28)) 1) 
+(check-expect (current-light (* 8 28)) 2) 
+(define (is-on type const) (if (= type const) "solid" "outline"))
+(check-expect (is-on 0 0) "solid")
+(check-expect (is-on 0 1) "outline") 
+(define (ticks->seconds ticks)
+  (floor (/ ticks TICKS-SECOND)))
+(define AUTOS (list . . .))
+(define HALF-CAR (/ (image-height (first AUTOS)) 2))
+(define HALf-CAR-X (/ (image-width (first AUTOS)) 2))
+(define LANE-START (+ HALF-CAR Y-POS (* 3 LIGHT-RADIUS)))
+(define LANE-HEIGHT (- HEIGHT HALF-CAR LANE-START -1))
+(define-struct auto (x y speed car-type))
+(define (auto-dx auto tick)
+  (let
+      ([new-x (+ (auto-x auto) (* .5 (auto-speed auto)))])
+    (cond
+      [(or (> (auto-x auto) X-POS) (= (current-light tick) 0)) (+ (auto-x auto) (auto-speed auto))]
+      [(= (current-light tick) 1) (+ (auto-x auto) (* .75 (auto-speed auto)))]
+      [(>= new-x X-POS) X-POS]
+      [else
+       new-x])))
+(check-expect (auto-dx (make-auto 0 0 5 0) 0) 5) 
+(check-expect (auto-dx (make-auto 0 0 15 0) 0) 15) 
+(check-expect (auto-dx (make-auto 0 0 5 0) (* 5 28)) 3.75) 
+(check-expect (auto-dx (make-auto 0 0 10 0) (* 5 28)) 7.5) 
+(check-expect (auto-dx (make-auto 0 0 5 0) (* 8 28)) 2.5) 
+(check-expect (auto-dx (make-auto 0 0 10 0) (* 8 28)) 5) 
+(define (spawn loa)
+  (if (< (/ (random 1000) 1000) SPAWN-CHANCE)
+      (cons (new-car 0) loa)
+      loa))
+(define (new-car _)
+  (make-auto (- HALf-CAR-X) (+ LANE-START (random LANE-HEIGHT)) (+ MIN-SPEED (random RANGE-SPEED)) (random 3)))
+(define (tick-autos loa tick) (spawn (tick--autos loa tick)))
+(define (tick--autos loa tick)
+  (cond
+    [(empty? loa) empty]
+    [(< (auto-x (first loa)) (+ HALf-CAR-X WIDTH))
+     (cons (make-auto (auto-dx (first loa) tick) (auto-y (first loa)) (auto-speed (first loa))
+                      (auto-car-type (first loa))) (tick--autos (rest loa) tick))]
+    [else (tick--autos (rest loa) tick)]))
+ 
+(define (draw-cars loa)
+  (cond
+    [(empty? loa) (rectangle WIDTH HEIGHT "outline" "black")]
+    [else
+     (place-image (list-ref AUTOS (auto-car-type (first loa))) (auto-x (first loa)) (auto-y (first loa)) (draw-cars (rest loa)))]))
+                
+(define-struct WorldState (ticks autos bb ads))
+(define (main ws)
+  (big-bang ws
+    (on-tick tick)
+    (to-draw draw)
+    (on-key key)))
+(define (tick ws) (make-WorldState (add1 (WorldState-ticks ws)) (tick-autos (WorldState-autos ws) (WorldState-ticks ws))
+                                   (WorldState-bb ws) (Ad-ticks (WorldState-ads ws))))
+(check-expect (tick (make-WorldState 0 empty (list "") empty)) (make-WorldState 1 empty (list "") empty))
+(define (draw ws) (let
+                      ([ad (scale Ad-SCALE (Ad-images (WorldState-ads ws)))])
+                    (overlay (draw-cars (WorldState-autos ws))
+                             (place-image ad (- WIDTH (/ (image-width ad) 2)) (/ (image-height ad) 2)
+                                          (place-image (bulbs (WorldState-ticks ws)) X-POS Y-POS
+                                                       (place-image (text (number->string (ticks->seconds (WorldState-ticks ws))) 20 "black") (+ X-POS (* 2 LIGHT-RADIUS)) Y-POS
+                                                                    (place-image (text (Billboard-text (WorldState-bb ws)) 12 "red") (/ (- X-POS LIGHT-RADIUS) 2) Y-POS MTS)))))))
+(define (key ws ke) (make-WorldState (WorldState-ticks ws) (WorldState-autos ws) (Billboard-key (WorldState-bb ws) ke) (WorldState-ads ws)))
+(check-expect (key (make-WorldState 0 empty (list "") empty) "n") (make-WorldState 0 empty (list "n") empty))
+(define-struct Ad (index time))
+(define-struct SpriteSheet (name x-count y-count img))
+(define (Ad-start _)
+  (letrec ([make (λ (count)
+                   (if (= count Ad-COUNT) empty
+                       (cons (make-Ad (if (< count (length ads)) count (random (length ads))) 0) (make (add1 count)))))])
+    (make 0)))
+(define (Ad-ticks lowa) (if (empty? lowa) empty (cons (Ad-tick (first lowa)) (Ad-ticks (rest lowa)))))
+(check-expect (Ad-ticks empty) empty)
+(check-expect (Ad-ticks (list (make-Ad 0 Ad-SPEED))) (list (make-Ad 0 (* Ad-SPEED 2))))
+(define (Ad-tick wa) (let* ([count (length (list-ref ads (Ad-index wa)))]
+                            [new-time (+ Ad-SPEED (Ad-time wa))]
+                            [change (>= (floor new-time) count)])
+                       (make-Ad (if change (random-but-not (Ad-index wa) (length ads)) (Ad-index wa)) (if change 0 new-time))))
+(check-expect (Ad-tick (make-Ad 0 0)) (make-Ad 0 Ad-SPEED))
+(check-expect (Ad-tick (make-Ad 0 Ad-SPEED)) (make-Ad 0 (* Ad-SPEED 2)))
+(define (Ad-images ws) (align-images ws Ad-GRID-LENGTH))
+(define (Ad-image wa) (list-ref (list-ref ads (Ad-index wa)) (floor (Ad-time wa))))
+(define (align-images loa width)
+  (letrec ([place-x (λ (loa)
+                      (if (empty? loa) (square 0 "outline" "white")
+                          (beside (Ad-image (first loa)) (place-x (rest loa)))))]
+           [place-y (λ (loa)          
+                      (if (empty? loa) (square 0 "outline" "white")
+                          (above (place-x (list-ref* loa 0 (min width (length loa))))
+                                 (place-y (list-ref* loa width (length loa))))))])
+    (place-y loa)))
+(define (random-but-not number max) (let ([try (random max)]) (if (= try number) (random-but-not number max) try)))
+(check-expect (random-but-not 0 2) 1)
+(check-expect (random-but-not 0 2) 1)
+(check-expect (random-but-not 0 2) 1)
+(check-expect (random-but-not 0 2) 1)
+(define (list-ref* lox start end)
+  (letrec ([ref (λ (lon)
+                  (if (empty? lon) empty
+                      (cons (list-ref lox (first lon)) (ref (rest lon)))))])
+    (ref (range start end 1))))
+(check-expect (list-ref* (list 1 0 2 9 3 8 4 7 5 6) 0 3) (list 1 0 2))
+(check-expect (list-ref* (list 1 0 2 9 3 8 4 7 5 6) 1 5) (list 0 2 9 3))
+(define (convert-spritesheets loss)
+  (if (empty? loss) empty
+      (cons (convert-spritesheet (SpriteSheet-img (first loss)) (SpriteSheet-x-count (first loss)) (SpriteSheet-y-count (first loss)))
+            (convert-spritesheets (rest loss)))))
+(define (convert-spritesheet img x-count y-count)
+  (letrec ([convert (λ(x-index y-index)
+                      (if (= y-index y-count) empty
+                          (let ([new-x (modulo (add1 x-index) x-count)])
+                            (cons (crop-spritesheet img x-count y-count x-index y-index)
+                                  (convert new-x (+ (if (< new-x x-index) 1 0) y-index))))))])
+    (convert 0 0)))
+(define (crop-spritesheet img x-count y-count x-index y-index)
+  (let ([x-scale (/ (image-width img) x-count)]
+        [y-scale (/ (image-height img) y-count)])
+    (crop (* x-scale x-index) (* y-scale y-index) x-scale y-scale img)))
+(define spritesheets (list (make-SpriteSheet "Wendy's" 20 41 (identity.))
+                           (make-SpriteSheet "Grubhub" 20 42 (identity.))
+                           (make-SpriteSheet "Mountain Dew" 20 42 (identity.))
+                           (make-SpriteSheet "Chips Ahoy" 16 16 (identity.))
+                           (make-SpriteSheet "Skittles" 20 21 (identity.))))
+(define ads (convert-spritesheets spritesheets))
+(define Billboard-HELP "Control: Set currrent billboard to random quote
+Page Up or Up Arrow: Go to last billboard losing current one
+Page Down or Down Arrow: Create new billboard
+Tab: Clean current billboard
+~: Set current billboard to help message")
+(define Billboard-START (list Billboard-HELP))
+(define (Billboard-text bill) (first bill))
+(define (Billboard-key bill k) (cond
+                                 [(or (key=? k "shift") (key=? k "rshift")) bill]
+                                 [(or (key=? k "prior") (key=? k "up")) (if (empty? (rest bill)) bill (rest bill))]
+                                 [(or (key=? k "next") (key=? k "down")) (cons "" bill)]
+                                 [else (cons (cond
+                                               [(key=? k "\b") (backspace (first bill))]
+                                               [(key=? k "\t") ""]
+                                               [(or (key=? k "`") (key=? k "~")) Billboard-HELP]
+                                               [(or (key=? k "control") (key=? k "rcontrol")) (format-quote (list-random quotes))]
+                                               [else (string-append (first bill) (cond
+                                                                                   [(key=? k "\r") "\n"]
+                                                                                   [else k]))]) (rest bill))]))
+(check-expect (Billboard-key (list "") "n") (list "n"))
+(check-expect (Billboard-key (list "" "ate") "n") (list "n" "ate"))
+(check-expect (Billboard-key (list "nat" "westfall") "e") (list "nate" "westfall"))
+(check-expect (Billboard-key (list "nate") "shift") (list "nate"))
+(check-expect (Billboard-key (list "nate") "down") (list "" "nate"))
+(check-expect (Billboard-key (list "nate" "westfall") "up") (list "westfall"))
+(check-expect (Billboard-key (list "nate") "up") (list "nate"))
+(check-expect (Billboard-key (list "nate") "\t") (list ""))
+(check-expect (Billboard-key (list "nate" "westfall") "\t") (list "" "westfall"))
+(check-expect (Billboard-key (list "nate" ) "\n") (list "nate\n"))
+(check-expect (Billboard-key (list "nate" ) "\r") (list "nate\n"))
+(check-expect (Billboard-key (list "nate" "westfall") "\n") (list "nate\n" "westfall"))
+(check-expect (Billboard-key (list "nate" "westfall") "\r") (list "nate\n" "westfall"))
+(check-expect (Billboard-key (list "nate") "~") (list Billboard-HELP))
+(check-expect (Billboard-key (list "nate") "`") (list Billboard-HELP))
+(check-expect (Billboard-key (list "nate" "westfall") "~") (list Billboard-HELP "westfall"))
+(check-expect (Billboard-key (list "nate" "westfall") "`") (list Billboard-HELP "westfall"))
+(check-expect (Billboard-key (list "nate") "\b") (list "nat"))
+(check-expect (Billboard-key (list "nate" "") "\b") (list "nat" ""))
+(check-expect (Billboard-key (list "" "nate") "\b") (list "" "nate"))
+(define (backspace str) (if (zero? (string-length str)) "" (substring str 0 (sub1 (string-length str)))))
+(check-expect (backspace "") "")
+(check-expect (backspace "abc") "ab")
+(check-expect (backspace "def ") "def")
+(define (list-random lox) (list-ref lox (random (length lox))))
+(define (unpack-quotes psv)
+  (letrec ([los (string-split psv #\|)]
+           [unpack (λ (los) (if (empty? los) empty (cons (list (first los) (second los)) (unpack (rest (rest los))))))])
+    (unpack los)))
+(check-expect (unpack-quotes "Somebody|Yummy!||Hello|Nate|Hi") (list (list "Somebody" "Yummy!") (list "" "Hello") (list "Nate" "Hi")))
+(define (string-split str sep)
+  (letrec ([split (λ (loc str) (cond
+                                 [(empty? loc) (list str)]
+                                 [(char=? (first loc) sep) (cons str (split (rest loc) ""))]
+                                 [else (split (rest loc) (string-append str (string (first loc))))]))])
+    (split (string->list str) "")))
+(check-expect (string-split "1,23,45,678" #\,) (list "1" "23" "45" "678"))
+(check-expect (string-split "ab c def gh i jkl" #\space) (list "ab" "c" "def" "gh" "i" "jkl"))
+(define (format-quote qu) (string-append "\"" (format-quote2 (second qu)) ".\"" "\n - " (if (string=? (first qu) "") "Unknown" (first qu))))
+(check-expect (format-quote (list "Nate" "Hi, this is Nate")) "\"Hi,\nthis is Nate.\"\n - Nate")
+(check-expect (format-quote (list "" "Hello? Are you there?")) "\"Hello?\nAre you there?.\"\n - Unknown")
+(define (format-quote2 qu)
+  (letrec ([format (λ (qu) (if (< (length qu) 3) (list->string qu) (let
+                                                                       ([dot-check (list->string (list (first qu) (second qu) (third qu)))])
+                                                                     (cond
+                                                                       [(string=? dot-check "...") (string-append "...\n" (trim-left (format (rest(rest(rest qu))))))]
+                                                                       [(string-contains? (string (first qu)) ",.
+                                                                       [else (string-append (string (first qu)) (format (rest qu)))]))))])
+    (format (string->list qu))))
+(check-expect (format-quote2 "") "")
+(check-expect (format-quote2 "Hi, this is Nate.") "Hi,\nthis is Nate.")
+(check-expect (format-quote2 "Hello? Are you there?") "Hello?\nAre you there?")
+(check-expect (format-quote2 "Dots... are hard") "Dots...\nare hard")
+(define (trim-left str)
+  (letrec ([trim (λ (str) (cond
+                            [(empty? str) ""]
+                            [(char=? (first str) #\space) (trim (rest str))]
+                            [else (string-append (string (first str))  (list->string (rest str)))]))])
+    (trim (string->list str))))
+(check-expect (trim-left "") "")
+(check-expect (trim-left "abc") "abc")
+(check-expect (trim-left "abc ") "abc ")
+(check-expect (trim-left " abc ") "abc ")
+  
+(define quotes-psv (identity"A. A. Milne|One of the advantages of being disorderly is that one is constantly making exciting discoveries|A. Powell Davies|Life is just a chance to grow a soul|Abernathy|The industrial landscape is already littered with remains of once successful companies that could not adapt their strategic vision to altered conditions of competition|Abraham Lincoln|A house divided against itself cannot stand|Abraham Lincoln|Always bear in mind that your own resolution to succeed is more important than any one thing|Abraham Lincoln|As our case is new, we must think and act anew|Abraham Lincoln|Be sure you put your feet in the right place, then stand firm|Abraham Lincoln|Character is like a tree and reputation like a shadow. The shadow is what we think of it
+(define quotes (unpack-quotes quotes-psv))
+(define START (make-WorldState 0 empty Billboard-START (Ad-start 0)))
