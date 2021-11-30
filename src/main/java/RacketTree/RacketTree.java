@@ -1,7 +1,8 @@
 package RacketTree;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.HashMap;
 
 public class RacketTree {
     static public String function_open = "([{";
@@ -26,20 +27,45 @@ public class RacketTree {
         // iterate through file character by character
         // Theres just too many token exceptions to do anything but that
         for (int lastChar = fin.read(); lastChar != -1; lastChar = fin.read()) {
-            // backslash literally escapes everything
-            if (Character.isWhitespace(lastChar)) {
-                continue;
-            }
-            if (function_open.indexOf(lastChar) != -1) {
-                this.children.add(new RacketFunction(fin, lastChar));
-            }
-            else if (string_chars.indexOf(lastChar) != -1) {
-                this.children.add(new RacketString(fin, lastChar));
-            }
-            else {
-                this.children.add(new RacketKeyword(fin, lastChar));
+            if (!Character.isWhitespace((char)lastChar)) {
+                fin.unread(lastChar);
+                this.children.add(RacketAtom.generateAtom(fin, null));
             }
         }
+    }
+
+    /**
+     *  First try is going to just count the size of subtrees between the two
+     * @param other The other racket tree to compare with
+     * @return a value representing how similar they are
+     */
+    public int TreeSimilarity(RacketTree other) {
+
+        // First make a hashtable of all the leaf nodes of this
+        // Then for each leaf see if its in the map and then if so go up and see if it has matching leaf nodes in their parents
+        // add up the sum of length for each one
+        return 0;
+    }
+
+    private HashMap<String, ArrayList<RacketAtom>> getLeavesHash() {
+        HashMap<String, ArrayList<RacketAtom>> map = new HashMap<String, ArrayList<RacketAtom>>();
+        for (RacketAtom tree : this.children) {
+            tree.insertIntoTreeMap(map);
+        }
+        return map;
+    }
+
+    public int similarityValue(HashMap<String, ArrayList<RacketAtom>> leavesMap) {
+        int sum = 0;
+        for (RacketAtom child : this.children) {
+            sum += child.similarityValue(leavesMap);
+        }
+        return sum;
+    }
+
+    public int similarityValue(RacketTree other) {
+        HashMap<String, ArrayList<RacketAtom>> map = this.getLeavesHash();
+        return other.similarityValue(map);
     }
 
     public int size() {
