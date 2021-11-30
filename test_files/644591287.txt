@@ -1,0 +1,306 @@
+#lang racket
+(require wxme)
+(require racket/format)
+
+
+(define output_dir "./output")
+
+
+
+(define paths
+  (if (= 0 (vector-length (current-command-line-arguments)))
+      (list (some-system-path->string (current-directory)))
+      (vector->list (current-command-line-arguments))))
+
+(define (char-in-list char list-of-chars) 
+  (foldr (lambda (new cumm) 
+           (or (char=? char new) cumm)) 
+         #f list-of-chars))
+
+
+
+
+
+
+
+
+
+
+(define (convert-rkt-to-txt rkt-file txt-file)
+  (call-with-input-file rkt-file
+    (λ (rkt-port)
+      (call-with-output-file txt-file
+        (λ (txt-port) (write-rkt-port-to-txt-port rkt-port txt-port)) #:exists 'replace))))
+
+(define (corresponding-closing-brace opening-brace)
+  (cond [(char=? opening-brace #\{) #\}]
+        [(char=? opening-brace #\() #\)]
+        [(char=? opening-brace #\[) #\]]
+        [else #f]))
+
+
+(define (skip-spaces txt-port)
+  (local [(define char (read-char txt-port))]
+    (cond [(eof-object? char) char]
+          [(char-whitespace? char) (skip-spaces txt-port)]
+          [else char])))
+
+
+(define (skip-list txt-port char closing-brace)
+  (cond [(eof-object? char) char]
+        [(char=? char closing-brace) #\space]
+        [(char-whitespace? char) (skip-list txt-port (read-char txt-port) closing-brace)]
+        [else (skip-list txt-port (skip-atom txt-port char) closing-brace)]))
+
+
+(define (skip-string txt-port char)
+  (cond [(eof-object? char) char]
+        [(char=? char #\\) (skip-string txt-port (read-char txt-port))]
+        [(char=? char #\") #\space]
+        [else (skip-string txt-port (read-char txt-port))]))
+
+
+(define (skip-line-comment txt-port char shebang?)
+  (cond [(eof-object? char) char]
+        [(and shebang? (char=? #\\)) (skip-line-comment txt-port (read-char txt-port) shebang?)]
+        [(char=? char #\newline) char]
+        [else (skip-line-comment txt-port (read-char txt-port) shebang?)]))
+
+
+(define (skip-block-comment txt-port char1 char2)
+  (cond [(eof-object? char2) char2]
+        [(and (char=? char1 #\|)
+              (char=? char2 #\#)) #\space]
+        [else (skip-block-comment txt-port char2 (read-char txt-port))]))
+
+
+(define (skip-verbatim-section txt-port char)
+  (cond [(eof-object? char) char]
+        [(char=? char #\|) #\space]
+        [else (skip-verbatim-section txt-port (read-char txt-port))]))
+
+
+(define (skip-symbol txt-port char)
+  (cond [(eof-object? char) char]
+        [(char=? char #\|) (begin (skip-verbatim-section txt-port (read-char txt-port))
+                                  (skip-symbol txt-port (read-char txt-port)))]
+        [(char=? char #\\) (begin (read-char txt-port)
+                                  (skip-symbol txt-port (read-char txt-port)))]
+        [(char-whitespace? char) char]
+        [(char=? char #\() char]
+        [(char=? char #\{) char]
+        [(char=? char #\[) char]
+        [(char=? char #\)) char]
+        [(char=? char #\}) char]
+        [(char=? char #\]) char]
+        [(char=? char #\") char]
+        [(char=? char #\') char]
+        
+        [(char=? char #\#) 
+         (local [(define next-char (read-char txt-port))]
+           (begin (if (char=? next-char #\|) 
+                      (skip-block-comment txt-port (read-char txt-port) (read-char txt-port))
+                      #\space)
+                  (skip-symbol txt-port (read-char txt-port))))]
+        [else (skip-symbol txt-port (read-char txt-port))]))
+
+(define (skip-reader txt-port char)
+  (cond [(eof-object? char) char]
+        [(char-whitespace? char) (local [(define next-char (skip-spaces txt-port))]
+                                   (cond [(eof-object? next-char) next-char]
+                                         [(char=? next-char #\{) (skip-list txt-port (read-char txt-port) #\})]
+                                         [(char=? next-char #\[) (skip-list txt-port (read-char txt-port) #\])]
+                                         [(char=? next-char #\() (skip-list txt-port (read-char txt-port) #\))]
+                                         [else (skip-symbol txt-port (read-char txt-port))]))]
+        [(char=? char #\r) (local [(define next-char (skip-spaces txt-port))]
+                             (cond [(eof-object? next-char) next-char]
+                                   [(char=? next-char #\{) (skip-list txt-port (read-char txt-port) #\})]
+                                   [(char=? next-char #\[) (skip-list txt-port (read-char txt-port) #\])]
+                                   [(char=? next-char #\() (skip-list txt-port (read-char txt-port) #\))]
+                                   [else (skip-symbol txt-port (read-char txt-port))]))]
+        [else (skip-reader txt-port char)]))
+
+
+(define (skip-#<<-string txt-port terminator)
+  (local [(define line (read-line txt-port))]
+    (cond [(eof-object? line) line]
+          [(string=? line terminator) #\space]
+          [else (skip-#<<-string txt-port terminator)])))
+
+
+(define (skip-hash-inst-atom txt-port first-char)
+  (cond [(eof-object? first-char) first-char]
+        
+        [(char=? first-char #\{) (skip-list txt-port (read-char txt-port) #\})]
+        [(char=? first-char #\[) (skip-list txt-port (read-char txt-port) #\])]
+        [(char=? first-char #\() (skip-list txt-port (read-char txt-port) #\))]
+        [(char=? first-char #\") (skip-string txt-port (read-char txt-port))]
+        [(char=? first-char #\%) (skip-symbol txt-port (read-char txt-port))]
+        [(char=? first-char #\:) (skip-symbol txt-port (read-char txt-port))]
+        
+        [(char=? first-char #\r) (local [(define next-char (read-char txt-port))]
+                                   
+                                   (cond [(eof-object? next-char) next-char]
+                                         [(char=? next-char #\") (skip-string txt-port (read-char txt-port))]
+                                         [else (skip-reader txt-port (read-char txt-port))]))]
+        
+        [(char=? first-char #\|) (begin (skip-block-comment txt-port (read-char txt-port) (read-char txt-port))
+                                        (skip-atom txt-port (read-char txt-port)))]
+        
+        [(char=? first-char #\p) (begin (read-char txt-port)
+                                        (read-char txt-port)
+                                        (skip-string txt-port (read-char txt-port)))]
+        
+        [(char=? first-char #\<) (begin
+                                    
+                                   (read-char txt-port)
+                                   (skip-#<<-string txt-port (read-line txt-port)))]
+        
+        [(char=? first-char #\
+        
+        [(char=? first-char #\') (skip-atom txt-port (read-char txt-port))]
+        [(char=? first-char #\`) (skip-atom txt-port (read-char txt-port))]
+        [(char=? first-char #\,) (skip-atom txt-port (read-char txt-port))]
+        [(char=? first-char #\&) (skip-atom txt-port (read-char txt-port))]
+        
+        [(char-ci=? first-char #\c) (begin (read-char txt-port)
+                                           (skip-atom txt-port (read-char txt-port)))]
+        
+        [(or (char-ci=? first-char #\h)
+             (char-ci=? first-char #\f)
+             (char-numeric? first-char)) (local [(define opening-brace (skip-symbol txt-port #\f))]
+                                           (cond [(eof-object? opening-brace) opening-brace]
+                                                 [(char=? opening-brace #\() (skip-list txt-port (read-char txt-port) #\))]
+                                                 [(char=? opening-brace #\{) (skip-list txt-port (read-char txt-port) #\})]
+                                                 [(char=? opening-brace #\[) (skip-list txt-port (read-char txt-port) #\])]
+                                                 [else opening-brace]))]
+        [(char=? first-char #\!) (skip-atom txt-port (skip-line-comment txt-port (read-char txt-port) #t))]
+        [(char=? first-char #\
+        [(char-ci=? first-char #\t) (read-char txt-port)]
+        
+        [(char-ci=? first-char #\i) (skip-symbol txt-port (read-char txt-port))]
+        [(char-ci=? first-char #\e) (skip-symbol txt-port (read-char txt-port))]
+        [(char-ci=? first-char #\x) (skip-symbol txt-port (read-char txt-port))]
+        [(char-ci=? first-char #\o) (skip-symbol txt-port (read-char txt-port))]
+        [(char-ci=? first-char #\d) (skip-symbol txt-port (read-char txt-port))]
+        [(char-ci=? first-char #\b) (skip-symbol txt-port (read-char txt-port))]))
+
+
+(define (skip-atom txt-port first-char)
+  (cond
+    [(eof-object? first-char) first-char]
+    [(char-whitespace? first-char) (skip-atom txt-port (skip-spaces txt-port))]
+    [(char=? first-char #\
+                                    (skip-atom txt-port (read-char txt-port)))]
+    [(char=? first-char #\{) (skip-list txt-port (read-char txt-port) #\})]
+    [(char=? first-char #\[) (skip-list txt-port (read-char txt-port) #\])]
+    [(char=? first-char #\() (skip-list txt-port (read-char txt-port) #\))]
+    [(char=? first-char #\") (skip-string txt-port (read-char txt-port))]
+    [(char=? first-char #\') (skip-atom txt-port (skip-spaces txt-port))]
+    [(char=? first-char #\`) (skip-atom txt-port (skip-spaces txt-port))]
+    [(char=? first-char #\,) (skip-atom txt-port (skip-spaces txt-port))]
+    [(char=? first-char #\|) (begin (skip-verbatim-section txt-port (read-char txt-port))
+                                    (skip-symbol txt-port (read-char txt-port)))]
+    [(char=? first-char #\#) (skip-hash-inst-atom txt-port (read-char txt-port))]
+    [else (skip-symbol txt-port first-char)]))
+
+(define (anonymize-txt-port txt-port)
+  (local 
+    [(define char (read-char txt-port))]
+    (cond 
+      [(eof-object? char) ""]
+      [(char=? char #\#) 
+       (local [(define next-char (read-char txt-port))]
+         (cond [(eof-object? next-char) ""]
+               [(char=? next-char #\
+                (local [(define next-next-char (skip-atom txt-port (skip-spaces txt-port)))]
+                  (if (eof-object? next-next-char) "" 
+                      (string-append (string next-next-char) (anonymize-txt-port txt-port))))]
+               [(char=? next-char #\|) (begin (skip-block-comment txt-port (read-char txt-port) (read-char txt-port))
+                                              (anonymize-txt-port txt-port))]
+               [(char=? next-char #\!) 
+                (local [(define next-next-char (skip-line-comment txt-port (read-char txt-port) #t))]
+                  (if (eof-object? next-next-char) "" 
+                      (string-append (string next-next-char) (anonymize-txt-port txt-port))))]
+               [else (string-append (string #\# next-char) (anonymize-txt-port txt-port))]))]
+      [(char=? char #\
+       (local [(define next-next-char (skip-line-comment txt-port (read-char txt-port) #f))]
+         (if (eof-object? next-next-char) "" 
+             (string-append (string next-next-char) (anonymize-txt-port txt-port))))]
+      [else (string-append (string char) (anonymize-txt-port txt-port))])))
+
+
+
+
+
+
+
+
+(define (write-rkt-port-to-txt-port rkt-port txt-port)
+  (local [(define
+            (get-remaining-txt-port txt-port)
+            (local [(define line (read-line txt-port))]
+              (begin (if (eof-object? line) ""
+                         (string-append
+                          (if (or
+                               (string-prefix? line "
+                               (string=? line ""))
+                              ""
+                              (string-append
+                               (car (string-split line "
+                               "\n"))
+                          (get-remaining-txt-port txt-port))))))]
+    (display (anonymize-txt-port
+              (if (is-wxme-stream? rkt-port)
+                  (wxme-port->text-port rkt-port)
+                  rkt-port))
+             txt-port)))
+
+
+
+
+(define
+  files
+  (local
+    [(define
+       
+       (get-all-rkt-files path)
+       (foldl
+        
+        
+        
+        
+        
+        (λ (new cumm)
+          (local [(define filename (some-system-path->string new))]
+            (begin
+              (cond
+                
+                
+                
+                [(string-suffix? filename ".rkt") (cons
+                                                   (string-append
+                                                    (some-system-path->string path)
+                                                    "/"
+                                                    filename)
+                                                   cumm)]
+                [else cumm]))))
+        '() (directory-list path)))]
+    (foldl
+     (λ (new cumm)
+       (append cumm
+               (get-all-rkt-files (string->some-system-path new 'windows))))
+     '() paths)))
+
+(define
+  (generate_filename)
+  (local
+    [(define random-number (random 4294967087))]
+    (begin
+      (if (link-exists? (string-append output_dir "/" (~v random-number) ".txt"))
+          (generate_filename)
+          (string-append output_dir "/" (~v random-number) ".txt")))))
+
+(map
+ (λ (filename) (convert-rkt-to-txt filename (generate_filename)))
+ files)
