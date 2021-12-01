@@ -27,7 +27,7 @@ public class RacketString extends RacketAtom {
         this.str = val.toString();
     }
 
-    public void insertIntoTreeMap(HashMap<String, ArrayList<RacketAtom>> map) {
+    public int insertIntoTreeMap(HashMap<String, ArrayList<RacketAtom>> map) {
         ArrayList<RacketAtom> list = map.get("\"" + this.str + "\"");
         if (list == null) {
             ArrayList<RacketAtom> newList = new ArrayList<RacketAtom>();
@@ -39,6 +39,7 @@ public class RacketString extends RacketAtom {
             // TODO: check if I really need to put it back in
             map.put("\"" + this.str + "\"", list);
         }
+        return 1;
     }
 
     public boolean equals(RacketAtom other) {

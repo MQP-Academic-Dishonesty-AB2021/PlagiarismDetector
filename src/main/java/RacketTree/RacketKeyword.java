@@ -68,7 +68,7 @@ public class RacketKeyword extends RacketAtom {
     }
 
     @Override
-    public void insertIntoTreeMap(HashMap<String, ArrayList<RacketAtom>> map) {
+    public int insertIntoTreeMap(HashMap<String, ArrayList<RacketAtom>> map) {
         ArrayList<RacketAtom> list = map.get(this.keyword);
         if (list == null) {
             ArrayList<RacketAtom> newList = new ArrayList<RacketAtom>();
@@ -80,6 +80,7 @@ public class RacketKeyword extends RacketAtom {
             // TODO: check if I really need to put it back in
             map.put(this.keyword, list);
         }
+        return 1;
     }
 
     @Override
