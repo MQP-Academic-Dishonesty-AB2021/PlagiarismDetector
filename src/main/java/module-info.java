@@ -4,6 +4,7 @@ module com.plagiarismdetector {
 
     requires org.controlsfx.controls;
     requires org.kordamp.bootstrapfx.core;
+    requires javafx.web;
 
     opens com.JavaFX to javafx.fxml;
     exports com.JavaFX;
