@@ -54,10 +54,12 @@ public class RacketList extends RacketAtom {
     }
 
     @Override
-    public void insertIntoTreeMap(HashMap<String, ArrayList<RacketAtom>> map) {
+    public int insertIntoTreeMap(HashMap<String, ArrayList<RacketAtom>> map) {
+        int sum = 0;
         for (RacketAtom child : this.items) {
-            child.insertIntoTreeMap(map);
+            sum += child.insertIntoTreeMap(map);
         }
+        return sum;
     }
 
     public int numberOfMatchingChildren(RacketList other) {
@@ -77,7 +79,6 @@ public class RacketList extends RacketAtom {
 
     @Override
     public boolean equals(RacketAtom other) {
-//        return false;
         if (!(other instanceof RacketList)) {
             return false;
         }

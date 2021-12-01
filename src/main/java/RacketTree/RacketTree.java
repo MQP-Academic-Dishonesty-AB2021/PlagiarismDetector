@@ -15,6 +15,9 @@ public class RacketTree {
     static public String lambda_chars = "λ";
 
     ArrayList<RacketAtom> children;
+    HashMap<String, ArrayList<RacketAtom>> leavesHash;
+    int numLeaves;
+
 
     public RacketTree(String filename) throws
             java.io.IOException,
@@ -33,6 +36,7 @@ public class RacketTree {
                 this.children.add(RacketAtom.generateAtom(fin, null));
             }
         }
+        this.leavesHash = this.getLeavesHash();
     }
 
     /**
@@ -50,9 +54,11 @@ public class RacketTree {
 
     private HashMap<String, ArrayList<RacketAtom>> getLeavesHash() {
         HashMap<String, ArrayList<RacketAtom>> map = new HashMap<String, ArrayList<RacketAtom>>();
+        int sum = 0;
         for (RacketAtom tree : this.children) {
-            tree.insertIntoTreeMap(map);
+            sum += tree.insertIntoTreeMap(map);
         }
+        this.numLeaves = sum;
         return map;
     }
 
@@ -66,11 +72,7 @@ public class RacketTree {
 
     public int similarityValue(RacketTree other) {
         HashMap<String, ArrayList<RacketAtom>> map = this.getLeavesHash();
-        int numleaves = 0;
-        for (Map.Entry<String, ArrayList<RacketAtom>> entry : map.entrySet()) {
-            numleaves += entry.getValue().size();
-        }
-        return other.similarityValue(map) / numleaves;
+        return other.similarityValue(map) / this.numLeaves;
     }
 
     public int size() {

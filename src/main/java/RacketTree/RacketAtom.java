@@ -33,5 +33,12 @@ public abstract class RacketAtom {
         return 0;
     }
 
-    public void insertIntoTreeMap(HashMap<String, ArrayList<RacketAtom>> map) {}
+    /**
+     *
+     * @param map The map to add the leaves into
+     * @return The number of leaves added
+     */
+    public int insertIntoTreeMap(HashMap<String, ArrayList<RacketAtom>> map) {
+        return 0;
+    }
 }

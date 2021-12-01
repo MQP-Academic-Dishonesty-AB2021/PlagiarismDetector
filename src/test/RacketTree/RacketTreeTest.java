@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,32 +71,30 @@ public class RacketTreeTest {
     @Test
     void RunSimilarityForAll() {
         int maxValue = 0;
-        File bestFile1;
-        File bestFile2;
+        HashMap<String, RacketTree> treeMap = new HashMap<String, RacketTree>();
         try {
-            int outerFileCount = 0;
             for (File fin : new File("test_files").listFiles()) {
-                RacketTree tree1 = new RacketTree(new PushbackReader(new FileReader(fin)));
-//                int innerFileCount = 0;
-                for (File fin2 : new File("test_files").listFiles()) {
-                    if (fin.equals(fin2)) { continue; }
-                    RacketTree tree2 = new RacketTree(new PushbackReader(new FileReader(fin2)));
-                    int val = tree1.similarityValue(tree2);
-                    if (val > maxValue) {
-                        maxValue = val;
-                        bestFile1 = fin;
-                        bestFile2 = fin2;
-                        System.out.println("New Max: " + Integer.toString(maxValue) + " " + fin.getName() + " " + fin2.getName());
-                    }
-//                    innerFileCount++;
-//                    System.out.println("innerFileCount" + Integer.toString(innerFileCount));
-                }
-                outerFileCount++;
-                System.out.println("outerFileCount" + Integer.toString(outerFileCount));
+                treeMap.put(fin.getName(), new RacketTree(new PushbackReader(new FileReader(fin))));
             }
         }
         catch (Exception e) {
             fail();
+        }
+        int outerCount = 0;
+        for (Map.Entry<String, RacketTree> entry1 : treeMap.entrySet()) {
+            for (Map.Entry<String, RacketTree> entry2 : treeMap.entrySet()) {
+                if (entry1.getKey().equals(entry2.getKey())) { continue; }
+                int val = entry1.getValue().similarityValue(entry2.getValue());
+                if (val > maxValue) {
+                    maxValue = val;
+                    System.out.print("New Max: ");
+                    System.out.print(Integer.toString(maxValue));
+                    System.out.print(" " + entry1.getKey());
+                    System.out.println(" " + entry2.getKey());
+                }
+            }
+            outerCount++;
+            System.out.println(Integer.toString(outerCount));
         }
     }
 
