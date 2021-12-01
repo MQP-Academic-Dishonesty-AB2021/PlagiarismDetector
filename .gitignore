@@ -28,3 +28,6 @@ hs_err_pid*
 /.DS_Store
 # javafx target
 /target
+
+/rm_file.sh
+/*.csv

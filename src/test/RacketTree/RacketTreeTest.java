@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,16 +28,38 @@ public class RacketTreeTest {
      * Check that the code completes
      */
     @Test
-    void RacketTreeCompletes() {
-        for (File fin : new File("test_files").listFiles()) {
-            try {
-                RacketTree test = new RacketTree(new PushbackReader(new FileReader(fin)));
-            }
-            catch (Exception e) {
-                fail();
-            }
+    void RemoveIncorrectFiles() {
+        try {
+            FileWriter rm_file = new FileWriter("rm_file.sh");
+            RecursivelyDeleteBadFiles(new File("test_files"), rm_file);
+            rm_file.close();
+        }
+        catch (Exception e) {
+
         }
         assertTrue(true);
+    }
+
+    void RecursivelyDeleteBadFiles(File file, FileWriter rm_file) throws IOException {
+        for (File child : file.listFiles()) {
+            if (child.isFile()) {
+                try {
+                    RacketTree test = new RacketTree(new PushbackReader(new FileReader(child)));
+                }
+                catch (Exception e) {
+                    if (child.delete()) {
+                        System.out.println("Deleted file: " + child.getPath());
+                    }
+                    else {
+                        System.out.println("Failed to delete: " + child.getPath());
+                        rm_file.write("rm " + child.getPath() + "\n");
+                    }
+                }
+            }
+            else {
+                RecursivelyDeleteBadFiles(child, rm_file);
+            }
+        }
     }
 
     /**
@@ -54,47 +77,45 @@ public class RacketTreeTest {
     }
 
     @Test
-    void RacketTreeSimilarityValueFinishes() {
+    void GenerateComparisonCSV() {
+        File test_files = new File("test_files/");
         try {
-            RacketTree tree1 = new RacketTree("test_files/7214742.txt");
-            RacketTree tree2 = new RacketTree("test_files/7214742.txt");
-            int value = tree1.similarityValue(tree2);
-            RacketTree tree3 = new RacketTree("test_files/8595055.txt");
-            int value2 = tree1.similarityValue(tree3);
-            assertTrue(value2 < value);
-        }
-        catch (Exception e) {
-            fail();
-        }
-    }
-
-    @Test
-    void RunSimilarityForAll() {
-        int maxValue = 0;
-        HashMap<String, RacketTree> treeMap = new HashMap<String, RacketTree>();
-        try {
-            for (File fin : new File("test_files").listFiles()) {
-                treeMap.put(fin.getName(), new RacketTree(new PushbackReader(new FileReader(fin))));
-            }
-        }
-        catch (Exception e) {
-            fail();
-        }
-        int outerCount = 0;
-        for (Map.Entry<String, RacketTree> entry1 : treeMap.entrySet()) {
-            for (Map.Entry<String, RacketTree> entry2 : treeMap.entrySet()) {
-                if (entry1.getKey().equals(entry2.getKey())) { continue; }
-                int val = entry1.getValue().similarityValue(entry2.getValue());
-                if (val > maxValue) {
-                    maxValue = val;
-                    System.out.print("New Max: ");
-                    System.out.print(Integer.toString(maxValue));
-                    System.out.print(" " + entry1.getKey());
-                    System.out.println(" " + entry2.getKey());
+            for (File assignement : test_files.listFiles()) {
+                // For .DS_Store
+                if (assignement.isFile()) { continue; }
+                ArrayList<RacketTree> treeList = new ArrayList<RacketTree>();
+                ArrayList<String> fileOrder = new ArrayList<>();
+                File csvFile = new File( assignement.getName() + ".csv");
+                if (!csvFile.exists()) { csvFile.createNewFile(); }
+                FileWriter csv = new FileWriter(csvFile.getPath());
+                for (File child : assignement.listFiles()) {
+                    if (child.getName().substring(child.getName().length() - 3).equals("txt")) {
+                        treeList.add(new RacketTree(new PushbackReader(new FileReader(child))));
+                        fileOrder.add(child.getName().substring(0, child.getName().length() - 4));
+                        csv.write("," + fileOrder.get(fileOrder.size() - 1));
+                    }
                 }
+                csv.write("\n");
+                for (int i = 0; i < treeList.size(); i++) {
+                    csv.write(fileOrder.get(i) + ",");
+                    for (int j = 0; j < treeList.size(); j++) {
+                        if (i == j) {
+                            csv.write(",");
+                            continue;
+                        }
+                        RacketTree treeI = treeList.get(i);
+                        RacketTree treeJ = treeList.get(j);
+                        csv.write(Integer.toString(treeI.similarityValue(treeJ)));
+                        if (j != treeList.size() - 1) { csv.write(","); };
+                    }
+                    csv.write("\n");
+                }
+                System.out.println(csvFile.getName());
+                csv.close();
             }
-            outerCount++;
-            System.out.println(Integer.toString(outerCount));
+        }
+        catch (Exception e) {
+            fail();
         }
     }
 

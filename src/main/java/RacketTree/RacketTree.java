@@ -67,12 +67,11 @@ public class RacketTree {
         for (RacketAtom child : this.children) {
             sum += child.similarityValue(leavesMap);
         }
-        return sum;
+        return sum / this.numLeaves;
     }
 
     public int similarityValue(RacketTree other) {
-        HashMap<String, ArrayList<RacketAtom>> map = this.getLeavesHash();
-        return other.similarityValue(map) / this.numLeaves;
+        return other.similarityValue(this.leavesHash);
     }
 
     public int size() {
