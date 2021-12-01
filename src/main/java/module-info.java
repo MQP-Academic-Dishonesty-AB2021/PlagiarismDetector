@@ -1,15 +1,10 @@
-module com.example.plagarismdetector {
+module com.plagiarismdetector {
     requires javafx.controls;
     requires javafx.fxml;
-    requires javafx.web;
 
     requires org.controlsfx.controls;
-    requires com.dlsc.formsfx;
-    requires validatorfx;
-    requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
-    requires eu.hansolo.tilesfx;
 
-    opens com.example.plagarismdetector to javafx.fxml;
-    exports com.example.plagarismdetector;
+    opens com.JavaFX to javafx.fxml;
+    exports com.JavaFX;
 }
