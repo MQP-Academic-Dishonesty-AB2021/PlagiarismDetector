@@ -3,6 +3,7 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RacketTree {
     static public String function_open = "([{";
@@ -55,7 +56,7 @@ public class RacketTree {
         return map;
     }
 
-    public int similarityValue(HashMap<String, ArrayList<RacketAtom>> leavesMap) {
+    private int similarityValue(HashMap<String, ArrayList<RacketAtom>> leavesMap) {
         int sum = 0;
         for (RacketAtom child : this.children) {
             sum += child.similarityValue(leavesMap);
@@ -65,7 +66,11 @@ public class RacketTree {
 
     public int similarityValue(RacketTree other) {
         HashMap<String, ArrayList<RacketAtom>> map = this.getLeavesHash();
-        return other.similarityValue(map);
+        int numleaves = 0;
+        for (Map.Entry<String, ArrayList<RacketAtom>> entry : map.entrySet()) {
+            numleaves += entry.getValue().size();
+        }
+        return other.similarityValue(map) / numleaves;
     }
 
     public int size() {

@@ -77,6 +77,7 @@ public class RacketList extends RacketAtom {
 
     @Override
     public boolean equals(RacketAtom other) {
+//        return false;
         if (!(other instanceof RacketList)) {
             return false;
         }

@@ -4,6 +4,7 @@ import RacketTree.RacketTree;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,17 +26,13 @@ public class RacketTreeTest {
      */
     @Test
     void RacketTreeCompletes() {
-        int errorCount = 0;
-        int totalCount = 0;
         for (File fin : new File("test_files").listFiles()) {
             try {
                 RacketTree test = new RacketTree(new PushbackReader(new FileReader(fin)));
             }
             catch (Exception e) {
-//                fail();
-                errorCount++;
+                fail();
             }
-            totalCount++;
         }
         assertTrue(true);
     }
@@ -68,4 +65,37 @@ public class RacketTreeTest {
             fail();
         }
     }
+
+    @Test
+    void RunSimilarityForAll() {
+        int maxValue = 0;
+        File bestFile1;
+        File bestFile2;
+        try {
+            int outerFileCount = 0;
+            for (File fin : new File("test_files").listFiles()) {
+                RacketTree tree1 = new RacketTree(new PushbackReader(new FileReader(fin)));
+//                int innerFileCount = 0;
+                for (File fin2 : new File("test_files").listFiles()) {
+                    if (fin.equals(fin2)) { continue; }
+                    RacketTree tree2 = new RacketTree(new PushbackReader(new FileReader(fin2)));
+                    int val = tree1.similarityValue(tree2);
+                    if (val > maxValue) {
+                        maxValue = val;
+                        bestFile1 = fin;
+                        bestFile2 = fin2;
+                        System.out.println("New Max: " + Integer.toString(maxValue) + " " + fin.getName() + " " + fin2.getName());
+                    }
+//                    innerFileCount++;
+//                    System.out.println("innerFileCount" + Integer.toString(innerFileCount));
+                }
+                outerFileCount++;
+                System.out.println("outerFileCount" + Integer.toString(outerFileCount));
+            }
+        }
+        catch (Exception e) {
+            fail();
+        }
+    }
+
 }
