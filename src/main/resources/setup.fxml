@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-width: 5;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.JavaFX.SetupController">
+   <children>
+      <JFXTextArea layoutX="148.0" layoutY="14.0" prefHeight="64.0" prefWidth="305.0" text="First Time Setup">
+         <font>
+            <Font size="41.0" />
+         </font>
+      </JFXTextArea>
+      <JFXTextArea layoutX="66.0" layoutY="149.0" prefHeight="35.0" prefWidth="468.0" text="Please select the directory containing the database of files to be cross referenced:" />
+      <JFXButton buttonType="RAISED" layoutX="247.0" layoutY="200.0" style="-fx-border-width: 10px; -fx-background-color: pink;" text="Select file location..." />
+      <JFXTextArea layoutX="73.0" layoutY="247.0" prefHeight="35.0" prefWidth="468.0" text="Please select the directory containing the assignment files to be tested:" />
+      <JFXButton buttonType="RAISED" layoutX="247.0" layoutY="293.0" style="-fx-border-width: 10px; -fx-background-color: pink;" text="Select file location..." />
+      <JFXRadioButton layoutX="198.0" layoutY="332.0" text="Make this the default install location" />
+   </children>
+</AnchorPane>

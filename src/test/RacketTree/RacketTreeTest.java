@@ -89,7 +89,7 @@ public class RacketTreeTest {
                 if (!csvFile.exists()) { csvFile.createNewFile(); }
                 FileWriter csv = new FileWriter(csvFile.getPath());
                 for (File child : assignement.listFiles()) {
-                    if (child.getName().substring(child.getName().length() - 3).equals("txt")) {
+                    if (child.getName().substring(child.getName().length() - 3).equals("rkt")) {
                         treeList.add(new RacketTree(new PushbackReader(new FileReader(child))));
                         fileOrder.add(child.getName().substring(0, child.getName().length() - 4));
                         csv.write("," + fileOrder.get(fileOrder.size() - 1));
