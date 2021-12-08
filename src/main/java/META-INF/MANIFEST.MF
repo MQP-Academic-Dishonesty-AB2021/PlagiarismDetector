@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Main-Class: Launcher
+Class-Path: javafx-fxml-13.0.2.jar javafx-controls-13.0.2-win.jar javafx
+ -media-13.0.2.jar javafx-graphics-13.0.2-win.jar javafx-web-13.0.2-win.
+ jar controlsfx-11.1.0.jar javafx-base-13.0.2.jar javafx-fxml-13.0.2-win
+ .jar jfoenix-9.0.10.jar bootstrapfx-core-0.4.0.jar javafx-graphics-13.0
+ .2.jar javafx-base-13.0.2-win.jar javafx-controls-13.0.2.jar javafx-med
+ ia-13.0.2-win.jar javafx-web-13.0.2.jar javafx-swt.jar javafx.base.jar 
+ javafx.controls.jar javafx.fxml.jar javafx.graphics.jar javafx.media.ja
+ r javafx.swing.jar javafx.web.jar
+

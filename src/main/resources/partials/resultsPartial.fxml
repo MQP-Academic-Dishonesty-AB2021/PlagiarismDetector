@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="457.0" prefWidth="826.0" style="-fx-background-color: A9B0B7;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.JavaFX.quickstartresultsController">
+   <children>
+      <AnchorPane layoutX="531.0" layoutY="74.0" prefHeight="78.0" prefWidth="304.0">
+         <children>
+            <Text layoutX="6.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File name:" textAlignment="CENTER" wrappingWidth="297.400390625">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text layoutX="6.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student2Assignment1" textAlignment="CENTER" wrappingWidth="297.400390625">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="36.0" layoutY="74.0" prefHeight="88.0" prefWidth="335.0">
+         <children>
+            <Text layoutX="6.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="File name:" textAlignment="CENTER" wrappingWidth="297.400390625">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+            <Text layoutX="6.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student1Assignment1" textAlignment="CENTER" wrappingWidth="297.400390625">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="-13.0" layoutY="-14.0" prefHeight="88.0" prefWidth="848.0" style="-fx-background-color: AC2B37;">
+         <children>
+            <Label fx:id="drawerImage" layoutX="7.0" layoutY="7.0" />
+            <ImageView fx:id="exit" fitHeight="24.0" fitWidth="24.0" layoutX="822.0" layoutY="18.0" onMouseClicked="#returnToMainMenu" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/exit.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="275.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Results" textAlignment="CENTER" wrappingWidth="297.400390625">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+      <Circle fill="#60da85" layoutX="417.0" layoutY="346.0" radius="109.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: AC2B37;" />
+      <Text fx:id="resultValue" layoutX="353.0" layoutY="356.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0000" textAlignment="CENTER" wrappingWidth="126.400390625">
+         <font>
+            <Font size="48.0" />
+         </font>
+      </Text>
+      <Text layoutX="328.0" layoutY="220.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Similarity Value" textAlignment="CENTER" wrappingWidth="177.400390625">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Text>
+      <Text fill="#ab2b38" layoutX="328.0" layoutY="186.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X Possible Cases" textAlignment="CENTER" underline="true" wrappingWidth="177.400390625">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Text>
+      <JFXButton buttonType="RAISED" layoutX="365.0" layoutY="463.0" prefHeight="32.0" prefWidth="105.0" styleClass="circle-button" stylesheets="@../buttonStylesheet.css" text="Next Case" textAlignment="CENTER" underline="true">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </JFXButton>
+      <Text layoutX="389.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Case #:">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>

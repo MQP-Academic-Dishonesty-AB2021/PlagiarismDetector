@@ -14,6 +14,7 @@ public class MainMenu extends Application {
     private static Parent dashPane;
 
 
+
     public void loadPartials() throws Exception {
         //Pane dashPane = FXMLLoader.load(MainMenu.class.getResource("/dashboard.fxml"));
     }
@@ -23,7 +24,10 @@ public class MainMenu extends Application {
         loadPartials();
 
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menuBar.fxml"));
+
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/menuBar.fxml"));
+        System.out.println(fxmlLoader.getLocation());
         Parent root = fxmlLoader.load();
 
         primaryStage.initStyle(StageStyle.UNDECORATED);
@@ -38,8 +42,6 @@ public class MainMenu extends Application {
             primaryStage.setY(event.getScreenY() - y);
         });
 
-        //Pane mainPane = MenuController.mainPane;
-       // mainPane.getChildren().add(dashPane);
 
         primaryStage.setScene(new Scene(root, 800, 500));
         primaryStage.show();
