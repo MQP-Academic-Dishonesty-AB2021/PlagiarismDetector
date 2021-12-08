@@ -10,8 +10,8 @@ public class RacketKeyword extends RacketAtom {
     private String keyword;
 
     @Override
-    public boolean equals(RacketAtom other) {
-        if (!(other instanceof RacketKeyword)) {
+    public boolean equals(Object other) {
+        if (!(other.getClass() == this.getClass())) {
             return false;
         }
         RacketKeyword otherKeyword = (RacketKeyword) other;
@@ -102,10 +102,21 @@ public class RacketKeyword extends RacketAtom {
         RacketList otherParent = other.parent;
         RacketList parent = this.parent;
         while (parent != null && otherParent != null) {
-            value += otherParent.numberOfMatchingChildren(parent);
+            // requiring consecutive matches decreased time by a lot
+            // while almost not change to output
+            int numMatches = otherParent.numberOfMatchingChildren(parent, this);
+            if (numMatches == 0) {
+                break;
+            }
+            value += numMatches;
             parent = parent.parent;
             otherParent = otherParent.parent;
         }
         return value;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.keyword.hashCode();
     }
 }
