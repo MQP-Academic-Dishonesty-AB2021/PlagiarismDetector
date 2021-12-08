@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PushbackReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import static RacketTree.RacketTree.function_open;
 import static RacketTree.RacketTree.string_chars;
@@ -62,12 +63,12 @@ public class RacketList extends RacketAtom {
         return sum;
     }
 
-    public int numberOfMatchingChildren(RacketList other) {
-        // Since hopefully the number of children should really never go above 5ish I will do a use O(n^2)
-        // algorithm to find the intersection rather than deal with making a hashmap to make it O(n)
-        // TODO: see if its worth it to use a hashmap to make it O(n)
+    public int numberOfMatchingChildren(RacketList other, RacketAtom child) {
         int num = 0;
-        for (RacketAtom child : this.items) {
+        for (RacketAtom thisChild : this.items) {
+            if (thisChild == child) {
+                continue;
+            }
             for (RacketAtom otherChild : other.items) {
                 if (child.equals(otherChild)) {
                     num++;
@@ -75,11 +76,24 @@ public class RacketList extends RacketAtom {
             }
         }
         return num;
+//         using a hash set slows it down considerably -- even though it should be O(n) (small dataset)
+//         TODO: Delete this commented out code once it's tracked by git (I dont want to have to retype it later)
+//        HashSet<RacketAtom> set = new HashSet<RacketAtom>();
+//        for (RacketAtom thisChild : this.items) {
+//            if (thisChild != child) {
+//                set.add(thisChild);
+//            }
+//        }
+//        int num = 0;
+//        for (RacketAtom otherChild : other.items) {
+//            num += set.contains(otherChild) ? 1 : 0;
+//        }
+//        return num;
     }
 
     @Override
-    public boolean equals(RacketAtom other) {
-        if (!(other instanceof RacketList)) {
+    public boolean equals(Object other) {
+        if (other.getClass() != this.getClass()) {
             return false;
         }
         RacketList otherList = (RacketList) other;
@@ -101,5 +115,10 @@ public class RacketList extends RacketAtom {
             sum += child.similarityValue(leavesMap);
         }
         return sum;
+    }
+
+    public int hashCode() {
+        if (this.items.size() == 0) { return 0; }
+        return this.items.get(0).hashCode() * this.items.size();
     }
 }

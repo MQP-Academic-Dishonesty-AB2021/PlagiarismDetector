@@ -575,4 +575,15 @@ public final class ChecksimsCommandLine {
 
         logs.trace("CLI parsing complete!");
     }
+
+    public static ChecksimsConfig generateFinalConfig(String[] args)
+            throws ParseException, ChecksimsException, IOException {
+        CommandLine cli = parseOpts(args, false);
+        // First, parse basic flags
+        ChecksimsConfig config = parseBaseFlags(cli);
+
+        // Parse file flags
+        ChecksimsConfig finalConfig = parseFileFlags(cli, config);
+        return finalConfig;
+    }
 }

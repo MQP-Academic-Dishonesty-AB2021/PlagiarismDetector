@@ -43,10 +43,41 @@ public class RacketString extends RacketAtom {
     }
 
     public boolean equals(RacketAtom other) {
-        if (!(other instanceof RacketString)) {
+        if (other.getClass() != this.getClass()) {
             return false;
         }
         RacketString otherString = (RacketString) other;
         return otherString.str.equals(this.str);
+    }
+
+    @Override
+    public int similarityValue(HashMap<String, ArrayList<RacketAtom>> map) {
+        ArrayList<RacketAtom> list = map.get("\"" + this.str + "\"");
+
+        if (list == null) {
+            return 0;
+        }
+        int sum = 0;
+        for (RacketAtom leaf : list) {
+            sum += this.similarityValue(leaf);
+        }
+        return sum;
+    }
+
+    private int similarityValue(RacketAtom other) {
+        int value = 1;
+        RacketList otherParent = other.parent;
+        RacketList parent = this.parent;
+        while (parent != null && otherParent != null) {
+            value += otherParent.numberOfMatchingChildren(parent, this);
+            parent = parent.parent;
+            otherParent = otherParent.parent;
+        }
+        return value;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.str.hashCode();
     }
 }

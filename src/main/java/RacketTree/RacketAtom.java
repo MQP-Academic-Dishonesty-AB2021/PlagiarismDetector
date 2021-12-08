@@ -8,10 +8,6 @@ import java.util.HashMap;
 public abstract class RacketAtom {
     public RacketList parent;
 
-    boolean equals(RacketAtom other) {
-        return false;
-    };
-
     public static RacketAtom generateAtom(PushbackReader fin, RacketList parent) throws InvalidFormatException, IOException {
         int firstChar = fin.read();
         while (Character.isWhitespace((char)firstChar)) { firstChar = fin.read(); }
