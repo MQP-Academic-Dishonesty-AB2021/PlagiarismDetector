@@ -1,16 +1,27 @@
 package com.JavaFX;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import javafx.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -23,13 +34,51 @@ public class MenuController implements Initializable {
     private Label drawerImage;
 
     @FXML
-    private Button dashboardButton;
+    private JFXButton quickStartButton;
 
     @FXML
-    public static Pane mainPane;
+    private JFXButton visualizationsText;
+
+    public boolean firstTimeSetup;
+
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
+
+    public void switchToSetup(ActionEvent event) throws IOException{
+        if(firstTimeSetup == false) {
+            Parent root = FXMLLoader.load(getClass().getResource("/setup.fxml"));
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            firstTimeSetup = true;
+        }
+        else{
+            //switchToResults(event);
+        }
+    }
+
+    public void switchToVisualizations(ActionEvent event) throws IOException{
+        Parent root = FXMLLoader.load(getClass().getResource("/partials/heatmapPartial.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+    }
+//    public void switchToResults(ActionEvent event) throws IOException{
+//        Parent root = FXMLLoader.load(getClass().getResource("/partials/resultsPartial.fxml"));
+//        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+//        scene = new Scene(root);
+//        stage.setScene(scene);
+//    }
+
+
+    @FXML
+    public Pane mainPane;
 
     @FXML
     private ImageView exit;
+
+
 
     @Override
     @FXML
@@ -83,6 +132,11 @@ public class MenuController implements Initializable {
             translateTransition1.setByX(-600);
             translateTransition1.play();
         });
+
+
+
+
+
 
 
 
