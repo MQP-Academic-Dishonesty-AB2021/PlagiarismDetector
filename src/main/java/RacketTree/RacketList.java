@@ -12,7 +12,6 @@ import static RacketTree.RacketTree.string_chars;
 
 public class RacketList extends RacketAtom {
     public ArrayList<RacketAtom> items;
-//    public static long matchingChildrenCount = 0;
 
     static private int MatchingBraces(int openingBrace)
     throws InvalidFormatException {
@@ -62,15 +61,7 @@ public class RacketList extends RacketAtom {
     @Override
     public int insertIntoTreeMap(HashMap<RacketAtom, ArrayList<RacketAtom>> map, int leafDepth) {
         if (this.height <= leafDepth) {
-            ArrayList<RacketAtom> currentList = map.get(this);
-            if (currentList == null) {
-                ArrayList<RacketAtom> newList = new ArrayList<RacketAtom>();
-                map.put(this, newList);
-            }
-            else {
-                currentList.add(this);
-            }
-            return 1;
+            return super.insertIntoTreeMap(map, leafDepth);
         }
         int sum = 0;
         for (RacketAtom child : this.items) {
@@ -80,7 +71,6 @@ public class RacketList extends RacketAtom {
     }
 
     public int numberOfMatchingChildren(RacketList other, RacketAtom child) {
-//        this.matchingChildrenCount++;
         int num = 0;
         for (RacketAtom thisChild : this.items) {
             if (thisChild == child) {
@@ -97,7 +87,6 @@ public class RacketList extends RacketAtom {
 
     @Override
     public boolean equals(Object other) {
-//        RacketAtom.equalsCount++;
         if (other.getClass() != this.getClass()) {
             return false;
         }
@@ -105,23 +94,12 @@ public class RacketList extends RacketAtom {
         if (otherList.items.size() != this.items.size()) {
             return false;
         }
-//        for (int i = 0; i < this.items.size(); i++) {
-//            if (!otherList.items.get(i).equals(this.items.get(i))) {
-//                return false;
-//            }
-//        }
         return this.items.equals(otherList.items);
     }
 
     @Override
     public int similarityValue(HashMap<RacketAtom, ArrayList<RacketAtom>> leavesMap) {
-        int sum = 0;
-        ArrayList<RacketAtom> sameList = leavesMap.get(this);
-        if (sameList != null) {
-            for (RacketAtom leaf : sameList) {
-                sum += this.similarityValue(leaf);
-            }
-        }
+        int sum = super.similarityValue(leavesMap);
         for (RacketAtom child : this.items) {
             sum += child.similarityValue(leavesMap);
         }
@@ -131,5 +109,15 @@ public class RacketList extends RacketAtom {
     public int hashCode() {
         if (this.items.size() == 0) { return 0; }
         return this.items.get(0).hashCode() * this.items.size();
+    }
+
+    public String toString() {
+        StringBuilder strbuild = new StringBuilder("(");
+        for (RacketAtom child : this.items) {
+            strbuild.append(child.toString());
+            strbuild.append(" ");
+        }
+        strbuild.append(')');
+        return strbuild.toString();
     }
 }

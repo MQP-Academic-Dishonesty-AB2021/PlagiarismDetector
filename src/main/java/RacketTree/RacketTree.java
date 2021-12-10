@@ -21,7 +21,7 @@ public class RacketTree {
     public HashMap<RacketAtom, ArrayList<RacketAtom>> leavesHash;
     private int leafDepth;
     public int numLeaves;
-    public static int defaultLeafDepth = 1;
+    public static int defaultLeafDepth = 3;
 
 
     public RacketTree(String filename) throws
@@ -68,19 +68,6 @@ public class RacketTree {
         return children;
     }
 
-    /**
-     *  First try is going to just count the size of subtrees between the two
-     * @param other The other racket tree to compare with
-     * @return a value representing how similar they are
-     */
-    public int TreeSimilarity(RacketTree other) {
-
-        // First make a hashtable of all the leaf nodes of this
-        // Then for each leaf see if its in the map and then if so go up and see if it has matching leaf nodes in their parents
-        // add up the sum of length for each one
-        return 0;
-    }
-
     private HashMap<RacketAtom, ArrayList<RacketAtom>> generateLeavesHash() {
         return this.generateLeavesHash(this.leafDepth);
     }
@@ -123,4 +110,5 @@ public class RacketTree {
     public int size() {
         return children.size();
     }
+
 }

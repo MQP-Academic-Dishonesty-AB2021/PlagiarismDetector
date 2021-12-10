@@ -70,41 +70,13 @@ public class RacketKeyword extends RacketAtom {
         this.height = 1;
     }
 
-    @Override
-    public int insertIntoTreeMap(HashMap<RacketAtom, ArrayList<RacketAtom>> map, int leafDepth) {
-        if (this.keyword.equals("define") || this.keyword.equals("check-expect") || this.keyword.equals("list")) {
-            return 0;
-        }
-        ArrayList<RacketAtom> list = map.get(this.keyword);
-        if (list == null) {
-            ArrayList<RacketAtom> newList = new ArrayList<RacketAtom>();
-            newList.add(this);
-            map.put(this, newList);
-        }
-        else {
-            list.add(this);
-            // TODO: check if I really need to put it back in
-            map.put(this, list);
-        }
-        return 1;
-    }
-
-    @Override
-    public int similarityValue(HashMap<RacketAtom, ArrayList<RacketAtom>> map) {
-        ArrayList<RacketAtom> list = map.get(this);
-
-        if (list == null) {
-            return 0;
-        }
-        int sum = 0;
-        for (RacketAtom leaf : list) {
-            sum += this.similarityValue(leaf);
-        }
-        return sum;
-    }
 
     @Override
     public int hashCode() {
         return this.keyword.hashCode();
+    }
+
+    public String toString() {
+        return this.keyword;
     }
 }
