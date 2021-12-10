@@ -14,25 +14,24 @@ import Checksims.util.threading.ParallelAlgorithm;
 import RacketTree.RacketTree;
 import RacketTree.InvalidFormatException;
 import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 public class Comparison {
     private HashMap<ComparisonPair, Double> values;
     private ArrayList<String> fileList;
 
     public Comparison(String directory) {
-        this.generateOurComparison(directory);
+        this.generateRacketTreeComparison(directory);
     }
 
     public Comparison(String directory, String method) {
         switch(method) {
             case "TreeSimilarity":
-                this.generateOurComparison(directory);
+                this.generateRacketTreeComparison(directory);
                 break;
             case "Checksims":
             default:
@@ -40,7 +39,23 @@ public class Comparison {
         }
     }
 
-    private void generateOurComparison(String assignment) {
+    public double getValue(ComparisonPair pair) { return this.values.get(pair); }
+
+    public double getValue(String base, String compared) {
+        return this.values.get(new ComparisonPair(base, compared));
+    }
+
+    public ArrayList<ImmutablePair<ComparisonPair, Double>> getOrderedList() {
+        ArrayList<ImmutablePair<ComparisonPair, Double>> list = new ArrayList<>();
+        for (Map.Entry<ComparisonPair, Double> value : values.entrySet()) {
+            list.add(new ImmutablePair<>(value.getKey(), value.getValue()));
+        }
+        list.sort((val1, val2) -> Double.compare(val2.getValue(), val1.getValue()));
+        return list;
+    }
+
+
+    private void generateRacketTreeComparison(String assignment) {
         File dir = new File(assignment);
         HashMap<String, RacketTree> assignmentMap = new HashMap<String, RacketTree>();
         this.values = new HashMap<>();

@@ -1,8 +1,11 @@
 package ComparisonRunner;
 
-class ComparisonPair {
+public class ComparisonPair {
     private String file1;
     private String file2;
+
+    public String getBaseFile() { return this.file1; }
+    public String getComparedFile() { return this.file2; }
 
     public ComparisonPair(String file1, String file2) {
         this.file1 = file1;
