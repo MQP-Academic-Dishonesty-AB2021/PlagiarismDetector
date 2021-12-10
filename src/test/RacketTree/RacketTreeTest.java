@@ -60,7 +60,6 @@ public class RacketTreeTest {
                 System.out.println(assignment.getName());
                 submissions.toCSV(assignment.getName() + "Checksims");
             }
-            assertTrue(true);
         }
         catch (Exception e) {
             fail();
