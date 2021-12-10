@@ -17,6 +17,9 @@ import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import RacketTree.RacketAtom;
+import RacketTree.RacketList;
+import RacketTree.RacketKeyword;
+import RacketTree.RacketString;
 
 import java.io.*;
 import java.util.*;
@@ -78,6 +81,18 @@ public class Comparison {
                     this.fileList.add(submission.getName());
                 }
             }
+
+            HashMap<String, Integer> numTimes = new HashMap<>();
+            for (Map.Entry<String, RacketTree> sub : assignmentMap.entrySet()) {
+                for (Map.Entry<RacketAtom, ArrayList<RacketAtom>> leaf : sub.getValue().leavesHash.entrySet())  {
+                    numTimes.merge(leaf.getKey().toString(), leaf.getValue().size(), Integer::sum);
+                }
+            }
+            ArrayList<ImmutablePair<String, Integer>> sortedNum = new ArrayList<>();
+            for (Map.Entry<String, Integer> x : numTimes.entrySet()) {
+                sortedNum.add(new ImmutablePair<>(x.getKey(), x.getValue()));
+            }
+            sortedNum.sort((x, y) -> Integer.compare(y.getValue(), x.getValue()));
 
             ForkJoinPool myPool = new ForkJoinPool(numThreads);
             myPool.submit(() -> fileList.parallelStream().forEach(

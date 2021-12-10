@@ -27,9 +27,6 @@ public abstract class RacketAtom {
         }
     }
 
-    public int similarityValue(HashMap<RacketAtom, ArrayList<RacketAtom>> map) {
-        return 0;
-    }
 
     /**
      *
@@ -37,7 +34,18 @@ public abstract class RacketAtom {
      * @return The number of leaves added
      */
     public int insertIntoTreeMap(HashMap<RacketAtom, ArrayList<RacketAtom>> map, int leafDepth) {
-        return 0;
+        ArrayList<RacketAtom> list = map.get(this);
+        if (list == null) {
+            ArrayList<RacketAtom> newList = new ArrayList<RacketAtom>();
+            newList.add(this);
+            map.put(this, newList);
+        }
+        else {
+            list.add(this);
+            // TODO: check if I really need to put it back in
+            map.put(this, list);
+        }
+        return 1;
     }
 
     int similarityValue(RacketAtom other) {
@@ -57,4 +65,18 @@ public abstract class RacketAtom {
         }
         return value;
     }
+
+    public int similarityValue(HashMap<RacketAtom, ArrayList<RacketAtom>> map) {
+        ArrayList<RacketAtom> list = map.get(this);
+
+        if (list == null) {
+            return 0;
+        }
+        int sum = 0;
+        for (RacketAtom leaf : list) {
+            sum += this.similarityValue(leaf);
+        }
+        return sum;
+    }
+
 }
