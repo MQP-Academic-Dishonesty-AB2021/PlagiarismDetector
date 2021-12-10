@@ -25,6 +25,7 @@ import java.util.concurrent.ForkJoinPool;
 public class Comparison {
     private ConcurrentHashMap<ComparisonPair, Double> values;
     private ArrayList<String> fileList;
+    public static int numThreads = 4;
 
     public Comparison(String directory) {
         this.generateRacketTreeComparison(directory);
@@ -77,7 +78,7 @@ public class Comparison {
                 }
             }
 
-            ForkJoinPool myPool = new ForkJoinPool(4);
+            ForkJoinPool myPool = new ForkJoinPool(numThreads);
             myPool.submit(() -> fileList.parallelStream().forEach(
                     (filenameI) -> {
                         RacketTree treeI = assignmentMap.get(filenameI);
@@ -107,7 +108,7 @@ public class Comparison {
     }
 
     private void generateChecksimsComparison(String assignment) {
-        String[] args = {"-s", assignment, "-o", "csv"};
+        String[] args = {"-s", assignment, "-o", "csv", "-j", Integer.toString(numThreads)};
         this.values = new ConcurrentHashMap<>();
         this.fileList = new ArrayList<>();
         try {
