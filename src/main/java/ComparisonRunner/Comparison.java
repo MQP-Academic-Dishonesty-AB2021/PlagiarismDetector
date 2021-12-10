@@ -19,9 +19,11 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ForkJoinPool;
 
 public class Comparison {
-    private HashMap<ComparisonPair, Double> values;
+    private ConcurrentHashMap<ComparisonPair, Double> values;
     private ArrayList<String> fileList;
 
     public Comparison(String directory) {
@@ -58,7 +60,7 @@ public class Comparison {
     private void generateRacketTreeComparison(String assignment) {
         File dir = new File(assignment);
         HashMap<String, RacketTree> assignmentMap = new HashMap<String, RacketTree>();
-        this.values = new HashMap<>();
+        this.values = new ConcurrentHashMap<>();
         try {
             this.fileList = new ArrayList<>();
             for (File submission : dir.listFiles()) {
@@ -74,17 +76,21 @@ public class Comparison {
                     this.fileList.add(submission.getName());
                 }
             }
-            for (int i = 0; i < fileList.size(); i++) {
-                String filenameI = fileList.get(i);
-                RacketTree treeI = assignmentMap.get(filenameI);
-                for (int j = 0; j < fileList.size(); j++) {
-                    if (i == j) { continue; }
-                    String filenameJ = fileList.get(j);
-                    RacketTree treeJ = assignmentMap.get(filenameJ);
-                    double simValI = treeI.similarityValue(treeJ);
-                    this.values.put(new ComparisonPair(filenameI, filenameJ), simValI);
-                }
-            }
+
+            ForkJoinPool myPool = new ForkJoinPool(4);
+            myPool.submit(() -> fileList.parallelStream().forEach(
+                    (filenameI) -> {
+                        RacketTree treeI = assignmentMap.get(filenameI);
+                        for (String filenameJ : fileList) {
+                            if (filenameI.equals(filenameJ)) {
+                                continue;
+                            }
+                            RacketTree treeJ = assignmentMap.get(filenameJ);
+                            double simValI = treeI.similarityValue(treeJ);
+                            this.values.put(new ComparisonPair(filenameI, filenameJ), simValI);
+                        }
+                    }
+            )).get();
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -95,11 +101,14 @@ public class Comparison {
         catch (InvalidFormatException e) {
 
         }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void generateChecksimsComparison(String assignment) {
         String[] args = {"-s", assignment, "-o", "csv"};
-        this.values = new HashMap<>();
+        this.values = new ConcurrentHashMap<>();
         this.fileList = new ArrayList<>();
         try {
             // All in this scope are copy and pasted from checksims with unused items removed (logging)
