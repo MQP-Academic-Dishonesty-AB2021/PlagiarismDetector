@@ -1,6 +1,8 @@
 package RacketTree;
 
 import ComparisonRunner.Comparison;
+import ComparisonRunner.ComparisonPair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -57,15 +59,22 @@ public class RacketTreeTest {
                 Comparison submissions = new Comparison(assignment.getPath(), "Checksims");
                 System.out.println(assignment.getName());
                 submissions.toCSV(assignment.getName() + "Checksims");
-//                submissions.toCSV(assignment.getName());
-//                String[] args = {"-s", assignment.getPath(), "-o", "csv", "-f", assignment.getName() + "Checksims"};
-//                Checksims.ChecksimsCommandLine.runCLI(args);
             }
             assertTrue(true);
         }
         catch (Exception e) {
             fail();
         }
+    }
+
+    @Test
+    void TestOrderedListInRightOrder() {
+        Comparison test = new Comparison("test_files/assign2", "TreeSimilarity");
+        ArrayList<ImmutablePair<ComparisonPair, Double>> list = test.getOrderedList();
+        for (int i = 1; i < list.size(); i++) {
+            assertTrue(list.get(i - 1).getValue() >= list.get(i).getValue());
+        }
+        assertTrue(true);
     }
 
 }
