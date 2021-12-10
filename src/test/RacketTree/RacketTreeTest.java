@@ -44,6 +44,7 @@ public class RacketTreeTest {
                 System.out.println(assignment.getName());
                 submissions.toCSV(assignment.getName());
             }
+            assertTrue(true);
         }
         catch (Exception e) {
             fail();

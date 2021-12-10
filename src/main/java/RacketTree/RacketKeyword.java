@@ -8,9 +8,11 @@ import java.util.HashMap;
 
 public class RacketKeyword extends RacketAtom {
     private String keyword;
+    public int height = 1;
 
     @Override
     public boolean equals(Object other) {
+//        RacketAtom.equalsCount++;
         if (!(other.getClass() == this.getClass())) {
             return false;
         }
@@ -65,27 +67,31 @@ public class RacketKeyword extends RacketAtom {
             throw new InvalidFormatException("Error: found an invalid keyword");
         }
         this.keyword = word.toString();
+        this.height = 1;
     }
 
     @Override
-    public int insertIntoTreeMap(HashMap<String, ArrayList<RacketAtom>> map) {
+    public int insertIntoTreeMap(HashMap<RacketAtom, ArrayList<RacketAtom>> map, int leafDepth) {
+        if (this.keyword.equals("define") || this.keyword.equals("check-expect") || this.keyword.equals("list")) {
+            return 0;
+        }
         ArrayList<RacketAtom> list = map.get(this.keyword);
         if (list == null) {
             ArrayList<RacketAtom> newList = new ArrayList<RacketAtom>();
             newList.add(this);
-            map.put(this.keyword, newList);
+            map.put(this, newList);
         }
         else {
             list.add(this);
             // TODO: check if I really need to put it back in
-            map.put(this.keyword, list);
+            map.put(this, list);
         }
         return 1;
     }
 
     @Override
-    public int similarityValue(HashMap<String, ArrayList<RacketAtom>> map) {
-        ArrayList<RacketAtom> list = map.get(this.keyword);
+    public int similarityValue(HashMap<RacketAtom, ArrayList<RacketAtom>> map) {
+        ArrayList<RacketAtom> list = map.get(this);
 
         if (list == null) {
             return 0;
@@ -95,24 +101,6 @@ public class RacketKeyword extends RacketAtom {
             sum += this.similarityValue(leaf);
         }
         return sum;
-    }
-
-    private int similarityValue(RacketAtom other) {
-        int value = 1;
-        RacketList otherParent = other.parent;
-        RacketList parent = this.parent;
-        while (parent != null && otherParent != null) {
-            // requiring consecutive matches decreased time by a lot
-            // while almost not change to output
-            int numMatches = otherParent.numberOfMatchingChildren(parent, this);
-            if (numMatches == 0) {
-                break;
-            }
-            value += numMatches;
-            parent = parent.parent;
-            otherParent = otherParent.parent;
-        }
-        return value;
     }
 
     @Override

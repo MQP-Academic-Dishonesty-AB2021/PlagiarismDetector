@@ -5,12 +5,14 @@ import java.io.PushbackReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Optional;
 
 import static RacketTree.RacketTree.function_open;
 import static RacketTree.RacketTree.string_chars;
 
 public class RacketList extends RacketAtom {
-    private ArrayList<RacketAtom> items;
+    public ArrayList<RacketAtom> items;
+//    public static long matchingChildrenCount = 0;
 
     static private int MatchingBraces(int openingBrace)
     throws InvalidFormatException {
@@ -52,18 +54,33 @@ public class RacketList extends RacketAtom {
                 }
             }
         }
+        super.height = this.items.stream().reduce(0,
+                (max, next) -> Integer.max(max, next.height),
+                (Integer::max)) + 1;
     }
 
     @Override
-    public int insertIntoTreeMap(HashMap<String, ArrayList<RacketAtom>> map) {
+    public int insertIntoTreeMap(HashMap<RacketAtom, ArrayList<RacketAtom>> map, int leafDepth) {
+        if (this.height <= leafDepth) {
+            ArrayList<RacketAtom> currentList = map.get(this);
+            if (currentList == null) {
+                ArrayList<RacketAtom> newList = new ArrayList<RacketAtom>();
+                map.put(this, newList);
+            }
+            else {
+                currentList.add(this);
+            }
+            return 1;
+        }
         int sum = 0;
         for (RacketAtom child : this.items) {
-            sum += child.insertIntoTreeMap(map);
+            sum += child.insertIntoTreeMap(map, leafDepth);
         }
         return sum;
     }
 
     public int numberOfMatchingChildren(RacketList other, RacketAtom child) {
+//        this.matchingChildrenCount++;
         int num = 0;
         for (RacketAtom thisChild : this.items) {
             if (thisChild == child) {
@@ -76,23 +93,11 @@ public class RacketList extends RacketAtom {
             }
         }
         return num;
-//         using a hash set slows it down considerably -- even though it should be O(n) (small dataset)
-//         TODO: Delete this commented out code once it's tracked by git (I dont want to have to retype it later)
-//        HashSet<RacketAtom> set = new HashSet<RacketAtom>();
-//        for (RacketAtom thisChild : this.items) {
-//            if (thisChild != child) {
-//                set.add(thisChild);
-//            }
-//        }
-//        int num = 0;
-//        for (RacketAtom otherChild : other.items) {
-//            num += set.contains(otherChild) ? 1 : 0;
-//        }
-//        return num;
     }
 
     @Override
     public boolean equals(Object other) {
+//        RacketAtom.equalsCount++;
         if (other.getClass() != this.getClass()) {
             return false;
         }
@@ -100,17 +105,23 @@ public class RacketList extends RacketAtom {
         if (otherList.items.size() != this.items.size()) {
             return false;
         }
-        for (int i = 0; i < this.items.size(); i++) {
-            if (!otherList.items.get(i).equals(this.items.get(i))) {
-                return false;
-            }
-        }
-        return true;
+//        for (int i = 0; i < this.items.size(); i++) {
+//            if (!otherList.items.get(i).equals(this.items.get(i))) {
+//                return false;
+//            }
+//        }
+        return this.items.equals(otherList.items);
     }
 
     @Override
-    public int similarityValue(HashMap<String, ArrayList<RacketAtom>> leavesMap) {
+    public int similarityValue(HashMap<RacketAtom, ArrayList<RacketAtom>> leavesMap) {
         int sum = 0;
+        ArrayList<RacketAtom> sameList = leavesMap.get(this);
+        if (sameList != null) {
+            for (RacketAtom leaf : sameList) {
+                sum += this.similarityValue(leaf);
+            }
+        }
         for (RacketAtom child : this.items) {
             sum += child.similarityValue(leavesMap);
         }
