@@ -16,6 +16,7 @@ import RacketTree.InvalidFormatException;
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import RacketTree.RacketAtom;
 
 import java.io.*;
 import java.util.*;

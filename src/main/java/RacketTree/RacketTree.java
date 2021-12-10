@@ -1,6 +1,5 @@
 package RacketTree;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,8 +18,10 @@ public class RacketTree {
     static public String lambda_chars = "λ";
 
     ArrayList<RacketAtom> children;
-    HashMap<String, ArrayList<RacketAtom>> leavesHash;
+    public HashMap<RacketAtom, ArrayList<RacketAtom>> leavesHash;
+    private int leafDepth;
     public int numLeaves;
+    public static int defaultLeafDepth = 1;
 
 
     public RacketTree(String filename) throws
@@ -30,7 +31,7 @@ public class RacketTree {
         File fin = new File(filename);
         if (fin.isFile()) {
             this.children = this.generateChildren(new PushbackReader(new FileReader(fin)));
-            this.leavesHash = this.generateLeavesHash();
+            this.leavesHash = this.generateLeavesHash(defaultLeafDepth);
             return;
         }
         else if (fin.isDirectory()) {
@@ -45,12 +46,12 @@ public class RacketTree {
                 }
             });
         }
-        this.leavesHash = this.generateLeavesHash();
+        this.leavesHash = this.generateLeavesHash(defaultLeafDepth);
     }
 
     public RacketTree(PushbackReader fin) throws java.io.IOException, InvalidFormatException {
         this.children = generateChildren(fin);
-        this.leavesHash = this.generateLeavesHash();
+        this.leavesHash = this.generateLeavesHash(defaultLeafDepth);
     }
 
     private ArrayList<RacketAtom> generateChildren(PushbackReader fin)
@@ -80,31 +81,43 @@ public class RacketTree {
         return 0;
     }
 
-    private HashMap<String, ArrayList<RacketAtom>> generateLeavesHash() {
-        HashMap<String, ArrayList<RacketAtom>> map = new HashMap<String, ArrayList<RacketAtom>>();
+    private HashMap<RacketAtom, ArrayList<RacketAtom>> generateLeavesHash() {
+        return this.generateLeavesHash(this.leafDepth);
+    }
+
+    private HashMap<RacketAtom, ArrayList<RacketAtom>> generateLeavesHash(int height) {
+        HashMap<RacketAtom, ArrayList<RacketAtom>> map = new HashMap<>();
         int sum = 0;
         for (RacketAtom tree : this.children) {
-            sum += tree.insertIntoTreeMap(map);
+            sum += tree.insertIntoTreeMap(map, height);
         }
         this.numLeaves = sum;
         return map;
     }
 
-    private double similarityValue(HashMap<String, ArrayList<RacketAtom>> leavesMap) {
+    private double similarityValue(HashMap<RacketAtom, ArrayList<RacketAtom>> leavesMap, int minHeight) {
         int sum = 0;
         for (RacketAtom child : this.children) {
             sum += child.similarityValue(leavesMap);
         }
 //        for (ArrayList<RacketAtom> list: this.leavesHash.values()) {
-//            for (RacketAtom child : list) {
+//        for (Map.Entry<String, ArrayList<RacketAtom>> leaf : this.leavesHash.entrySet()) {
+//            if (leaf.getKey().equals("define")) { continue; }
+//            for (RacketAtom child : leaf.getValue()) {
 //                sum += child.similarityValue(leavesMap);
 //            }
 //        }
         return (double)sum / this.numLeaves;
     }
 
+    public void setLeafDepth(int leafDepth) {
+        if (this.leafDepth == leafDepth) { return; }
+        this.leafDepth = leafDepth;
+        this.leavesHash = this.generateLeavesHash();
+    }
+
     public double similarityValue(RacketTree other) {
-        return other.similarityValue(this.leavesHash);
+        return other.similarityValue(this.leavesHash, this.leafDepth);
     }
 
     public int size() {
