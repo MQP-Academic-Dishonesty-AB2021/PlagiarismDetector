@@ -23,7 +23,7 @@ public class MainMenu extends Application {
         loadPartials();
 
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("menuBar.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/menuBar.fxml"));
         Parent root = fxmlLoader.load();
 
         primaryStage.initStyle(StageStyle.UNDECORATED);
