@@ -31,92 +31,96 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Results for a pairwise comparison algorithm.
  */
 public final class AlgorithmResults {
-    // TODO consider making these private and adding getters
-    public final Submission a;
-    public final Submission b;
-    public final int identicalTokensA;
-    public final int identicalTokensB;
-    public final TokenList finalListA;
-    public final TokenList finalListB;
-    private final double percentMatchedA;
-    private final double percentMatchedB;
+	// TODO consider making these private and adding getters
+	public final Submission a;
+	public final Submission b;
+	public final int identicalTokensA;
+	public final int identicalTokensB;
+	public final TokenList finalListA;
+	public final TokenList finalListB;
+	private final double percentMatchedA;
+	private final double percentMatchedB;
 
-    /**
-     * Construct results for a pairwise similarity detection algorithm.
-     *
-     * @param a First submission compared
-     * @param b Second submission compared
-     * @param finalListA Token list from submission A, with matched tokens set invalid
-     * @param finalListB Token list from submission B, with matched tokens set invalid
-     */
-    public AlgorithmResults(Submission a, Submission b, TokenList finalListA, TokenList finalListB) {
-        checkNotNull(a);
-        checkNotNull(b);
-        checkNotNull(finalListA);
-        checkNotNull(finalListB);
-        checkArgument(a.getNumTokens() == finalListA.size(),
-                "Token size mismatch when creating algorithm results for submission \"" + a.getName()
-                        + "\" --- expected " + a.getNumTokens() + ", got " + finalListA.size());
-        checkArgument(b.getNumTokens() == finalListB.size(),
-                "Token size mismatch when creating algorithm results for submission \"" + b.getName()
-                        + "\" --- expected " + b.getNumTokens() + ", got " + finalListB.size());
+	/**
+	 * Construct results for a pairwise similarity detection algorithm.
+	 *
+	 * @param a          First submission compared
+	 * @param b          Second submission compared
+	 * @param finalListA Token list from submission A, with matched tokens set
+	 *                   invalid
+	 * @param finalListB Token list from submission B, with matched tokens set
+	 *                   invalid
+	 */
+	public AlgorithmResults(Submission a, Submission b, TokenList finalListA, TokenList finalListB) {
+		checkNotNull(a);
+		checkNotNull(b);
+		checkNotNull(finalListA);
+		checkNotNull(finalListB);
+		checkArgument(a.getNumTokens() == finalListA.size(),
+				"Token size mismatch when creating algorithm results for submission \"" + a.getName()
+						+ "\" --- expected " + a.getNumTokens() + ", got " + finalListA.size());
+		checkArgument(b.getNumTokens() == finalListB.size(),
+				"Token size mismatch when creating algorithm results for submission \"" + b.getName()
+						+ "\" --- expected " + b.getNumTokens() + ", got " + finalListB.size());
 
-        this.a = a;
-        this.b = b;
-        this.finalListA = TokenList.immutableCopy(finalListA);
-        this.finalListB = TokenList.immutableCopy(finalListB);
+		this.a = a;
+		this.b = b;
+		this.finalListA = TokenList.immutableCopy(finalListA);
+		this.finalListB = TokenList.immutableCopy(finalListB);
 
-        this.identicalTokensA = (int)finalListA.stream().filter((token) -> !token.isValid()).count();
-        this.identicalTokensB = (int)finalListB.stream().filter((token) -> !token.isValid()).count();
+		this.identicalTokensA = (int) finalListA.stream().filter((token) -> !token.isValid()).count();
+		this.identicalTokensB = (int) finalListB.stream().filter((token) -> !token.isValid()).count();
 
-        if(a.getNumTokens() == 0) {
-            percentMatchedA = 0.0;
-        } else {
-            percentMatchedA = ((double)identicalTokensA) / (double)a.getNumTokens();
-        }
+		if (a.getNumTokens() == 0) {
+			percentMatchedA = 0.0;
+		} else {
+			percentMatchedA = ((double) identicalTokensA) / (double) a.getNumTokens();
+		}
 
-        if(b.getNumTokens() == 0) {
-            percentMatchedB = 0.0;
-        } else {
-            percentMatchedB = ((double)identicalTokensB) / (double)b.getNumTokens();
-        }
-    }
+		if (b.getNumTokens() == 0) {
+			percentMatchedB = 0.0;
+		} else {
+			percentMatchedB = ((double) identicalTokensB) / (double) b.getNumTokens();
+		}
+	}
 
-    /**
-     * @return Percentage similarity of submission A to submission B. Represented as a double from 0.0 to 1.0 inclusive
-     */
-    public double percentMatchedA() {
-        return percentMatchedA;
-    }
+	/**
+	 * @return Percentage similarity of submission A to submission B. Represented as
+	 *         a double from 0.0 to 1.0 inclusive
+	 */
+	public double percentMatchedA() {
+		return percentMatchedA;
+	}
 
-    /**
-     * @return Percentage similarity of submission B to submission A. Represented as a double from 0.0 to 1.0 inclusive
-     */
-    public double percentMatchedB() {
-        return percentMatchedB;
-    }
+	/**
+	 * @return Percentage similarity of submission B to submission A. Represented as
+	 *         a double from 0.0 to 1.0 inclusive
+	 */
+	public double percentMatchedB() {
+		return percentMatchedB;
+	}
 
-    @Override
-    public String toString() {
-        return "Similarity results for submissions named " + a.getName() + " and " + b.getName();
-    }
+	@Override
+	public String toString() {
+		return "Similarity results for submissions named " + a.getName() + " and " + b.getName();
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        if(!(other instanceof AlgorithmResults)) {
-            return false;
-        }
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof AlgorithmResults)) {
+			return false;
+		}
 
-        AlgorithmResults otherResults = (AlgorithmResults)other;
+		AlgorithmResults otherResults = (AlgorithmResults) other;
 
-        return this.a.equals(otherResults.a)
-                && this.b.equals(otherResults.b)
-                && this.finalListA.equals(otherResults.finalListA)
-                && this.finalListB.equals(otherResults.finalListB);
-    }
+		return this.a.equals(otherResults.a)
+				&& this.b.equals(otherResults.b)
+				&& this.finalListA.equals(otherResults.finalListA)
+				&& this.finalListB.equals(otherResults.finalListB);
+	}
 
-    @Override
-    public int hashCode() {
-        return a.hashCode() ^ b.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return a.hashCode() ^ b.hashCode();
+	}
 }
