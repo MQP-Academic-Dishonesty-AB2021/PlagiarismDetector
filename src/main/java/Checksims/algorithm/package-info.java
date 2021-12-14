@@ -20,13 +20,17 @@
  */
 
 /**
- * This package contains Similarity Detectors, Preprocessors, the Similarity Matrix, and Output Strategies.
+ * This package contains Similarity Detectors, Preprocessors, the Similarity
+ * Matrix, and Output Strategies.
  *
- * Preprocessors, the Similarity Matrix, and Output Strategies are all handled within subpackages. The base package
- * contains SimilarityDetector, the base interface for all Similarity Detection Algorithms, and a registry for these
+ * Preprocessors, the Similarity Matrix, and Output Strategies are all handled
+ * within subpackages. The base package
+ * contains SimilarityDetector, the base interface for all Similarity Detection
+ * Algorithms, and a registry for these
  * implementations.
  *
- * Also present are utilities for running algorithms, and the Result class representing the output of a Similarity
+ * Also present are utilities for running algorithms, and the Result class
+ * representing the output of a Similarity
  * Detector.
  */
 package Checksims.algorithm;

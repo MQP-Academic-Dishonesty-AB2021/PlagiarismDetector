@@ -1,4 +1,4 @@
-package ComparisonRunner;
+package Comparison;
 
 public class ComparisonPair {
     private String file1;
