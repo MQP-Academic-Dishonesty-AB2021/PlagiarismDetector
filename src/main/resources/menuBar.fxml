@@ -72,9 +72,8 @@
             <children>
                 <Pane id="mainPane" layoutY="21.0" prefHeight="454.0" prefWidth="756.0" style="-fx-background-color: A9B0B7;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <AnchorPane layoutX="97.0" layoutY="27.0" prefHeight="400.0" prefWidth="562.0">
+                  <AnchorPane layoutX="71.0" layoutY="27.0" prefHeight="400.0" prefWidth="562.0">
                      <children>
-                        <JFXButton text="Quick Start" />
                         <ImageView fitHeight="216.0" fitWidth="212.0" layoutX="88.0" layoutY="143.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/wpi.png" />
@@ -85,7 +84,7 @@
                               <Font size="34.0" />
                            </font>
                         </Text>
-                        <JFXButton buttonType="RAISED" layoutX="346.0" layoutY="159.0" prefHeight="181.0" prefWidth="178.0" style="-fx-background-color: AC2B37;" text="Quick Start" />
+                        <JFXButton fx:id="quickStartButton" buttonType="RAISED" layoutX="346.0" layoutY="159.0" onAction="#switchToSetup" prefHeight="181.0" prefWidth="178.0" style="-fx-background-color: AC2B37;" text="Quick Start" />
                      </children>
                   </AnchorPane>
                </children></Pane>
@@ -101,7 +100,7 @@
                                 <Font size="16.0" />
                             </font>
                         </JFXButton>
-                        <JFXButton alignment="BASELINE_LEFT" buttonType="RAISED" layoutX="10.0" layoutY="10.0" prefHeight="38.0" prefWidth="179.0" text="Visualizations">
+                        <JFXButton fx:id="visualizationsText" alignment="BASELINE_LEFT" buttonType="RAISED" layoutX="10.0" layoutY="10.0" onAction="#switchToVisualizations" prefHeight="38.0" prefWidth="179.0" text="Visualizations">
                             <font>
                                 <Font size="16.0" />
                             </font>
@@ -139,7 +138,7 @@
                                 <Image url="@images/home.png" />
                             </image>
                         </ImageView>
-                        <ImageView fitHeight="46.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="visualizationsIcon" fitHeight="46.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@images/add.png" />
                             </image>

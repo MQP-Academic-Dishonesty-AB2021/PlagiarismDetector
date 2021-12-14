@@ -1,6 +1,6 @@
 package com.JavaFX;
 
-import javafx.concurrent.Worker;
+import RacketTree.RacketTree;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -9,32 +9,26 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.web.*;
+import javafx.scene.text.Text;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import org.w3c.dom.Document;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class heatmapController implements Initializable {
+public class quickstartresultsController implements Initializable {
 
     @FXML
     private ImageView exit;
 
     @FXML
-    private AnchorPane webPane;
-
-    @FXML
-    private WebView webview;
-    private WebEngine engine;
-
+    private Text resultValue;
 
     private Stage stage;
     private Scene scene;
     private Parent root;
-
     //returns to main menu
     public void returnToMainMenu(MouseEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/menuBar.fxml"));
@@ -47,15 +41,10 @@ public class heatmapController implements Initializable {
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
 
-        WebView webView = new WebView();
-        WebEngine webEngine = webView.getEngine();
-        String url = getClass().getResource("/matrixVis/fileview.html").toExternalForm();
-        webEngine.getLoadWorker().stateProperty().addListener((observable, oldState, newState) -> {
-            if (newState == Worker.State.SUCCEEDED) {
-                Document doc = webEngine.getDocument();
-            }
-        });
-        webEngine.loadContent(url);
+        //RacketTree racketTree = new RacketTree();
+        //resultValue.setText(TreeSimilarity());
+
+
 
 
     }
