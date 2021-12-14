@@ -27,93 +27,94 @@ import org.apache.commons.lang3.tuple.Pair;
  * An immutable 2-D coordinate.
  */
 public final class Coordinate extends Pair<Integer, Integer> {
-    private final int x;
-    private final int y;
+	private final int x;
+	private final int y;
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Construct a 2D coordinate.
-     *
-     * @param x Desired X coordinate
-     * @param y Desired Y coordinate
-     */
-    public Coordinate(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
+	/**
+	 * Construct a 2D coordinate.
+	 *
+	 * @param x Desired X coordinate
+	 * @param y Desired Y coordinate
+	 */
+	public Coordinate(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 
-    /**
-     * @param x X coordinate
-     * @param y Y coordinate
-     * @return 2D coordinate from given X and Y
-     */
-    public static Coordinate of(int x, int y) {
-        return new Coordinate(x, y);
-    }
+	/**
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @return 2D coordinate from given X and Y
+	 */
+	public static Coordinate of(int x, int y) {
+		return new Coordinate(x, y);
+	}
 
-    /**
-     * @return X coordinate
-     */
-    public int getX() {
-        return x;
-    }
+	/**
+	 * @return X coordinate
+	 */
+	public int getX() {
+		return x;
+	}
 
-    /**
-     * @return Y coordinate
-     */
-    public int getY() {
-        return y;
-    }
+	/**
+	 * @return Y coordinate
+	 */
+	public int getY() {
+		return y;
+	}
 
-    /**
-     * @return X coordinate
-     */
-    @Override
-    public Integer getLeft() {
-        return x;
-    }
+	/**
+	 * @return X coordinate
+	 */
+	@Override
+	public Integer getLeft() {
+		return x;
+	}
 
-    /**
-     * @return Y coordinate
-     */
-    @Override
-    public Integer getRight() {
-        // IntelliJ seems to think that getRight() shouldn't actually be the Y coordinate
-        // This makes it happy
-        //noinspection SuspiciousNameCombination
-        return y;
-    }
+	/**
+	 * @return Y coordinate
+	 */
+	@Override
+	public Integer getRight() {
+		// IntelliJ seems to think that getRight() shouldn't actually be the Y
+		// coordinate
+		// This makes it happy
+		// noinspection SuspiciousNameCombination
+		return y;
+	}
 
-    /**
-     * Unsupported as Coordinate is immutable.
-     *
-     * @param value Unused
-     * @return Unused
-     */
-    @Override
-    public Integer setValue(Integer value) {
-        throw new UnsupportedOperationException();
-    }
+	/**
+	 * Unsupported as Coordinate is immutable.
+	 *
+	 * @param value Unused
+	 * @return Unused
+	 */
+	@Override
+	public Integer setValue(Integer value) {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        if(!(other instanceof Coordinate)) {
-            return false;
-        }
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Coordinate)) {
+			return false;
+		}
 
-        Coordinate otherCoord = (Coordinate)other;
+		Coordinate otherCoord = (Coordinate) other;
 
-        return (otherCoord.getX() == x) && (otherCoord.getY() == y);
-    }
+		return (otherCoord.getX() == x) && (otherCoord.getY() == y);
+	}
 
-    @Override
-    public int hashCode() {
-        return (5 * x) ^ (3 * y);
-    }
+	@Override
+	public int hashCode() {
+		return (5 * x) ^ (3 * y);
+	}
 
-    @Override
-    public String toString() {
-        return "(" + x + "," + y + ")";
-    }
+	@Override
+	public String toString() {
+		return "(" + x + "," + y + ")";
+	}
 }

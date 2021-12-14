@@ -28,43 +28,44 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * Submission which enforces token validity - two tokens, even if invalid, are not considered equal.
+ * Submission which enforces token validity - two tokens, even if invalid, are
+ * not considered equal.
  *
  * Decorates another submission and overrides equals()
  */
 public final class ValidityEnsuringSubmission extends AbstractSubmissionDecorator {
-    public ValidityEnsuringSubmission(Submission wrappedSubmission) {
-        super(wrappedSubmission);
-    }
+	public ValidityEnsuringSubmission(Submission wrappedSubmission) {
+		super(wrappedSubmission);
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        if(!(other instanceof Submission)) {
-            return false;
-        }
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Submission)) {
+			return false;
+		}
 
-        Submission otherSubmission = (Submission)other;
+		Submission otherSubmission = (Submission) other;
 
-        if(!otherSubmission.getTokenType().equals(this.getTokenType())
-                || !otherSubmission.getName().equals(this.getName())
-                || !(otherSubmission.getNumTokens() == this.getNumTokens())
-                || !(otherSubmission.getContentAsString().equals(this.getContentAsString()))) {
-            return false;
-        }
+		if (!otherSubmission.getTokenType().equals(this.getTokenType())
+				|| !otherSubmission.getName().equals(this.getName())
+				|| !(otherSubmission.getNumTokens() == this.getNumTokens())
+				|| !(otherSubmission.getContentAsString().equals(this.getContentAsString()))) {
+			return false;
+		}
 
-        Supplier<TokenList> tokenListSupplier = () -> new TokenList(this.getTokenType());
-        TokenList thisList = this.getContentAsTokens().stream()
-                .map(ValidityEnsuringToken::new)
-                .collect(Collectors.toCollection(tokenListSupplier));
-        TokenList otherList = otherSubmission.getContentAsTokens().stream()
-                .map(ValidityEnsuringToken::new)
-                .collect(Collectors.toCollection(tokenListSupplier));
+		Supplier<TokenList> tokenListSupplier = () -> new TokenList(this.getTokenType());
+		TokenList thisList = this.getContentAsTokens().stream()
+				.map(ValidityEnsuringToken::new)
+				.collect(Collectors.toCollection(tokenListSupplier));
+		TokenList otherList = otherSubmission.getContentAsTokens().stream()
+				.map(ValidityEnsuringToken::new)
+				.collect(Collectors.toCollection(tokenListSupplier));
 
-        return thisList.equals(otherList);
-    }
+		return thisList.equals(otherList);
+	}
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

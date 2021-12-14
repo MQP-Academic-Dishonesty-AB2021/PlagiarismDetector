@@ -20,33 +20,30 @@ import java.util.ResourceBundle;
 
 public class quickstartresultsController implements Initializable {
 
-    @FXML
-    private ImageView exit;
+	@FXML
+	private ImageView exit;
 
-    @FXML
-    private Text resultValue;
+	@FXML
+	private Text resultValue;
 
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
-    //returns to main menu
-    public void returnToMainMenu(MouseEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/menuBar.fxml"));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-    }
+	private Stage stage;
+	private Scene scene;
+	private Parent root;
 
-    @Override
-    @FXML
-    public void initialize(URL location, ResourceBundle resources) {
+	// returns to main menu
+	public void returnToMainMenu(MouseEvent event) throws IOException {
+		Parent root = FXMLLoader.load(getClass().getResource("/menuBar.fxml"));
+		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		scene = new Scene(root);
+		stage.setScene(scene);
+	}
 
-        //RacketTree racketTree = new RacketTree();
-        //resultValue.setText(TreeSimilarity());
+	@Override
+	@FXML
+	public void initialize(URL location, ResourceBundle resources) {
 
+		// RacketTree racketTree = new RacketTree();
+		// resultValue.setText(TreeSimilarity());
 
-
-
-    }
+	}
 }
-

@@ -20,9 +20,11 @@
  */
 
 /**
- * This package contains the implementation of a Smith-Waterman algorithm based Similarity Detector.
+ * This package contains the implementation of a Smith-Waterman algorithm based
+ * Similarity Detector.
  *
- * A number of support classes are also present. It is not recommended that these be used external to the package,
+ * A number of support classes are also present. It is not recommended that
+ * these be used external to the package,
  * however.
  */
 package Checksims.algorithm.smithwaterman;

@@ -34,49 +34,50 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Split a file into a list of character tokens.
  */
 public final class CharTokenizer implements Tokenizer {
-    private static CharTokenizer instance;
+	private static CharTokenizer instance;
 
-    private CharTokenizer() {}
+	private CharTokenizer() {
+	}
 
-    /**
-     * @return Singleton instance of CharTokenizer
-     */
-    public static CharTokenizer getInstance() {
-        if(instance == null) {
-            instance = new CharTokenizer();
-        }
+	/**
+	 * @return Singleton instance of CharTokenizer
+	 */
+	public static CharTokenizer getInstance() {
+		if (instance == null) {
+			instance = new CharTokenizer();
+		}
 
-        return instance;
-    }
+		return instance;
+	}
 
-    /**
-     * Split a string into character tokens.
-     *
-     * @param string String to split
-     * @return Input string, with a single token representing each character
-     */
-    @Override
-    public TokenList splitString(String string) {
-        checkNotNull(string);
+	/**
+	 * Split a string into character tokens.
+	 *
+	 * @param string String to split
+	 * @return Input string, with a single token representing each character
+	 */
+	@Override
+	public TokenList splitString(String string) {
+		checkNotNull(string);
 
-        TokenList toReturn = new TokenList(this.getType());
+		TokenList toReturn = new TokenList(this.getType());
 
-        char[] chars = string.toCharArray();
+		char[] chars = string.toCharArray();
 
-        Arrays.stream(ArrayUtils.toObject(chars))
-                .map((character) -> new ConcreteToken(character, TokenType.CHARACTER))
-                .forEachOrdered(toReturn::add);
+		Arrays.stream(ArrayUtils.toObject(chars))
+				.map((character) -> new ConcreteToken(character, TokenType.CHARACTER))
+				.forEachOrdered(toReturn::add);
 
-        return toReturn;
-    }
+		return toReturn;
+	}
 
-    @Override
-    public TokenType getType() {
-        return TokenType.CHARACTER;
-    }
+	@Override
+	public TokenType getType() {
+		return TokenType.CHARACTER;
+	}
 
-    @Override
-    public String toString() {
-        return "Singleton instance of FileCharSplitter";
-    }
+	@Override
+	public String toString() {
+		return "Singleton instance of FileCharSplitter";
+	}
 }

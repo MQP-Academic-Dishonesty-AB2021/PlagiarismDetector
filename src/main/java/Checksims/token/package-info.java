@@ -20,24 +20,36 @@
  */
 
 /**
- * The Token package contains all classes related to Tokens, the most basic unit of comparison in Checksims.
+ * The Token package contains all classes related to Tokens, the most basic unit
+ * of comparison in Checksims.
  *
- * Tokens represent a single element of a Submission. They can be a single character, or a string representing a number
+ * Tokens represent a single element of a Submission. They can be a single
+ * character, or a string representing a number
  * of characters in the original text.
  *
- * Tokens have a type, representing how the original submission was broken down. Checksims will usually only work with
- * one type of token at a time, and all tokens will be of this type (though this is not a rule, and is not guaranteed;
- * see the Line Comparison Common Code Removal preprocessor for an example of this being violated). Two tokens with
+ * Tokens have a type, representing how the original submission was broken down.
+ * Checksims will usually only work with
+ * one type of token at a time, and all tokens will be of this type (though this
+ * is not a rule, and is not guaranteed;
+ * see the Line Comparison Common Code Removal preprocessor for an example of
+ * this being violated). Two tokens with
  * different types can never be equal.
  *
- * Tokens also have a Validity. When a token is matched in a Similarity Detector, it is marked as invalid, to indicate
- * that it has been detected as similar (some detectors will also use validity for internal accounting, to ensure that
- * the same token is not matched more than once). A number of Decorators are provided to mutate token equality depending
- * on validity --- for example, to consider two tokens not equal even if identical, if both are invalid.
+ * Tokens also have a Validity. When a token is matched in a Similarity
+ * Detector, it is marked as invalid, to indicate
+ * that it has been detected as similar (some detectors will also use validity
+ * for internal accounting, to ensure that
+ * the same token is not matched more than once). A number of Decorators are
+ * provided to mutate token equality depending
+ * on validity --- for example, to consider two tokens not equal even if
+ * identical, if both are invalid.
  *
- * Token itself is an interface, with a single concrete implementation and a number of decorators. The concrete
- * implementation maps individual tokens to "lexemes" --- a single integer representing the input. This results in a
- * size ballooning in the case of characters (UTF-16 code point vs. 32-bit integer), but a size decrease and speed
+ * Token itself is an interface, with a single concrete implementation and a
+ * number of decorators. The concrete
+ * implementation maps individual tokens to "lexemes" --- a single integer
+ * representing the input. This results in a
+ * size ballooning in the case of characters (UTF-16 code point vs. 32-bit
+ * integer), but a size decrease and speed
  * increase for strings. More information can be found in LexemeMap.
  */
 package Checksims.token;

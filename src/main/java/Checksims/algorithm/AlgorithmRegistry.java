@@ -29,29 +29,29 @@ import Checksims.util.reflection.RegistryWithDefault;
  * Registry for all supported similarity detection algorithms.
  */
 public final class AlgorithmRegistry extends RegistryWithDefault<SimilarityDetector> {
-    private static AlgorithmRegistry instance;
+	private static AlgorithmRegistry instance;
 
-    private AlgorithmRegistry() throws NoSuchImplementationException {
-        super("Checksims.algorithm", SimilarityDetector.class, LineSimilarityChecker.getInstance().getName());
-    }
+	private AlgorithmRegistry() throws NoSuchImplementationException {
+		super("Checksims.algorithm", SimilarityDetector.class, LineSimilarityChecker.getInstance().getName());
+	}
 
-    /**
-     * @return Singleton instance of AlgorithmRegistry
-     */
-    public static AlgorithmRegistry getInstance() {
-        if(instance == null) {
-            try {
-                instance = new AlgorithmRegistry();
-            } catch(NoSuchImplementationException e) {
-                throw new RuntimeException("Cannot instantiate AlgorithmRegistry", e);
-            }
-        }
+	/**
+	 * @return Singleton instance of AlgorithmRegistry
+	 */
+	public static AlgorithmRegistry getInstance() {
+		if (instance == null) {
+			try {
+				instance = new AlgorithmRegistry();
+			} catch (NoSuchImplementationException e) {
+				throw new RuntimeException("Cannot instantiate AlgorithmRegistry", e);
+			}
+		}
 
-        return instance;
-    }
+		return instance;
+	}
 
-    @Override
-    public String toString() {
-        return "Singleton instance of AlgorithmRegistry";
-    }
+	@Override
+	public String toString() {
+		return "Singleton instance of AlgorithmRegistry";
+	}
 }

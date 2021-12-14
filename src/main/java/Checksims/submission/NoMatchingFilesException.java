@@ -27,13 +27,13 @@ import Checksims.ChecksimsException;
  * Thrown when creating a submission if no files are found that match.
  */
 public class NoMatchingFilesException extends ChecksimsException {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public NoMatchingFilesException(String message) {
-        super(message);
-    }
+	public NoMatchingFilesException(String message) {
+		super(message);
+	}
 
-    public NoMatchingFilesException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public NoMatchingFilesException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

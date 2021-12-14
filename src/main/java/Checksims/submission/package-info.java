@@ -22,11 +22,16 @@
 /**
  * The Submission package contains all classes related to Submissions.
  *
- * A Submission contains all the code for a single submission of a single assignment. Checksims compares a number of
- * Submissions for similarities. Submissions are typically formed by reading all files matching a given pattern in a
- * directory, concatenating them, and tokenizing the results (using the methods in the base Submission interface).
- * However, Submissions can be constructed on their own by instantiating a ConcreteSubmission.
+ * A Submission contains all the code for a single submission of a single
+ * assignment. Checksims compares a number of
+ * Submissions for similarities. Submissions are typically formed by reading all
+ * files matching a given pattern in a
+ * directory, concatenating them, and tokenizing the results (using the methods
+ * in the base Submission interface).
+ * However, Submissions can be constructed on their own by instantiating a
+ * ConcreteSubmission.
  *
- * Submission itself is an interface with one concrete implementation and a number of decorators.
+ * Submission itself is an interface with one concrete implementation and a
+ * number of decorators.
  */
 package Checksims.submission;

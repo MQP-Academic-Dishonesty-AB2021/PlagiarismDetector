@@ -28,36 +28,37 @@ import Checksims.token.TokenType;
  * Interface to convert a string into a list of tokens of a certain type.
  */
 public interface Tokenizer {
-    /**
-     * Tokenize a String.
-     *
-     * @param string String to tokenize
-     * @return A TokenList of type returned by getType(), containing tokens generated from the string
-     */
-    TokenList splitString(String string);
+	/**
+	 * Tokenize a String.
+	 *
+	 * @param string String to tokenize
+	 * @return A TokenList of type returned by getType(), containing tokens
+	 *         generated from the string
+	 */
+	TokenList splitString(String string);
 
-    /**
-     * @return Type of tokens produced by this tokenizer.
-     */
-    TokenType getType();
+	/**
+	 * @return Type of tokens produced by this tokenizer.
+	 */
+	TokenType getType();
 
-    /**
-     * Get a Tokenizer for given token type.
-     *
-     * @param type Type of token
-     * @return Tokenizer for given type of token
-     */
-    static Tokenizer getTokenizer(TokenType type) {
-        switch(type) {
-            case CHARACTER:
-                return CharTokenizer.getInstance();
-            case LINE:
-                return LineTokenizer.getInstance();
-            case WHITESPACE:
-                return WhitespaceTokenizer.getInstance();
-            default:
-                // TODO handle more gracefully
-                throw new RuntimeException("Unhandled tokenization requested!");
-        }
-    }
+	/**
+	 * Get a Tokenizer for given token type.
+	 *
+	 * @param type Type of token
+	 * @return Tokenizer for given type of token
+	 */
+	static Tokenizer getTokenizer(TokenType type) {
+		switch (type) {
+			case CHARACTER:
+				return CharTokenizer.getInstance();
+			case LINE:
+				return LineTokenizer.getInstance();
+			case WHITESPACE:
+				return WhitespaceTokenizer.getInstance();
+			default:
+				// TODO handle more gracefully
+				throw new RuntimeException("Unhandled tokenization requested!");
+		}
+	}
 }

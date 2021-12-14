@@ -29,29 +29,33 @@ import Checksims.util.reflection.NamedInstantiable;
 /**
  * Detect similarities between two submissions.
  *
- * NOTE that, in addition to the methods listed here, all plagiarism detectors MUST support a no-arguments getInstance()
- * method, and be contained in edu.wpi.checksims.algorithm or a subpackage thereof.
+ * NOTE that, in addition to the methods listed here, all plagiarism detectors
+ * MUST support a no-arguments getInstance()
+ * method, and be contained in edu.wpi.checksims.algorithm or a subpackage
+ * thereof.
  *
- * This is required as reflection is used to automatically detect and instantiate all similarity detection algorithms
+ * This is required as reflection is used to automatically detect and
+ * instantiate all similarity detection algorithms
  * present at runtime.
  */
 public interface SimilarityDetector extends NamedInstantiable {
-    /**
-     * @return Default token type to be used for this similarity detector
-     */
-    TokenType getDefaultTokenType();
+	/**
+	 * @return Default token type to be used for this similarity detector
+	 */
+	TokenType getDefaultTokenType();
 
-    /**
-     * Apply a pairwise similarity detection algorithm.
-     *
-     * Token list types of A and B must match
-     *
-     * @param a First submission to apply to
-     * @param b Second submission to apply to
-     * @return Similarity results of comparing submissions A and B
-     * @throws TokenTypeMismatchException Thrown on comparing two submissions with different token types
-     * @throws InternalAlgorithmError Thrown on error detecting similarities
-     */
-    AlgorithmResults detectSimilarity(Submission a, Submission b)
-            throws TokenTypeMismatchException, InternalAlgorithmError;
+	/**
+	 * Apply a pairwise similarity detection algorithm.
+	 *
+	 * Token list types of A and B must match
+	 *
+	 * @param a First submission to apply to
+	 * @param b Second submission to apply to
+	 * @return Similarity results of comparing submissions A and B
+	 * @throws TokenTypeMismatchException Thrown on comparing two submissions with
+	 *                                    different token types
+	 * @throws InternalAlgorithmError     Thrown on error detecting similarities
+	 */
+	AlgorithmResults detectSimilarity(Submission a, Submission b)
+			throws TokenTypeMismatchException, InternalAlgorithmError;
 }

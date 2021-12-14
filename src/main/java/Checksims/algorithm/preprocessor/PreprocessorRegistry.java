@@ -29,26 +29,26 @@ import java.util.Collections;
  * Registry to obtain valid preprocessors.
  */
 public final class PreprocessorRegistry extends Registry<SubmissionPreprocessor> {
-    private static PreprocessorRegistry instance;
+	private static PreprocessorRegistry instance;
 
-    private PreprocessorRegistry() {
-        super("Checksims.algorithm.preprocessor", SubmissionPreprocessor.class,
-                Collections.singleton("commoncodeline"));
-    }
+	private PreprocessorRegistry() {
+		super("Checksims.algorithm.preprocessor", SubmissionPreprocessor.class,
+				Collections.singleton("commoncodeline"));
+	}
 
-    /**
-     * @return Singleton instance of PreprocessorRegistry
-     */
-    public static PreprocessorRegistry getInstance() {
-        if(instance == null) {
-            instance = new PreprocessorRegistry();
-        }
+	/**
+	 * @return Singleton instance of PreprocessorRegistry
+	 */
+	public static PreprocessorRegistry getInstance() {
+		if (instance == null) {
+			instance = new PreprocessorRegistry();
+		}
 
-        return instance;
-    }
+		return instance;
+	}
 
-    @Override
-    public String toString() {
-        return "Singleton instance of PreprocessorRegistry";
-    }
+	@Override
+	public String toString() {
+		return "Singleton instance of PreprocessorRegistry";
+	}
 }

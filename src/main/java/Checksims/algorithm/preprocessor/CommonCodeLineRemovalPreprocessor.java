@@ -43,120 +43,124 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Common Code Removal via Line Comparison.
  */
 public class CommonCodeLineRemovalPreprocessor implements SubmissionPreprocessor {
-    private final Submission common;
-    private static final SimilarityDetector algorithm = LineSimilarityChecker.getInstance();
-    private static final Logger logs = LoggerFactory.getLogger(CommonCodeLineRemovalPreprocessor.class);
+	private final Submission common;
+	private static final SimilarityDetector algorithm = LineSimilarityChecker.getInstance();
+	private static final Logger logs = LoggerFactory.getLogger(CommonCodeLineRemovalPreprocessor.class);
 
-    /**
-     * @return Dummy instance of CommonCodeLineRemovalPreprocessor with empty common code
-     */
-    public static CommonCodeLineRemovalPreprocessor getInstance() {
-        return new CommonCodeLineRemovalPreprocessor(new ConcreteSubmission("Empty", "",
-                new TokenList(TokenType.CHARACTER)));
-    }
+	/**
+	 * @return Dummy instance of CommonCodeLineRemovalPreprocessor with empty common
+	 *         code
+	 */
+	public static CommonCodeLineRemovalPreprocessor getInstance() {
+		return new CommonCodeLineRemovalPreprocessor(new ConcreteSubmission("Empty", "",
+				new TokenList(TokenType.CHARACTER)));
+	}
 
-    /**
-     * Create a Common Code Removal preprocessor using Line Compare.
-     *
-     * @param common Common code to remove
-     */
-    public CommonCodeLineRemovalPreprocessor(Submission common) {
-        checkNotNull(common);
+	/**
+	 * Create a Common Code Removal preprocessor using Line Compare.
+	 *
+	 * @param common Common code to remove
+	 */
+	public CommonCodeLineRemovalPreprocessor(Submission common) {
+		checkNotNull(common);
 
-        this.common = common;
-    }
+		this.common = common;
+	}
 
-    /**
-     * Perform common code removal using Line Comparison.
-     *
-     * @param removeFrom Submission to remove common code from
-     * @return Input submission with common code removed
-     * @throws InternalAlgorithmError Thrown on error removing common code
-     */
-    @Override
-    public Submission process(Submission removeFrom) throws InternalAlgorithmError {
-        logs.debug("Performing common code removal on submission " + removeFrom.getName());
+	/**
+	 * Perform common code removal using Line Comparison.
+	 *
+	 * @param removeFrom Submission to remove common code from
+	 * @return Input submission with common code removed
+	 * @throws InternalAlgorithmError Thrown on error removing common code
+	 */
+	@Override
+	public Submission process(Submission removeFrom) throws InternalAlgorithmError {
+		logs.debug("Performing common code removal on submission " + removeFrom.getName());
 
-        TokenType type = algorithm.getDefaultTokenType();
-        Tokenizer tokenizer = Tokenizer.getTokenizer(type);
+		TokenType type = algorithm.getDefaultTokenType();
+		Tokenizer tokenizer = Tokenizer.getTokenizer(type);
 
-        // Re-tokenize input and common code using given token type
-        TokenList redoneIn = tokenizer.splitString(removeFrom.getContentAsString());
-        TokenList redoneCommon = tokenizer.splitString(common.getContentAsString());
+		// Re-tokenize input and common code using given token type
+		TokenList redoneIn = tokenizer.splitString(removeFrom.getContentAsString());
+		TokenList redoneCommon = tokenizer.splitString(common.getContentAsString());
 
-        // Create new submissions with retokenized input
-        Submission computeIn = new ConcreteSubmission(removeFrom.getName(), removeFrom.getContentAsString(), redoneIn);
-        Submission computeCommon = new ConcreteSubmission(common.getName(), common.getContentAsString(), redoneCommon);
+		// Create new submissions with retokenized input
+		Submission computeIn = new ConcreteSubmission(removeFrom.getName(), removeFrom.getContentAsString(), redoneIn);
+		Submission computeCommon = new ConcreteSubmission(common.getName(), common.getContentAsString(), redoneCommon);
 
-        // Use the new submissions to compute this
-        AlgorithmResults results;
+		// Use the new submissions to compute this
+		AlgorithmResults results;
 
-        // This exception should never happen, but if it does, just rethrow as InternalAlgorithmException
-        try {
-            results = algorithm.detectSimilarity(computeIn, computeCommon);
-        } catch(TokenTypeMismatchException e) {
-            throw new InternalAlgorithmError(e.getMessage());
-        }
+		// This exception should never happen, but if it does, just rethrow as
+		// InternalAlgorithmException
+		try {
+			results = algorithm.detectSimilarity(computeIn, computeCommon);
+		} catch (TokenTypeMismatchException e) {
+			throw new InternalAlgorithmError(e.getMessage());
+		}
 
-        // The results contains two TokenLists, representing the final state of the submissions after detection
-        // All common code should be marked invalid for the input submission's final list
-        TokenList listWithCommonInvalid;
-        double percentMatched;
-        int identTokens;
-        if(new ValidityIgnoringSubmission(results.a).equals(computeIn)) {
-            listWithCommonInvalid = results.finalListA;
-            percentMatched = results.percentMatchedA();
-            identTokens = results.identicalTokensA;
-        } else if(new ValidityIgnoringSubmission(results.b).equals(computeIn)) {
-            listWithCommonInvalid = results.finalListB;
-            percentMatched = results.percentMatchedB();
-            identTokens = results.identicalTokensB;
-        } else {
-            throw new RuntimeException("Unreachable code!");
-        }
+		// The results contains two TokenLists, representing the final state of the
+		// submissions after detection
+		// All common code should be marked invalid for the input submission's final
+		// list
+		TokenList listWithCommonInvalid;
+		double percentMatched;
+		int identTokens;
+		if (new ValidityIgnoringSubmission(results.a).equals(computeIn)) {
+			listWithCommonInvalid = results.finalListA;
+			percentMatched = results.percentMatchedA();
+			identTokens = results.identicalTokensA;
+		} else if (new ValidityIgnoringSubmission(results.b).equals(computeIn)) {
+			listWithCommonInvalid = results.finalListB;
+			percentMatched = results.percentMatchedB();
+			identTokens = results.identicalTokensB;
+		} else {
+			throw new RuntimeException("Unreachable code!");
+		}
 
-        // Recreate the string body of the submission from this new list
-        String newBody = listWithCommonInvalid.join(true);
+		// Recreate the string body of the submission from this new list
+		String newBody = listWithCommonInvalid.join(true);
 
-        // Retokenize the new body with the original tokenization
-        TokenType oldType = removeFrom.getTokenType();
-        Tokenizer oldTokenizer = Tokenizer.getTokenizer(oldType);
-        TokenList finalListGoodTokenization = oldTokenizer.splitString(newBody);
+		// Retokenize the new body with the original tokenization
+		TokenType oldType = removeFrom.getTokenType();
+		Tokenizer oldTokenizer = Tokenizer.getTokenizer(oldType);
+		TokenList finalListGoodTokenization = oldTokenizer.splitString(newBody);
 
-        DecimalFormat d = new DecimalFormat("###.00");
-        logs.trace("Submission " + removeFrom.getName() + " contained " + d.format(100 * percentMatched)
-                + "% common code");
-        logs.trace("Removed " + identTokens + " common tokens (of " + removeFrom.getNumTokens() + " total)");
+		DecimalFormat d = new DecimalFormat("###.00");
+		logs.trace("Submission " + removeFrom.getName() + " contained " + d.format(100 * percentMatched)
+				+ "% common code");
+		logs.trace("Removed " + identTokens + " common tokens (of " + removeFrom.getNumTokens() + " total)");
 
-        return new ConcreteSubmission(removeFrom.getName(), newBody, finalListGoodTokenization);
-    }
+		return new ConcreteSubmission(removeFrom.getName(), newBody, finalListGoodTokenization);
+	}
 
-    /**
-     * @return Name of the implementation as it will be seen in the registry
-     */
-    @Override
-    public String getName() {
-        return "commoncodeline";
-    }
+	/**
+	 * @return Name of the implementation as it will be seen in the registry
+	 */
+	@Override
+	public String getName() {
+		return "commoncodeline";
+	}
 
-    @Override
-    public String toString() {
-        return "Common Code Line Removal preprocessor, removing common code submission " + common.getName();
-    }
+	@Override
+	public String toString() {
+		return "Common Code Line Removal preprocessor, removing common code submission " + common.getName();
+	}
 
-    @Override
-    public int hashCode() {
-        return getName().hashCode() ^ common.getName().hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return getName().hashCode() ^ common.getName().hashCode();
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        if(!(other instanceof CommonCodeLineRemovalPreprocessor)) {
-            return false;
-        }
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof CommonCodeLineRemovalPreprocessor)) {
+			return false;
+		}
 
-        CommonCodeLineRemovalPreprocessor otherPreprocessor = (CommonCodeLineRemovalPreprocessor)other;
+		CommonCodeLineRemovalPreprocessor otherPreprocessor = (CommonCodeLineRemovalPreprocessor) other;
 
-        return otherPreprocessor.common.equals(common);
-    }
+		return otherPreprocessor.common.equals(common);
+	}
 }

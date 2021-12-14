@@ -25,13 +25,13 @@ package Checksims;
  * Generic exception for project.
  */
 public class ChecksimsException extends Exception {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public ChecksimsException(String message) {
-        super(message);
-    }
+	public ChecksimsException(String message) {
+		super(message);
+	}
 
-    public ChecksimsException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public ChecksimsException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

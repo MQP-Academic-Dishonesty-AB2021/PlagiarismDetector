@@ -32,49 +32,49 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Monitor thread for parallel execution jobs.
  */
 class MonitorThread implements Runnable {
-    private final ThreadPoolExecutor toMonitor;
-    private boolean doRun;
-    long currentComplete;
-    long total;
+	private final ThreadPoolExecutor toMonitor;
+	private boolean doRun;
+	long currentComplete;
+	long total;
 
-    private static Logger logs = LoggerFactory.getLogger(MonitorThread.class);
+	private static Logger logs = LoggerFactory.getLogger(MonitorThread.class);
 
-    MonitorThread(ThreadPoolExecutor toMonitor) {
-        checkNotNull(toMonitor);
+	MonitorThread(ThreadPoolExecutor toMonitor) {
+		checkNotNull(toMonitor);
 
-        this.toMonitor = toMonitor;
-        doRun = true;
-        currentComplete = 0;
-        total = toMonitor.getTaskCount();
-    }
+		this.toMonitor = toMonitor;
+		doRun = true;
+		currentComplete = 0;
+		total = toMonitor.getTaskCount();
+	}
 
-    public void shutDown() {
-        this.doRun = false;
-    }
+	public void shutDown() {
+		this.doRun = false;
+	}
 
-    @Override
-    public void run() {
-        while(doRun) {
-            long newComplete = toMonitor.getCompletedTaskCount();
-            total = toMonitor.getTaskCount();
+	@Override
+	public void run() {
+		while (doRun) {
+			long newComplete = toMonitor.getCompletedTaskCount();
+			total = toMonitor.getTaskCount();
 
-            // Only print if we have an update
-            if(newComplete != currentComplete) {
-                currentComplete = newComplete;
-                logs.info("Processed " + currentComplete + "/" + total + " tasks");
-            }
+			// Only print if we have an update
+			if (newComplete != currentComplete) {
+				currentComplete = newComplete;
+				logs.info("Processed " + currentComplete + "/" + total + " tasks");
+			}
 
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException e) {
-                logs.error("Interrupted while sleeping!");
-                throw new RuntimeException(e);
-            }
-        }
-    }
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				logs.error("Interrupted while sleeping!");
+				throw new RuntimeException(e);
+			}
+		}
+	}
 
-    @Override
-    public String toString() {
-        return "Monitoring thread for a ThreadPoolExecutor";
-    }
+	@Override
+	public String toString() {
+		return "Monitoring thread for a ThreadPoolExecutor";
+	}
 }

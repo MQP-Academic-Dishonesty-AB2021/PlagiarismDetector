@@ -27,118 +27,104 @@ import java.util.ResourceBundle;
 
 public class MenuController implements Initializable {
 
-    @FXML
-    private AnchorPane opacityPane,drawerPane;
+	@FXML
+	private AnchorPane opacityPane, drawerPane;
 
-    @FXML
-    private Label drawerImage;
+	@FXML
+	private Label drawerImage;
 
-    @FXML
-    private JFXButton quickStartButton;
+	@FXML
+	private JFXButton quickStartButton;
 
-    @FXML
-    private JFXButton visualizationsText;
+	@FXML
+	private JFXButton visualizationsText;
 
-    public boolean firstTimeSetup;
+	public boolean firstTimeSetup;
 
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
+	private Stage stage;
+	private Scene scene;
+	private Parent root;
 
-    public void switchToSetup(ActionEvent event) throws IOException{
-        if(firstTimeSetup == false) {
-            Parent root = FXMLLoader.load(getClass().getResource("/setup.fxml"));
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            firstTimeSetup = true;
-        }
-        else{
-            //switchToResults(event);
-        }
-    }
+	public void switchToSetup(ActionEvent event) throws IOException {
+		if (firstTimeSetup == false) {
+			Parent root = FXMLLoader.load(getClass().getResource("/setup.fxml"));
+			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			scene = new Scene(root);
+			stage.setScene(scene);
+			firstTimeSetup = true;
+		} else {
+			// switchToResults(event);
+		}
+	}
 
-    public void switchToVisualizations(ActionEvent event) throws IOException{
-        Parent root = FXMLLoader.load(getClass().getResource("/partials/heatmapPartial.fxml"));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-    }
-//    public void switchToResults(ActionEvent event) throws IOException{
-//        Parent root = FXMLLoader.load(getClass().getResource("/partials/resultsPartial.fxml"));
-//        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-//        scene = new Scene(root);
-//        stage.setScene(scene);
-//    }
+	public void switchToVisualizations(ActionEvent event) throws IOException {
+		Parent root = FXMLLoader.load(getClass().getResource("/partials/heatmapPartial.fxml"));
+		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		scene = new Scene(root);
+		stage.setScene(scene);
+	}
+	// public void switchToResults(ActionEvent event) throws IOException{
+	// Parent root =
+	// FXMLLoader.load(getClass().getResource("/partials/resultsPartial.fxml"));
+	// stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+	// scene = new Scene(root);
+	// stage.setScene(scene);
+	// }
 
+	@FXML
+	public Pane mainPane;
 
-    @FXML
-    public Pane mainPane;
+	@FXML
+	private ImageView exit;
 
-    @FXML
-    private ImageView exit;
+	@Override
+	@FXML
+	public void initialize(URL location, ResourceBundle resources) {
 
+		exit.setOnMouseClicked(event -> {
+			System.exit(0);
+		});
 
+		opacityPane.setVisible(false);
 
-    @Override
-    @FXML
-    public void initialize(URL location, ResourceBundle resources) {
+		FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.5), opacityPane);
+		fadeTransition.setFromValue(1);
+		fadeTransition.setToValue(0);
+		fadeTransition.play();
 
-        exit.setOnMouseClicked(event -> {
-            System.exit(0);
-        });
+		TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.5), drawerPane);
+		translateTransition.setByX(-600);
+		translateTransition.play();
 
-        opacityPane.setVisible(false);
+		drawerImage.setOnMouseClicked(event -> {
 
-        FadeTransition fadeTransition=new FadeTransition(Duration.seconds(0.5),opacityPane);
-        fadeTransition.setFromValue(1);
-        fadeTransition.setToValue(0);
-        fadeTransition.play();
+			opacityPane.setVisible(true);
 
-        TranslateTransition translateTransition=new TranslateTransition(Duration.seconds(0.5),drawerPane);
-        translateTransition.setByX(-600);
-        translateTransition.play();
+			FadeTransition fadeTransition1 = new FadeTransition(Duration.seconds(0.5), opacityPane);
+			fadeTransition1.setFromValue(0);
+			fadeTransition1.setToValue(0.15);
+			fadeTransition1.play();
 
-        drawerImage.setOnMouseClicked(event -> {
+			TranslateTransition translateTransition1 = new TranslateTransition(Duration.seconds(0.5), drawerPane);
+			translateTransition1.setByX(+600);
+			translateTransition1.play();
+		});
 
+		opacityPane.setOnMouseClicked(event -> {
 
-            opacityPane.setVisible(true);
+			FadeTransition fadeTransition1 = new FadeTransition(Duration.seconds(0.5), opacityPane);
+			fadeTransition1.setFromValue(0.15);
+			fadeTransition1.setToValue(0);
+			fadeTransition1.play();
 
-            FadeTransition fadeTransition1=new FadeTransition(Duration.seconds(0.5),opacityPane);
-            fadeTransition1.setFromValue(0);
-            fadeTransition1.setToValue(0.15);
-            fadeTransition1.play();
+			fadeTransition1.setOnFinished(event1 -> {
+				opacityPane.setVisible(false);
+			});
 
-            TranslateTransition translateTransition1=new TranslateTransition(Duration.seconds(0.5),drawerPane);
-            translateTransition1.setByX(+600);
-            translateTransition1.play();
-        });
+			TranslateTransition translateTransition1 = new TranslateTransition(Duration.seconds(0.5), drawerPane);
+			translateTransition1.setByX(-600);
+			translateTransition1.play();
+		});
 
-        opacityPane.setOnMouseClicked(event -> {
-
-
-
-            FadeTransition fadeTransition1=new FadeTransition(Duration.seconds(0.5),opacityPane);
-            fadeTransition1.setFromValue(0.15);
-            fadeTransition1.setToValue(0);
-            fadeTransition1.play();
-
-            fadeTransition1.setOnFinished(event1 -> {
-                opacityPane.setVisible(false);
-            });
-
-
-            TranslateTransition translateTransition1=new TranslateTransition(Duration.seconds(0.5),drawerPane);
-            translateTransition1.setByX(-600);
-            translateTransition1.play();
-        });
-
-
-
-
-
-
-
-
-    }
+	}
 }

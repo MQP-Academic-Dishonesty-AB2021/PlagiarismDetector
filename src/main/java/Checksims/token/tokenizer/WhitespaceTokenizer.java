@@ -33,50 +33,51 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Split a file into tokens based on spaces.
  */
 public final class WhitespaceTokenizer implements Tokenizer {
-    private static WhitespaceTokenizer instance;
+	private static WhitespaceTokenizer instance;
 
-    private WhitespaceTokenizer() {}
+	private WhitespaceTokenizer() {
+	}
 
-    /**
-     * @return Singleton instance of WhitespaceTokenizer
-     */
-    public static WhitespaceTokenizer getInstance() {
-        if(instance == null) {
-            instance = new WhitespaceTokenizer();
-        }
+	/**
+	 * @return Singleton instance of WhitespaceTokenizer
+	 */
+	public static WhitespaceTokenizer getInstance() {
+		if (instance == null) {
+			instance = new WhitespaceTokenizer();
+		}
 
-        return instance;
-    }
+		return instance;
+	}
 
-    /**
-     * Split a string into whitespace-delineated tokens.
-     *
-     * @param string Input string
-     * @return List of WHITESPACE tokens representing the input submission
-     */
-    @Override
-    public TokenList splitString(String string) {
-        checkNotNull(string);
+	/**
+	 * Split a string into whitespace-delineated tokens.
+	 *
+	 * @param string Input string
+	 * @return List of WHITESPACE tokens representing the input submission
+	 */
+	@Override
+	public TokenList splitString(String string) {
+		checkNotNull(string);
 
-        TokenList toReturn = new TokenList(this.getType());
+		TokenList toReturn = new TokenList(this.getType());
 
-        String[] split = string.split("\\s+");
+		String[] split = string.split("\\s+");
 
-        Arrays.stream(split)
-                .filter((str) -> !str.isEmpty())
-                .map((str) -> new ConcreteToken(str, TokenType.WHITESPACE))
-                .forEachOrdered(toReturn::add);
+		Arrays.stream(split)
+				.filter((str) -> !str.isEmpty())
+				.map((str) -> new ConcreteToken(str, TokenType.WHITESPACE))
+				.forEachOrdered(toReturn::add);
 
-        return toReturn;
-    }
+		return toReturn;
+	}
 
-    @Override
-    public TokenType getType() {
-        return TokenType.WHITESPACE;
-    }
+	@Override
+	public TokenType getType() {
+		return TokenType.WHITESPACE;
+	}
 
-    @Override
-    public String toString() {
-        return "Singleton instance of FileSpaceSplitter";
-    }
+	@Override
+	public String toString() {
+		return "Singleton instance of FileSpaceSplitter";
+	}
 }

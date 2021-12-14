@@ -22,7 +22,8 @@
 /**
  * This package contains output formatters, and the output strategy registry.
  *
- * These output formatters implement MatrixPrinter, and print a human- or machine-readable representation of a
+ * These output formatters implement MatrixPrinter, and print a human- or
+ * machine-readable representation of a
  * Similarity Matrix.
  */
 package Checksims.algorithm.similaritymatrix.output;

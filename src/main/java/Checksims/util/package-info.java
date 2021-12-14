@@ -20,6 +20,7 @@
  */
 
 /**
- * The util package contains common utility classes unrelated to Submissions, Tokens, or Algorithms.
+ * The util package contains common utility classes unrelated to Submissions,
+ * Tokens, or Algorithms.
  */
 package Checksims.util;

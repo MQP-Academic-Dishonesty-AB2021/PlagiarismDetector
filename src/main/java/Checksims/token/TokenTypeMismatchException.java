@@ -24,16 +24,17 @@ package Checksims.token;
 import Checksims.ChecksimsException;
 
 /**
- * Exception thrown when attempting to compare two submissions with different tokenizations.
+ * Exception thrown when attempting to compare two submissions with different
+ * tokenizations.
  */
 public class TokenTypeMismatchException extends ChecksimsException {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public TokenTypeMismatchException(String message) {
-        super(message);
-    }
+	public TokenTypeMismatchException(String message) {
+		super(message);
+	}
 
-    public TokenTypeMismatchException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public TokenTypeMismatchException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

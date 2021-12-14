@@ -30,97 +30,103 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Concrete implementation of the Submission interface.
  *
- * Intended to be the only concrete implementation of Submission that is not a decorator.
+ * Intended to be the only concrete implementation of Submission that is not a
+ * decorator.
  */
 public final class ConcreteSubmission implements Submission {
-    private final TokenList tokenList;
-    private final String content;
-    private final String name;
+	private final TokenList tokenList;
+	private final String content;
+	private final String name;
 
-    /**
-     * Construct a new Concrete Submission with given name and contents.
-     *
-     * Token content should be the result of tokenizing the string content of the submission with some tokenizer. This
-     * invariant is maintained throughout the project, but not enforced here for performance reasons. It is thus
-     * possible to create a ConcreteSubmission with Token contents not equal to tokenized String contents. This is not
-     * recommended and will most likely break, at the very least, Preprocessors.
-     *
-     * @param name Name of new submission
-     * @param content Content of submission, as string
-     * @param tokens Content of submission, as token
-     */
-    public ConcreteSubmission(String name, String content, TokenList tokens) {
-        checkNotNull(name);
-        checkArgument(!name.isEmpty(), "Submission name cannot be empty");
-        checkNotNull(content);
-        checkNotNull(tokens);
+	/**
+	 * Construct a new Concrete Submission with given name and contents.
+	 *
+	 * Token content should be the result of tokenizing the string content of the
+	 * submission with some tokenizer. This
+	 * invariant is maintained throughout the project, but not enforced here for
+	 * performance reasons. It is thus
+	 * possible to create a ConcreteSubmission with Token contents not equal to
+	 * tokenized String contents. This is not
+	 * recommended and will most likely break, at the very least, Preprocessors.
+	 *
+	 * @param name    Name of new submission
+	 * @param content Content of submission, as string
+	 * @param tokens  Content of submission, as token
+	 */
+	public ConcreteSubmission(String name, String content, TokenList tokens) {
+		checkNotNull(name);
+		checkArgument(!name.isEmpty(), "Submission name cannot be empty");
+		checkNotNull(content);
+		checkNotNull(tokens);
 
-        this.name = name;
-        this.content = content;
-        this.tokenList = TokenList.immutableCopy(tokens);
-    }
+		this.name = name;
+		this.content = content;
+		this.tokenList = TokenList.immutableCopy(tokens);
+	}
 
-    @Override
-    public TokenList getContentAsTokens() {
-        return tokenList;
-    }
+	@Override
+	public TokenList getContentAsTokens() {
+		return tokenList;
+	}
 
-    @Override
-    public String getContentAsString() {
-        return content;
-    }
+	@Override
+	public String getContentAsString() {
+		return content;
+	}
 
-    @Override
-    public String getName() {
-        return name;
-    }
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    @Override
-    public int getNumTokens() {
-        return tokenList.size();
-    }
+	@Override
+	public int getNumTokens() {
+		return tokenList.size();
+	}
 
-    @Override
-    public TokenType getTokenType() {
-        return tokenList.type;
-    }
+	@Override
+	public TokenType getTokenType() {
+		return tokenList.type;
+	}
 
-    @Override
-    public String toString() {
-        return "A submission with name " + name + " and " + getNumTokens() + " tokens";
-    }
+	@Override
+	public String toString() {
+		return "A submission with name " + name + " and " + getNumTokens() + " tokens";
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        if(!(other instanceof ConcreteSubmission)) {
-            return false;
-        }
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof ConcreteSubmission)) {
+			return false;
+		}
 
-        Submission otherSubmission = (Submission)other;
+		Submission otherSubmission = (Submission) other;
 
-        return otherSubmission.getName().equals(this.name)
-                && otherSubmission.getNumTokens() == this.getNumTokens()
-                && otherSubmission.getContentAsTokens().equals(this.tokenList)
-                && otherSubmission.getContentAsString().equals(this.content);
-    }
+		return otherSubmission.getName().equals(this.name)
+				&& otherSubmission.getNumTokens() == this.getNumTokens()
+				&& otherSubmission.getContentAsTokens().equals(this.tokenList)
+				&& otherSubmission.getContentAsString().equals(this.content);
+	}
 
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
 
-    /**
-     * Compare two Submissions, using natural ordering by name.
-     *
-     * Note that the natural ordering of ConcreteSubmission is inconsistent with equality. Ordering is based solely on
-     * the name of a submission; two submissions with the same name, but different contents, will have compareTo()
-     * return 0, but equals() return false
-     *
-     * @param other Submission to compare to
-     * @return Integer indicating relative ordering of the submissions
-     */
-    @Override
-    public int compareTo(Submission other) {
-        return this.name.compareTo(other.getName());
-    }
+	/**
+	 * Compare two Submissions, using natural ordering by name.
+	 *
+	 * Note that the natural ordering of ConcreteSubmission is inconsistent with
+	 * equality. Ordering is based solely on
+	 * the name of a submission; two submissions with the same name, but different
+	 * contents, will have compareTo()
+	 * return 0, but equals() return false
+	 *
+	 * @param other Submission to compare to
+	 * @return Integer indicating relative ordering of the submissions
+	 */
+	@Override
+	public int compareTo(Submission other) {
+		return this.name.compareTo(other.getName());
+	}
 }

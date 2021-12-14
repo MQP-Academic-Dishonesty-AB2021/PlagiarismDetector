@@ -22,15 +22,22 @@
 /**
  * This package contains the implementation of a Registry.
  *
- * Registries contain a instances of a number of implementations of a specific interface. These implementations are all
- * named, and can be retrieved by their name. Some Registry implementations also have a default implementation.
+ * Registries contain a instances of a number of implementations of a specific
+ * interface. These implementations are all
+ * named, and can be retrieved by their name. Some Registry implementations also
+ * have a default implementation.
  *
- * Registries are used as a sort of module system. They use reflection to identify all implementations of a given
- * interface within a given package, then instantiate them and provide a means for retrieving them. This allows for
- * pluggable implementations which require no modification of existing code to add another.
+ * Registries are used as a sort of module system. They use reflection to
+ * identify all implementations of a given
+ * interface within a given package, then instantiate them and provide a means
+ * for retrieving them. This allows for
+ * pluggable implementations which require no modification of existing code to
+ * add another.
  *
- * Everything contained in a Registry must implement NamedInstantiable, which provides a method for retrieving the
- * unique name of an implementation. There are also further constraints, described in the NamedInstantiable
+ * Everything contained in a Registry must implement NamedInstantiable, which
+ * provides a method for retrieving the
+ * unique name of an implementation. There are also further constraints,
+ * described in the NamedInstantiable
  * documentation.
  */
 package Checksims.util.reflection;
