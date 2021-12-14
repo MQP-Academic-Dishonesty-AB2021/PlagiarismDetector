@@ -2,8 +2,8 @@ module com.plagiarismdetector {
     requires javafx.controls;
     requires javafx.fxml;
 
-    requires org.controlsfx.controls;
-    requires org.kordamp.bootstrapfx.core;
+    requires com.jfoenix;
+    requires java.desktop;
     requires javafx.web;
     requires commons.cli;
     requires slf4j.api;
