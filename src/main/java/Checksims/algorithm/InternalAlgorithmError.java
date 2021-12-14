@@ -27,13 +27,13 @@ import Checksims.ChecksimsException;
  * Exception thrown on internal algorithm error.
  */
 public class InternalAlgorithmError extends ChecksimsException {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public InternalAlgorithmError(String message) {
-        super(message);
-    }
+	public InternalAlgorithmError(String message) {
+		super(message);
+	}
 
-    public InternalAlgorithmError(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public InternalAlgorithmError(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

@@ -2,13 +2,18 @@ package RacketTree;
 
 import java.io.IOException;
 import java.io.PushbackReader;
-import java.util.ArrayList;
-import java.util.HashMap;
 
-public class RacketString extends RacketAtom {
-    public String str;
-    public int height = 1;
+public class RacketString extends RacketExpression {
+    private final String str;
 
+    /**
+     * Generate a Racket String from the current place in the file,
+     * Assumes that you have already the first opening "
+     * @param fin The file to read from
+     * @param parent The parent of the string
+     * @throws InvalidFormatException Given an improperly formatted file and could not finish the string
+     * @throws IOException There was an error reading the file
+     */
     public RacketString(PushbackReader fin, RacketList parent)
     throws InvalidFormatException, IOException {
         super.parent = parent;
@@ -30,8 +35,12 @@ public class RacketString extends RacketAtom {
         this.height = 1;
     }
 
-    public boolean equals(RacketAtom other) {
-//        RacketAtom.equalsCount++;
+    /**
+     * Returns true iff the other object is a RacketString with the same string value
+     * @param other The object to compare too
+     * @return
+     */
+    public boolean equals(RacketExpression other) {
         if (other.getClass() != this.getClass()) {
             return false;
         }
@@ -39,12 +48,16 @@ public class RacketString extends RacketAtom {
         return otherString.str.equals(this.str);
     }
 
+    /**
+     * The hashCode is the same as the underlying string but added one to avoid collisions with RacketAtoms
+     * @return the hashCode
+     */
     @Override
-    public int hashCode() {
-        return this.str.hashCode();
-    }
+    public int hashCode() { return this.str.hashCode() + 1; }
 
-    public String toString() {
-        return this.str;
-    }
+    /**
+     *
+     * @return The string value of the String surrounded by quotes
+     */
+    public String toString() { return "\"" + this.str + "\""; }
 }

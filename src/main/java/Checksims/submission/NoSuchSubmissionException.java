@@ -27,13 +27,13 @@ import Checksims.ChecksimsException;
  * Exception thrown when no the requested submission cannot be found.
  */
 public class NoSuchSubmissionException extends ChecksimsException {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public NoSuchSubmissionException(String message) {
-        super(message);
-    }
+	public NoSuchSubmissionException(String message) {
+		super(message);
+	}
 
-    public NoSuchSubmissionException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public NoSuchSubmissionException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

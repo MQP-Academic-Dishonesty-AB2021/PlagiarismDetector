@@ -1,4 +1,4 @@
-package ComparisonRunner;
+package Comparison;
 
 import Checksims.ChecksimsCommandLine;
 import Checksims.ChecksimsConfig;
@@ -16,10 +16,7 @@ import RacketTree.InvalidFormatException;
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import RacketTree.RacketAtom;
-import RacketTree.RacketList;
-import RacketTree.RacketKeyword;
-import RacketTree.RacketString;
+import RacketTree.RacketExpression;
 
 import java.io.*;
 import java.util.*;
@@ -31,10 +28,20 @@ public class Comparison {
     private ArrayList<String> fileList;
     public static int numThreads = 4;
 
+    /**
+     * Calculate a Racket Tree comparison of all projects in a directory
+     * @param directory The directory
+     */
     public Comparison(String directory) {
         this.generateRacketTreeComparison(directory);
     }
 
+    /**
+     * Calculate a comparison of all projects in a directory with a given method
+     * Defaults to Checksims
+     * @param directory The directory
+     * @param method The method
+     */
     public Comparison(String directory, String method) {
         switch(method) {
             case "TreeSimilarity":
@@ -46,12 +53,27 @@ public class Comparison {
         }
     }
 
+    /**
+     * Get the value of a comparison between two projects
+     * @param pair The pair containing the projects
+     * @return the value of the comparison
+     */
     public double getValue(ComparisonPair pair) { return this.values.get(pair); }
 
+    /**
+     * Get the value of a comparison between two projects
+     * @param base The base project
+     * @param compared The project the base was compared too
+     * @return the value of the comparison
+     */
     public double getValue(String base, String compared) {
         return this.values.get(new ComparisonPair(base, compared));
     }
 
+    /**
+     *
+     * @return Get an ordered list of pairs of projects ordered by most likely to least likely to have cheated
+     */
     public ArrayList<ImmutablePair<ComparisonPair, Double>> getOrderedList() {
         ArrayList<ImmutablePair<ComparisonPair, Double>> list = new ArrayList<>();
         for (Map.Entry<ComparisonPair, Double> value : values.entrySet()) {
@@ -62,6 +84,10 @@ public class Comparison {
     }
 
 
+    /**
+     * Generate a RacketTree comparison between all projects in a directory
+     * @param assignment The directory
+     */
     private void generateRacketTreeComparison(String assignment) {
         File dir = new File(assignment);
         HashMap<String, RacketTree> assignmentMap = new HashMap<String, RacketTree>();
@@ -84,7 +110,7 @@ public class Comparison {
 
             HashMap<String, Integer> numTimes = new HashMap<>();
             for (Map.Entry<String, RacketTree> sub : assignmentMap.entrySet()) {
-                for (Map.Entry<RacketAtom, ArrayList<RacketAtom>> leaf : sub.getValue().leavesHash.entrySet())  {
+                for (Map.Entry<RacketExpression, ArrayList<RacketExpression>> leaf : sub.getValue().leavesHash.entrySet())  {
                     numTimes.merge(leaf.getKey().toString(), leaf.getValue().size(), Integer::sum);
                 }
             }
@@ -109,20 +135,18 @@ public class Comparison {
                     }
             )).get();
         }
-        catch (IOException e) {
+        catch (IOException | NullPointerException | InvalidFormatException e) {
             e.printStackTrace();
-        }
-        catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        catch (InvalidFormatException e) {
-
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Perform a checksims comparison between all projects in a directory
+     * @param assignment the directory
+     */
     private void generateChecksimsComparison(String assignment) {
         String[] args = {"-s", assignment, "-o", "csv", "-j", Integer.toString(numThreads)};
         this.values = new ConcurrentHashMap<>();
@@ -170,6 +194,11 @@ public class Comparison {
         }
     }
 
+    /**
+     * Write the results of the comparison to a csv file
+     * @param filename The file name of the csv
+     * @throws IOException Error writing to file
+     */
     public void toCSV(String filename) throws IOException {
         File csvFile = new File(filename + ".csv");
         if (!csvFile.exists()) { csvFile.createNewFile(); }
