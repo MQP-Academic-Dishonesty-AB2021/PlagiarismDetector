@@ -27,13 +27,13 @@ import Checksims.ChecksimsException;
  * Exception thrown when no matching implementation is available in a registry.
  */
 public class NoSuchImplementationException extends ChecksimsException {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public NoSuchImplementationException(String message) {
-        super(message);
-    }
+	public NoSuchImplementationException(String message) {
+		super(message);
+	}
 
-    public NoSuchImplementationException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public NoSuchImplementationException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

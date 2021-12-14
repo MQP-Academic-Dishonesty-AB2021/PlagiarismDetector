@@ -20,10 +20,13 @@
  */
 
 /**
- * The threading package contains a thread pool allowing parallel computation of several tasks.
+ * The threading package contains a thread pool allowing parallel computation of
+ * several tasks.
  *
- * All tasks are handled as individual implementations of Callable, which are submitted to the core executor in
- * ParallelAlgorithm. ParallelAlgorithm also contains convenience methods for common tasks, which create the Callable
+ * All tasks are handled as individual implementations of Callable, which are
+ * submitted to the core executor in
+ * ParallelAlgorithm. ParallelAlgorithm also contains convenience methods for
+ * common tasks, which create the Callable
  * workers and return easily-usable output.
  */
 package Checksims.util.threading;

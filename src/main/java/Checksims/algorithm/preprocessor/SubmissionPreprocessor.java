@@ -29,12 +29,13 @@ import Checksims.util.reflection.NamedInstantiable;
  * Interface for submission preprocessors which act on submissions.
  */
 public interface SubmissionPreprocessor extends NamedInstantiable {
-    /**
-     * Perform some implementation-specific transformation on the input submission.
-     *
-     * @param submission Submission to transform
-     * @return Result of transforming the input submission's contents
-     * @throws InternalAlgorithmError Thrown on internal error preprocessing submission
-     */
-    Submission process(Submission submission) throws InternalAlgorithmError;
+	/**
+	 * Perform some implementation-specific transformation on the input submission.
+	 *
+	 * @param submission Submission to transform
+	 * @return Result of transforming the input submission's contents
+	 * @throws InternalAlgorithmError Thrown on internal error preprocessing
+	 *                                submission
+	 */
+	Submission process(Submission submission) throws InternalAlgorithmError;
 }

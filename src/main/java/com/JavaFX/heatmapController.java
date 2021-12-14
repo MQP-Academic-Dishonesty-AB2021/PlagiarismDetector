@@ -20,44 +20,41 @@ import java.util.ResourceBundle;
 
 public class heatmapController implements Initializable {
 
-    @FXML
-    private ImageView exit;
+	@FXML
+	private ImageView exit;
 
-    @FXML
-    private AnchorPane webPane;
+	@FXML
+	private AnchorPane webPane;
 
-    @FXML
-    private WebView webview;
-    private WebEngine engine;
+	@FXML
+	private WebView webview;
+	private WebEngine engine;
 
+	private Stage stage;
+	private Scene scene;
+	private Parent root;
 
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
+	// returns to main menu
+	public void returnToMainMenu(MouseEvent event) throws IOException {
+		Parent root = FXMLLoader.load(getClass().getResource("/menuBar.fxml"));
+		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		scene = new Scene(root);
+		stage.setScene(scene);
+	}
 
-    //returns to main menu
-    public void returnToMainMenu(MouseEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/menuBar.fxml"));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-    }
+	@Override
+	@FXML
+	public void initialize(URL location, ResourceBundle resources) {
 
-    @Override
-    @FXML
-    public void initialize(URL location, ResourceBundle resources) {
+		WebView webView = new WebView();
+		WebEngine webEngine = webView.getEngine();
+		String url = getClass().getResource("/matrixVis/fileview.html").toExternalForm();
+		webEngine.getLoadWorker().stateProperty().addListener((observable, oldState, newState) -> {
+			if (newState == Worker.State.SUCCEEDED) {
+				Document doc = webEngine.getDocument();
+			}
+		});
+		webEngine.loadContent(url);
 
-        WebView webView = new WebView();
-        WebEngine webEngine = webView.getEngine();
-        String url = getClass().getResource("/matrixVis/fileview.html").toExternalForm();
-        webEngine.getLoadWorker().stateProperty().addListener((observable, oldState, newState) -> {
-            if (newState == Worker.State.SUCCEEDED) {
-                Document doc = webEngine.getDocument();
-            }
-        });
-        webEngine.loadContent(url);
-
-
-    }
+	}
 }
-

@@ -31,3 +31,9 @@ hs_err_pid*
 
 /rm_file.sh
 /**.csv
+
+# Eclipse things (sorry its due to my vim plugins using eclipse ls)
+.classpath
+.factorypath
+.project
+.settings/

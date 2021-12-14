@@ -27,57 +27,57 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Superclass for decorators for Tokens.
  */
 public abstract class AbstractTokenDecorator implements Token {
-    private final Token wrappedToken;
+	private final Token wrappedToken;
 
-    public AbstractTokenDecorator(Token wrappedToken) {
-        checkNotNull(wrappedToken);
+	public AbstractTokenDecorator(Token wrappedToken) {
+		checkNotNull(wrappedToken);
 
-        this.wrappedToken = wrappedToken;
-    }
+		this.wrappedToken = wrappedToken;
+	}
 
-    @Override
-    public TokenType getType() {
-        return wrappedToken.getType();
-    }
+	@Override
+	public TokenType getType() {
+		return wrappedToken.getType();
+	}
 
-    @Override
-    public boolean isValid() {
-        return wrappedToken.isValid();
-    }
+	@Override
+	public boolean isValid() {
+		return wrappedToken.isValid();
+	}
 
-    @Override
-    public void setValid(boolean valid) {
-        wrappedToken.setValid(valid);
-    }
+	@Override
+	public void setValid(boolean valid) {
+		wrappedToken.setValid(valid);
+	}
 
-    @Override
-    public Object getToken() {
-        return wrappedToken.getToken();
-    }
+	@Override
+	public Object getToken() {
+		return wrappedToken.getToken();
+	}
 
-    @Override
-    public String getTokenAsString() {
-        return wrappedToken.getTokenAsString();
-    }
+	@Override
+	public String getTokenAsString() {
+		return wrappedToken.getTokenAsString();
+	}
 
-    @Override
-    public int getLexeme() {
-        return wrappedToken.getLexeme();
-    }
+	@Override
+	public int getLexeme() {
+		return wrappedToken.getLexeme();
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        return other instanceof Token && wrappedToken.equals(other);
+	@Override
+	public boolean equals(Object other) {
+		return other instanceof Token && wrappedToken.equals(other);
 
-    }
+	}
 
-    @Override
-    public String toString() {
-        return wrappedToken.toString();
-    }
+	@Override
+	public String toString() {
+		return wrappedToken.toString();
+	}
 
-    @Override
-    public int hashCode() {
-        return wrappedToken.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return wrappedToken.hashCode();
+	}
 }

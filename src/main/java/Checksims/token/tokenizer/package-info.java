@@ -20,9 +20,11 @@
  */
 
 /**
- * This package contains Tokenizers, which convert a string into a TokenList suitable for use in submissions.
+ * This package contains Tokenizers, which convert a string into a TokenList
+ * suitable for use in submissions.
  *
- * There is one Tokenizer for each type of token, and all are singletons. A method in Tokenizer can be used to retrieve
+ * There is one Tokenizer for each type of token, and all are singletons. A
+ * method in Tokenizer can be used to retrieve
  * a Tokenizer for each token type.
  */
 package Checksims.token.tokenizer;

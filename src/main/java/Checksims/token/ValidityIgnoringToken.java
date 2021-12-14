@@ -27,33 +27,36 @@ package Checksims.token;
  * Decorates other tokens to override their equals() method
  */
 public final class ValidityIgnoringToken extends AbstractTokenDecorator {
-    public ValidityIgnoringToken(Token wrappedToken) {
-        super(wrappedToken);
-    }
+	public ValidityIgnoringToken(Token wrappedToken) {
+		super(wrappedToken);
+	}
 
-    /**
-     * This method checks another token for equality, ignoring their validity.
-     *
-     * This means that, if two tokens with the same type and content but different validites are compare, this method
-     * WILL RETURN TRUE. This is a violation of the equals() contract. Hence, use ValidityIgnoringToken sparingly and
-     * with care.
-     *
-     * @param other Object to compare against
-     * @return True if Other is a token of identical type and content (IGNORES VALIDITY)
-     */
-    @Override
-    public boolean equals(Object other) {
-        if(!(other instanceof Token)) {
-            return false;
-        }
+	/**
+	 * This method checks another token for equality, ignoring their validity.
+	 *
+	 * This means that, if two tokens with the same type and content but different
+	 * validites are compare, this method
+	 * WILL RETURN TRUE. This is a violation of the equals() contract. Hence, use
+	 * ValidityIgnoringToken sparingly and
+	 * with care.
+	 *
+	 * @param other Object to compare against
+	 * @return True if Other is a token of identical type and content (IGNORES
+	 *         VALIDITY)
+	 */
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Token)) {
+			return false;
+		}
 
-        Token otherToken = (Token)other;
+		Token otherToken = (Token) other;
 
-        return otherToken.getType().equals(this.getType()) && otherToken.getLexeme() == this.getLexeme();
-    }
+		return otherToken.getType().equals(this.getType()) && otherToken.getLexeme() == this.getLexeme();
+	}
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

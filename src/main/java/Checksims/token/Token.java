@@ -24,7 +24,8 @@ package Checksims.token;
 /**
  * Interface for Tokens.
  *
- * A Token is the basic unit of comparison in Checksims. A token represents a "chunk" of a submission --- typically a
+ * A Token is the basic unit of comparison in Checksims. A token represents a
+ * "chunk" of a submission --- typically a
  * substring of the submission, or a single character.
  *
  * Tokens are backed by "Lexemes" --- for details, see LexemeMap
@@ -32,41 +33,41 @@ package Checksims.token;
  * This interface enables easy use of Decorators for tokens.
  */
 public interface Token {
-    /**
-     * @return Lexeme used to represent this token
-     */
-    int getLexeme();
+	/**
+	 * @return Lexeme used to represent this token
+	 */
+	int getLexeme();
 
-    /**
-     * @return Type of this token
-     */
-    TokenType getType();
+	/**
+	 * @return Type of this token
+	 */
+	TokenType getType();
 
-    /**
-     * @return Object representing the token itself
-     */
-    Object getToken();
+	/**
+	 * @return Object representing the token itself
+	 */
+	Object getToken();
 
-    /**
-     * @return String representation of the token
-     */
-    String getTokenAsString();
+	/**
+	 * @return String representation of the token
+	 */
+	String getTokenAsString();
 
-    /**
-     * @return Whether this token is valid
-     */
-    boolean isValid();
+	/**
+	 * @return Whether this token is valid
+	 */
+	boolean isValid();
 
-    /**
-     * @param isValid New value for token validity
-     */
-    void setValid(boolean isValid);
+	/**
+	 * @param isValid New value for token validity
+	 */
+	void setValid(boolean isValid);
 
-    /**
-     * @param token Token to clone
-     * @return Clone of token
-     */
-    static Token cloneToken(Token token) {
-        return ConcreteToken.cloneToken(token);
-    }
+	/**
+	 * @param token Token to clone
+	 * @return Clone of token
+	 */
+	static Token cloneToken(Token token) {
+		return ConcreteToken.cloneToken(token);
+	}
 }

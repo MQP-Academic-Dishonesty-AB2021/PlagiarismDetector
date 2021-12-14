@@ -9,19 +9,15 @@ import java.util.ResourceBundle;
 
 public class DashController implements Initializable {
 
-    @FXML
-    private Pane dashPane;
+	@FXML
+	private Pane dashPane;
 
-    @FXML
-    private Pane mainPane;
+	@FXML
+	private Pane mainPane;
 
+	@Override
+	@FXML
+	public void initialize(URL location, ResourceBundle resources) {
 
-    @Override
-    @FXML
-    public void initialize(URL location, ResourceBundle resources) {
-
-
-
-    }
+	}
 }
-

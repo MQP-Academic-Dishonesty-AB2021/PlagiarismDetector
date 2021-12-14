@@ -33,51 +33,52 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Splits a file on a line-by-line basis.
  */
 public final class LineTokenizer implements Tokenizer {
-    private static LineTokenizer instance;
+	private static LineTokenizer instance;
 
-    private LineTokenizer() {}
+	private LineTokenizer() {
+	}
 
-    /**
-     * @return Singleton instance of LineTokenizer
-     */
-    public static LineTokenizer getInstance() {
-        if(instance == null) {
-            instance = new LineTokenizer();
-        }
+	/**
+	 * @return Singleton instance of LineTokenizer
+	 */
+	public static LineTokenizer getInstance() {
+		if (instance == null) {
+			instance = new LineTokenizer();
+		}
 
-        return instance;
-    }
+		return instance;
+	}
 
-    /**
-     * Split string into newline-delineated tokens.
-     *
-     * @param string String to split
-     * @return List of LINE tokens representing the input string
-     */
-    @Override
-    public TokenList splitString(String string) {
-        checkNotNull(string);
+	/**
+	 * Split string into newline-delineated tokens.
+	 *
+	 * @param string String to split
+	 * @return List of LINE tokens representing the input string
+	 */
+	@Override
+	public TokenList splitString(String string) {
+		checkNotNull(string);
 
-        TokenList toReturn = new TokenList(this.getType());
+		TokenList toReturn = new TokenList(this.getType());
 
-        if(string.isEmpty()) {
-            return toReturn;
-        }
+		if (string.isEmpty()) {
+			return toReturn;
+		}
 
-        Arrays.stream(string.split("\n"))
-                .map((str) -> new ConcreteToken(str, TokenType.LINE))
-                .forEachOrdered(toReturn::add);
+		Arrays.stream(string.split("\n"))
+				.map((str) -> new ConcreteToken(str, TokenType.LINE))
+				.forEachOrdered(toReturn::add);
 
-        return toReturn;
-    }
+		return toReturn;
+	}
 
-    @Override
-    public TokenType getType() {
-        return TokenType.LINE;
-    }
+	@Override
+	public TokenType getType() {
+		return TokenType.LINE;
+	}
 
-    @Override
-    public String toString() {
-        return "Singleton FileLineSplitter instance";
-    }
+	@Override
+	public String toString() {
+		return "Singleton FileLineSplitter instance";
+	}
 }

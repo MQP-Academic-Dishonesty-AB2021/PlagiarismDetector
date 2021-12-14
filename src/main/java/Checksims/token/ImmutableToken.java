@@ -25,15 +25,16 @@ package Checksims.token;
  * An immutable view of a token.
  */
 public final class ImmutableToken extends AbstractTokenDecorator {
-    public ImmutableToken(Token wrappedToken) {
-        super(wrappedToken);
-    }
+	public ImmutableToken(Token wrappedToken) {
+		super(wrappedToken);
+	}
 
-    /**
-     * @param isValid Ignored - this method always throws an UnsupportedOperationException
-     */
-    @Override
-    public void setValid(boolean isValid) {
-        throw new UnsupportedOperationException("Cannot modify immutable token!");
-    }
+	/**
+	 * @param isValid Ignored - this method always throws an
+	 *                UnsupportedOperationException
+	 */
+	@Override
+	public void setValid(boolean isValid) {
+		throw new UnsupportedOperationException("Cannot modify immutable token!");
+	}
 }

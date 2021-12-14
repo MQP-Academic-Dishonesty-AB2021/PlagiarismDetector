@@ -38,53 +38,57 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Takes two Submissions, applies an algorithm to them, returns results.
  */
 public class SimilarityDetectionWorker implements Callable<AlgorithmResults> {
-    private final SimilarityDetector algorithm;
-    private final Pair<Submission, Submission> submissions;
+	private final SimilarityDetector algorithm;
+	private final Pair<Submission, Submission> submissions;
 
-    private static Logger logs = LoggerFactory.getLogger(SimilarityDetectionWorker.class);
+	private static Logger logs = LoggerFactory.getLogger(SimilarityDetectionWorker.class);
 
-    /**
-     * Construct a Callable to perform pairwise similarity detection for one pair of assignments.
-     *
-     * @param algorithm Algorithm to use
-     * @param submissions Assignments to compare
-     */
-    public SimilarityDetectionWorker(SimilarityDetector algorithm, Pair<Submission, Submission> submissions) {
-        checkNotNull(algorithm);
-        checkNotNull(submissions);
-        checkNotNull(submissions.getLeft());
-        checkNotNull(submissions.getRight());
+	/**
+	 * Construct a Callable to perform pairwise similarity detection for one pair of
+	 * assignments.
+	 *
+	 * @param algorithm   Algorithm to use
+	 * @param submissions Assignments to compare
+	 */
+	public SimilarityDetectionWorker(SimilarityDetector algorithm, Pair<Submission, Submission> submissions) {
+		checkNotNull(algorithm);
+		checkNotNull(submissions);
+		checkNotNull(submissions.getLeft());
+		checkNotNull(submissions.getRight());
 
-        this.algorithm = algorithm;
-        this.submissions = submissions;
-    }
+		this.algorithm = algorithm;
+		this.submissions = submissions;
+	}
 
-    /**
-     * Perform pairwise similarity detection on assignments given when constructed.
-     *
-     * We don't throw exceptions here, checked or unchecked. The reason for this is our desire to "fail-fast" on
-     * algorithm errors --- instead of waiting for all comparisons to complete, we should immediately exit and inform
-     * the user of the failure.
-     *
-     * After future changes to the Similarity Matrix, it might be desirable to make this configurable behavior, as we'll
-     * be able to tolerate missing entires in the matrix at that point.
-     * TODO investigate this later
-     *
-     * @return Results of pairwise similarity detection
-     * @throws Exception Any exception thrown while executing the algorithm
-     */
-    @Override
-    public AlgorithmResults call() throws Exception {
-        logs.debug("Running " + algorithm.getName() + " on submissions " + submissions.getLeft().getName() +
-                "(" + submissions.getLeft().getNumTokens() + " tokens) and " + submissions.getRight().getName() + " (" +
-                submissions.getRight().getNumTokens() + " tokens)");
+	/**
+	 * Perform pairwise similarity detection on assignments given when constructed.
+	 *
+	 * We don't throw exceptions here, checked or unchecked. The reason for this is
+	 * our desire to "fail-fast" on
+	 * algorithm errors --- instead of waiting for all comparisons to complete, we
+	 * should immediately exit and inform
+	 * the user of the failure.
+	 *
+	 * After future changes to the Similarity Matrix, it might be desirable to make
+	 * this configurable behavior, as we'll
+	 * be able to tolerate missing entires in the matrix at that point.
+	 * TODO investigate this later
+	 *
+	 * @return Results of pairwise similarity detection
+	 * @throws Exception Any exception thrown while executing the algorithm
+	 */
+	@Override
+	public AlgorithmResults call() throws Exception {
+		logs.debug("Running " + algorithm.getName() + " on submissions " + submissions.getLeft().getName() +
+				"(" + submissions.getLeft().getNumTokens() + " tokens) and " + submissions.getRight().getName() + " (" +
+				submissions.getRight().getNumTokens() + " tokens)");
 
-        return algorithm.detectSimilarity(submissions.getLeft(), submissions.getRight());
-    }
+		return algorithm.detectSimilarity(submissions.getLeft(), submissions.getRight());
+	}
 
-    @Override
-    public String toString() {
-        return "Similarity detection worker for submissions \"" + submissions.getLeft().getName() + "\" and \""
-                + submissions.getRight().getName() + "\"";
-    }
+	@Override
+	public String toString() {
+		return "Similarity detection worker for submissions \"" + submissions.getLeft().getName() + "\" and \""
+				+ submissions.getRight().getName() + "\"";
+	}
 }

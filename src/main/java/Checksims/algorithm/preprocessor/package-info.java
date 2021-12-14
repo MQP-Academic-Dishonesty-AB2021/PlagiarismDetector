@@ -20,9 +20,12 @@
  */
 
 /**
- * The Preprocessor package contains submission preprocessors and the preprocessor registry.
+ * The Preprocessor package contains submission preprocessors and the
+ * preprocessor registry.
  *
- * Submission Preprocessors implement the SubmissionPreprocessor interface, and perform a transformation on an input
- * submission. This could be lowercasing all the characters within the submission, or removing duplicated whitespace.
+ * Submission Preprocessors implement the SubmissionPreprocessor interface, and
+ * perform a transformation on an input
+ * submission. This could be lowercasing all the characters within the
+ * submission, or removing duplicated whitespace.
  */
 package Checksims.algorithm.preprocessor;

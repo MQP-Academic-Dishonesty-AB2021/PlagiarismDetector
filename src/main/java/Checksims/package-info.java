@@ -20,11 +20,15 @@
  */
 
 /**
- * The base package for Checksims contains entrypoint methods and a configuration class.
+ * The base package for Checksims contains entrypoint methods and a
+ * configuration class.
  *
- * The ChecksimsRunner class contains the CLI entrypoint method, and runChecksims(), our core public API. Both of these
- * use the ChecksimsConfig class, which contains per-run configuration information.
+ * The ChecksimsRunner class contains the CLI entrypoint method, and
+ * runChecksims(), our core public API. Both of these
+ * use the ChecksimsConfig class, which contains per-run configuration
+ * information.
  *
- * There are also utility methods related to CLI parsing present in ChecksimsCommandLine.
+ * There are also utility methods related to CLI parsing present in
+ * ChecksimsCommandLine.
  */
 package Checksims;

@@ -27,13 +27,13 @@ import Checksims.ChecksimsException;
  * Exception thrown when an empty submission is created or encountered.
  */
 public class EmptySubmissionException extends ChecksimsException {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public EmptySubmissionException(String message) {
-        super(message);
-    }
+	public EmptySubmissionException(String message) {
+		super(message);
+	}
 
-    public EmptySubmissionException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public EmptySubmissionException(String message, Throwable cause) {
+		super(message, cause);
+	}
 }

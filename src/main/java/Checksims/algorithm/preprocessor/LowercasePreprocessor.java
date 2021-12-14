@@ -32,51 +32,52 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Lowercases tokens to prevent case from interfering with comparisons.
  */
 public final class LowercasePreprocessor implements SubmissionPreprocessor {
-    private static LowercasePreprocessor instance;
+	private static LowercasePreprocessor instance;
 
-    private LowercasePreprocessor() {}
+	private LowercasePreprocessor() {
+	}
 
-    /**
-     * @return Singleton instance of LowercasePreprocessor
-     */
-    public static LowercasePreprocessor getInstance() {
-        if(instance == null) {
-            instance = new LowercasePreprocessor();
-        }
+	/**
+	 * @return Singleton instance of LowercasePreprocessor
+	 */
+	public static LowercasePreprocessor getInstance() {
+		if (instance == null) {
+			instance = new LowercasePreprocessor();
+		}
 
-        return instance;
-    }
+		return instance;
+	}
 
-    @Override
-    public String getName() {
-        return "lowercase";
-    }
+	@Override
+	public String getName() {
+		return "lowercase";
+	}
 
-    @Override
-    public Submission process(Submission submission) {
-        checkNotNull(submission);
+	@Override
+	public Submission process(Submission submission) {
+		checkNotNull(submission);
 
-        Tokenizer tokenizer = Tokenizer.getTokenizer(submission.getTokenType());
+		Tokenizer tokenizer = Tokenizer.getTokenizer(submission.getTokenType());
 
-        // Lowercase the content of the submission, then retokenize
-        String contentLower = submission.getContentAsString().toLowerCase();
-        TokenList tokenizedLower = tokenizer.splitString(contentLower);
+		// Lowercase the content of the submission, then retokenize
+		String contentLower = submission.getContentAsString().toLowerCase();
+		TokenList tokenizedLower = tokenizer.splitString(contentLower);
 
-        return new ConcreteSubmission(submission.getName(), contentLower, tokenizedLower);
-    }
+		return new ConcreteSubmission(submission.getName(), contentLower, tokenizedLower);
+	}
 
-    @Override
-    public String toString() {
-        return "Singleton instance of LowercasePreprocessor";
-    }
+	@Override
+	public String toString() {
+		return "Singleton instance of LowercasePreprocessor";
+	}
 
-    @Override
-    public int hashCode() {
-        return this.getName().hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return this.getName().hashCode();
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        return other instanceof LowercasePreprocessor;
-    }
+	@Override
+	public boolean equals(Object other) {
+		return other instanceof LowercasePreprocessor;
+	}
 }

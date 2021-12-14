@@ -30,56 +30,56 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Superclass for submission decorators.
  */
 public abstract class AbstractSubmissionDecorator implements Submission {
-    private final Submission wrappedSubmission;
+	private final Submission wrappedSubmission;
 
-    public AbstractSubmissionDecorator(Submission wrappedSubmission) {
-        checkNotNull(wrappedSubmission);
+	public AbstractSubmissionDecorator(Submission wrappedSubmission) {
+		checkNotNull(wrappedSubmission);
 
-        this.wrappedSubmission = wrappedSubmission;
-    }
+		this.wrappedSubmission = wrappedSubmission;
+	}
 
-    @Override
-    public TokenList getContentAsTokens() {
-        return wrappedSubmission.getContentAsTokens();
-    }
+	@Override
+	public TokenList getContentAsTokens() {
+		return wrappedSubmission.getContentAsTokens();
+	}
 
-    @Override
-    public String getContentAsString() {
-        return wrappedSubmission.getContentAsString();
-    }
+	@Override
+	public String getContentAsString() {
+		return wrappedSubmission.getContentAsString();
+	}
 
-    @Override
-    public String getName() {
-        return wrappedSubmission.getName();
-    }
+	@Override
+	public String getName() {
+		return wrappedSubmission.getName();
+	}
 
-    @Override
-    public int getNumTokens() {
-        return wrappedSubmission.getNumTokens();
-    }
+	@Override
+	public int getNumTokens() {
+		return wrappedSubmission.getNumTokens();
+	}
 
-    @Override
-    public TokenType getTokenType() {
-        return wrappedSubmission.getTokenType();
-    }
+	@Override
+	public TokenType getTokenType() {
+		return wrappedSubmission.getTokenType();
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        return other instanceof Submission && wrappedSubmission.equals(other);
-    }
+	@Override
+	public boolean equals(Object other) {
+		return other instanceof Submission && wrappedSubmission.equals(other);
+	}
 
-    @Override
-    public String toString() {
-        return wrappedSubmission.toString();
-    }
+	@Override
+	public String toString() {
+		return wrappedSubmission.toString();
+	}
 
-    @Override
-    public int hashCode() {
-        return wrappedSubmission.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return wrappedSubmission.hashCode();
+	}
 
-    @Override
-    public int compareTo(Submission other) {
-        return wrappedSubmission.compareTo(other);
-    }
+	@Override
+	public int compareTo(Submission other) {
+		return wrappedSubmission.compareTo(other);
+	}
 }

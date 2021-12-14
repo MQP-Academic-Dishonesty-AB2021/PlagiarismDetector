@@ -20,6 +20,7 @@
  */
 
 /**
- * This package contains the Similarity Matrix, a results matrix presenting a view of the similarity of every input.
+ * This package contains the Similarity Matrix, a results matrix presenting a
+ * view of the similarity of every input.
  */
 package Checksims.algorithm.similaritymatrix;

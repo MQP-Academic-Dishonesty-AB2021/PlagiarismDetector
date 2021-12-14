@@ -29,12 +29,12 @@ import Checksims.util.reflection.NamedInstantiable;
  * Output a Similarity Matrix in human-readable or machine-readable format.
  */
 public interface MatrixPrinter extends NamedInstantiable {
-    /**
-     * Print a Similarity Matrix to string.
-     *
-     * @param matrix Matrix to print
-     * @return String representation of matrix
-     * @throws InternalAlgorithmError Thrown on internal error processing matrix
-     */
-    String printMatrix(SimilarityMatrix matrix) throws InternalAlgorithmError;
+	/**
+	 * Print a Similarity Matrix to string.
+	 *
+	 * @param matrix Matrix to print
+	 * @return String representation of matrix
+	 * @throws InternalAlgorithmError Thrown on internal error processing matrix
+	 */
+	String printMatrix(SimilarityMatrix matrix) throws InternalAlgorithmError;
 }

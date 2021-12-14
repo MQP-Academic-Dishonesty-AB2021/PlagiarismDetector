@@ -39,115 +39,116 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Print all results over a certain threshold.
  */
 public final class MatrixThresholdPrinter implements MatrixPrinter {
-    private static MatrixThresholdPrinter instance;
+	private static MatrixThresholdPrinter instance;
 
-    private static final double threshold = 0.65;
+	private static final double threshold = 0.65;
 
-    private MatrixThresholdPrinter() {}
+	private MatrixThresholdPrinter() {
+	}
 
-    /**
-     * @return Singleton instance of MatrixThresholdPrinter
-     */
-    public static MatrixThresholdPrinter getInstance() {
-        if(instance == null) {
-            instance = new MatrixThresholdPrinter();
-        }
+	/**
+	 * @return Singleton instance of MatrixThresholdPrinter
+	 */
+	public static MatrixThresholdPrinter getInstance() {
+		if (instance == null) {
+			instance = new MatrixThresholdPrinter();
+		}
 
-        return instance;
-    }
+		return instance;
+	}
 
-    /**
-     * Print significant results in a similarity matrix.
-     *
-     * @param matrix Matrix to print
-     * @return Results in matrix over threshold
-     * @throws InternalAlgorithmError Thrown on internal error processing matrix
-     */
-    @Override
-    public String printMatrix(SimilarityMatrix matrix) throws InternalAlgorithmError {
-        checkNotNull(matrix);
+	/**
+	 * Print significant results in a similarity matrix.
+	 *
+	 * @param matrix Matrix to print
+	 * @return Results in matrix over threshold
+	 * @throws InternalAlgorithmError Thrown on internal error processing matrix
+	 */
+	@Override
+	public String printMatrix(SimilarityMatrix matrix) throws InternalAlgorithmError {
+		checkNotNull(matrix);
 
-        StringBuilder builder = new StringBuilder();
-        DecimalFormat formatter = new DecimalFormat("0.##");
+		StringBuilder builder = new StringBuilder();
+		DecimalFormat formatter = new DecimalFormat("0.##");
 
-        ImmutableSet<AlgorithmResults> results = matrix.getBaseResults();
+		ImmutableSet<AlgorithmResults> results = matrix.getBaseResults();
 
-        Set<AlgorithmResults> filteredBelowThreshold = results.stream()
-                .filter((result) -> result.percentMatchedA() >= threshold || result.percentMatchedB() >= threshold)
-                .collect(Collectors.toCollection(HashSet::new));
+		Set<AlgorithmResults> filteredBelowThreshold = results.stream()
+				.filter((result) -> result.percentMatchedA() >= threshold || result.percentMatchedB() >= threshold)
+				.collect(Collectors.toCollection(HashSet::new));
 
-        if(filteredBelowThreshold.isEmpty()) {
-            builder.append("No significant matches found.\n");
-        }
+		if (filteredBelowThreshold.isEmpty()) {
+			builder.append("No significant matches found.\n");
+		}
 
-        // Loop until all results over threshold consumed
-        while(!filteredBelowThreshold.isEmpty()) {
-            // Find the largest single result
-            double largest = 0.00;
-            AlgorithmResults largestResult = Iterables.get(filteredBelowThreshold, 0);
-            for(AlgorithmResults result : filteredBelowThreshold) {
-                if(result.percentMatchedA() > largest) {
-                    largest = result.percentMatchedA();
-                    largestResult = result;
-                }
-                if(result.percentMatchedB() > largest) {
-                    largest = result.percentMatchedB();
-                    largestResult = result;
-                }
-            }
+		// Loop until all results over threshold consumed
+		while (!filteredBelowThreshold.isEmpty()) {
+			// Find the largest single result
+			double largest = 0.00;
+			AlgorithmResults largestResult = Iterables.get(filteredBelowThreshold, 0);
+			for (AlgorithmResults result : filteredBelowThreshold) {
+				if (result.percentMatchedA() > largest) {
+					largest = result.percentMatchedA();
+					largestResult = result;
+				}
+				if (result.percentMatchedB() > largest) {
+					largest = result.percentMatchedB();
+					largestResult = result;
+				}
+			}
 
-            double largerOfTwo;
-            double smallerOfTwo;
-            Submission largerSubmission;
-            Submission smallerSubmission;
+			double largerOfTwo;
+			double smallerOfTwo;
+			Submission largerSubmission;
+			Submission smallerSubmission;
 
-            if(largestResult.percentMatchedA() >= largestResult.percentMatchedB()) {
-                largerOfTwo = largestResult.percentMatchedA() * 100;
-                smallerOfTwo = largestResult.percentMatchedB() * 100;
-                largerSubmission = largestResult.a;
-                smallerSubmission = largestResult.b;
-            } else {
-                largerOfTwo = largestResult.percentMatchedB() * 100;
-                smallerOfTwo = largestResult.percentMatchedA() * 100;
-                largerSubmission = largestResult.b;
-                smallerSubmission = largestResult.a;
-            }
+			if (largestResult.percentMatchedA() >= largestResult.percentMatchedB()) {
+				largerOfTwo = largestResult.percentMatchedA() * 100;
+				smallerOfTwo = largestResult.percentMatchedB() * 100;
+				largerSubmission = largestResult.a;
+				smallerSubmission = largestResult.b;
+			} else {
+				largerOfTwo = largestResult.percentMatchedB() * 100;
+				smallerOfTwo = largestResult.percentMatchedA() * 100;
+				largerSubmission = largestResult.b;
+				smallerSubmission = largestResult.a;
+			}
 
-            // We have the largest single result, print it
-            builder.append("Found match of ");
-            builder.append(formatter.format(largerOfTwo));
-            builder.append("% (inverse match ");
-            builder.append(formatter.format(smallerOfTwo));
-            builder.append("%) between submissions \"");
-            builder.append(largerSubmission.getName());
-            builder.append("\" and \"");
-            builder.append(smallerSubmission.getName());
-            builder.append("\"\n");
+			// We have the largest single result, print it
+			builder.append("Found match of ");
+			builder.append(formatter.format(largerOfTwo));
+			builder.append("% (inverse match ");
+			builder.append(formatter.format(smallerOfTwo));
+			builder.append("%) between submissions \"");
+			builder.append(largerSubmission.getName());
+			builder.append("\" and \"");
+			builder.append(smallerSubmission.getName());
+			builder.append("\"\n");
 
-            // Remove the largest results
-            filteredBelowThreshold.remove(largestResult);
-        }
+			// Remove the largest results
+			filteredBelowThreshold.remove(largestResult);
+		}
 
-        return builder.toString();
-    }
+		return builder.toString();
+	}
 
-    @Override
-    public String getName() {
-        return "threshold";
-    }
+	@Override
+	public String getName() {
+		return "threshold";
+	}
 
-    @Override
-    public String toString() {
-        return "Singleton instance of MatrixThresholdPrinter";
-    }
+	@Override
+	public String toString() {
+		return "Singleton instance of MatrixThresholdPrinter";
+	}
 
-    @Override
-    public int hashCode() {
-        return this.getName().hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return this.getName().hashCode();
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        return other instanceof MatrixThresholdPrinter;
-    }
+	@Override
+	public boolean equals(Object other) {
+		return other instanceof MatrixThresholdPrinter;
+	}
 }

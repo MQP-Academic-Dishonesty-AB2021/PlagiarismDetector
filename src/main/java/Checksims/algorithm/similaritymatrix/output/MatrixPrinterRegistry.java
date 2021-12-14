@@ -28,30 +28,30 @@ import Checksims.util.reflection.RegistryWithDefault;
  * Registry for Matrix Printers.
  */
 public final class MatrixPrinterRegistry extends RegistryWithDefault<MatrixPrinter> {
-    private static MatrixPrinterRegistry instance;
+	private static MatrixPrinterRegistry instance;
 
-    private MatrixPrinterRegistry() throws NoSuchImplementationException {
-        super("Checksims.algorithm.similaritymatrix.output", MatrixPrinter.class,
-                MatrixThresholdPrinter.getInstance().getName());
-    }
+	private MatrixPrinterRegistry() throws NoSuchImplementationException {
+		super("Checksims.algorithm.similaritymatrix.output", MatrixPrinter.class,
+				MatrixThresholdPrinter.getInstance().getName());
+	}
 
-    /**
-     * @return Singleton instance of MatrixPrinterRegistry
-     */
-    public static MatrixPrinterRegistry getInstance() {
-        if(instance == null) {
-            try {
-                instance = new MatrixPrinterRegistry();
-            } catch(NoSuchImplementationException e) {
-                throw new RuntimeException(e);
-            }
-        }
+	/**
+	 * @return Singleton instance of MatrixPrinterRegistry
+	 */
+	public static MatrixPrinterRegistry getInstance() {
+		if (instance == null) {
+			try {
+				instance = new MatrixPrinterRegistry();
+			} catch (NoSuchImplementationException e) {
+				throw new RuntimeException(e);
+			}
+		}
 
-        return instance;
-    }
+		return instance;
+	}
 
-    @Override
-    public String toString() {
-        return "Singleton instance of MatrixPrinterRegistry";
-    }
+	@Override
+	public String toString() {
+		return "Singleton instance of MatrixPrinterRegistry";
+	}
 }

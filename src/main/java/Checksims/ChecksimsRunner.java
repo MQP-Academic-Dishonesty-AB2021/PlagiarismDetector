@@ -51,119 +51,123 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class ChecksimsRunner {
 
-    private ChecksimsRunner() {}
+	private ChecksimsRunner() {
+	}
 
-    /**
-     * CLI entrypoint of Checksims.
-     *
-     * @param args CLI arguments
-     */
-    public static void main(String[] args) {
-        try {
-            ChecksimsCommandLine.runCLI(args);
-        } catch(ParseException e) {
-            System.err.println(e.getMessage());
-            System.exit(-1);
-        } catch(ChecksimsException e) {
-            System.err.println(e.toString());
-            if(e.getCause() != null) {
-                System.err.println("Caused by: " + e.getCause().toString());
-            }
-            // Print the stack trace for internal exceptions, they may be serious
-            e.printStackTrace();
-            System.exit(-1);
-        } catch(IOException e) {
-            System.err.println("I/O Error!");
-            System.err.println(e.getMessage());
-            System.exit(-1);
-        }
+	/**
+	 * CLI entrypoint of Checksims.
+	 *
+	 * @param args CLI arguments
+	 */
+	public static void main(String[] args) {
+		try {
+			ChecksimsCommandLine.runCLI(args);
+		} catch (ParseException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		} catch (ChecksimsException e) {
+			System.err.println(e.toString());
+			if (e.getCause() != null) {
+				System.err.println("Caused by: " + e.getCause().toString());
+			}
+			// Print the stack trace for internal exceptions, they may be serious
+			e.printStackTrace();
+			System.exit(-1);
+		} catch (IOException e) {
+			System.err.println("I/O Error!");
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
 
-        System.exit(0);
-    }
+		System.exit(0);
+	}
 
-    /**
-     * Get current version.
-     *
-     * @return Current version of Checksims
-     */
-    public static String getChecksimsVersion() throws ChecksimsException {
-        InputStream resource = ChecksimsCommandLine.class.getResourceAsStream("version.txt");
+	/**
+	 * Get current version.
+	 *
+	 * @return Current version of Checksims
+	 */
+	public static String getChecksimsVersion() throws ChecksimsException {
+		InputStream resource = ChecksimsCommandLine.class.getResourceAsStream("version.txt");
 
-        if(resource == null) {
-            throw new ChecksimsException("Error obtaining resource for version!");
-        }
+		if (resource == null) {
+			throw new ChecksimsException("Error obtaining resource for version!");
+		}
 
-        try {
-            return IOUtils.toString(resource);
-        } catch (IOException e) {
-            throw new ChecksimsException("IO Exception reading version: " + e.getMessage(), e);
-        }
-    }
+		try {
+			return IOUtils.toString(resource);
+		} catch (IOException e) {
+			throw new ChecksimsException("IO Exception reading version: " + e.getMessage(), e);
+		}
+	}
 
-    /**
-     * Main public entrypoint to Checksims. Runs similarity detection according to given configuration.
-     *
-     * @param config Configuration defining how Checksims will be run
-     * @return Map containing output of all output printers requested. Keys are name of output printer.
-     * @throws ChecksimsException Thrown on error performing similarity detection
-     */
-    public static ImmutableMap<String, String> runChecksims(ChecksimsConfig config) throws ChecksimsException {
-        checkNotNull(config);
+	/**
+	 * Main public entrypoint to Checksims. Runs similarity detection according to
+	 * given configuration.
+	 *
+	 * @param config Configuration defining how Checksims will be run
+	 * @return Map containing output of all output printers requested. Keys are name
+	 *         of output printer.
+	 * @throws ChecksimsException Thrown on error performing similarity detection
+	 */
+	public static ImmutableMap<String, String> runChecksims(ChecksimsConfig config) throws ChecksimsException {
+		checkNotNull(config);
 
-        // Create a logger to log activity
-        Logger logs = LoggerFactory.getLogger(ChecksimsRunner.class);
+		// Create a logger to log activity
+		Logger logs = LoggerFactory.getLogger(ChecksimsRunner.class);
 
-        // Set parallelism
-        int threads = config.getNumThreads();
-        ParallelAlgorithm.setThreadCount(threads);
-        // TODO following line may not be necessary as we no longer use parallel streams?
-        System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "" + threads);
+		// Set parallelism
+		int threads = config.getNumThreads();
+		ParallelAlgorithm.setThreadCount(threads);
+		// TODO following line may not be necessary as we no longer use parallel
+		// streams?
+		System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "" + threads);
 
-        ImmutableSet<Submission> submissions = config.getSubmissions();
+		ImmutableSet<Submission> submissions = config.getSubmissions();
 
-        logs.info("Got " + submissions.size() + " submissions to test.");
+		logs.info("Got " + submissions.size() + " submissions to test.");
 
-        ImmutableSet<Submission> archiveSubmissions = config.getArchiveSubmissions();
+		ImmutableSet<Submission> archiveSubmissions = config.getArchiveSubmissions();
 
-        if(!archiveSubmissions.isEmpty()) {
-            logs.info("Got " + archiveSubmissions.size() + " archive submissions to test.");
-        }
+		if (!archiveSubmissions.isEmpty()) {
+			logs.info("Got " + archiveSubmissions.size() + " archive submissions to test.");
+		}
 
-        if(submissions.size() == 0) {
-            throw new ChecksimsException("No student submissions were found - cannot run Checksims!");
-        }
+		if (submissions.size() == 0) {
+			throw new ChecksimsException("No student submissions were found - cannot run Checksims!");
+		}
 
-        // Apply all preprocessors
-        for(SubmissionPreprocessor p : config.getPreprocessors()) {
-            submissions = ImmutableSet.copyOf(PreprocessSubmissions.process(p, submissions));
+		// Apply all preprocessors
+		for (SubmissionPreprocessor p : config.getPreprocessors()) {
+			submissions = ImmutableSet.copyOf(PreprocessSubmissions.process(p, submissions));
 
-            if(!archiveSubmissions.isEmpty()) {
-                archiveSubmissions = ImmutableSet.copyOf(PreprocessSubmissions.process(p, archiveSubmissions));
-            }
-        }
+			if (!archiveSubmissions.isEmpty()) {
+				archiveSubmissions = ImmutableSet.copyOf(PreprocessSubmissions.process(p, archiveSubmissions));
+			}
+		}
 
-        if(submissions.size() < 2) {
-            throw new ChecksimsException("Did not get at least 2 student submissions! Cannot run Checksims!");
-        }
+		if (submissions.size() < 2) {
+			throw new ChecksimsException("Did not get at least 2 student submissions! Cannot run Checksims!");
+		}
 
-        // Apply algorithm to submissions
-        Set<Pair<Submission, Submission>> allPairs = PairGenerator.generatePairsWithArchive(submissions,
-                archiveSubmissions);
-        Set<AlgorithmResults> results = AlgorithmRunner.runAlgorithm(allPairs, config.getAlgorithm());
-        SimilarityMatrix resultsMatrix = SimilarityMatrix.generateMatrix(submissions, archiveSubmissions, results);
+		// Apply algorithm to submissions
+		Set<Pair<Submission, Submission>> allPairs = PairGenerator.generatePairsWithArchive(submissions,
+				archiveSubmissions);
+		Set<AlgorithmResults> results = AlgorithmRunner.runAlgorithm(allPairs, config.getAlgorithm());
+		SimilarityMatrix resultsMatrix = SimilarityMatrix.generateMatrix(submissions, archiveSubmissions, results);
 
-        // All parallel jobs are done, shut down the parallel executor
-        ParallelAlgorithm.shutdownExecutor();
+		// All parallel jobs are done, shut down the parallel executor
+		ParallelAlgorithm.shutdownExecutor();
 
-        Map<String, String> outputMap = new HashMap<>();
+		Map<String, String> outputMap = new HashMap<>();
 
-        // Output using all output printers
-        for(MatrixPrinter p : config.getOutputPrinters()) {
-            logs.info("Generating " + p.getName() + " output");
+		// Output using all output printers
+		for (MatrixPrinter p : config.getOutputPrinters()) {
+			logs.info("Generating " + p.getName() + " output");
 
-            outputMap.put(p.getName(), p.printMatrix(resultsMatrix));
-        }
+			outputMap.put(p.getName(), p.printMatrix(resultsMatrix));
+		}
 
-        return ImmutableMap.copyOf(outputMap);
-    }
+		return ImmutableMap.copyOf(outputMap);
+	}
 }

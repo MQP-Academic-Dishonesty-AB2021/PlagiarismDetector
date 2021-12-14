@@ -36,91 +36,95 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Implementation of the Smith-Waterman algorithm.
  */
 public final class SmithWaterman implements SimilarityDetector {
-    private static SmithWaterman instance;
+	private static SmithWaterman instance;
 
-    private SmithWaterman() {}
+	private SmithWaterman() {
+	}
 
-    /**
-     * @return Singleton instance of the Smith-Waterman algorithm
-     */
-    public static SmithWaterman getInstance() {
-        if(instance == null) {
-            instance = new SmithWaterman();
-        }
+	/**
+	 * @return Singleton instance of the Smith-Waterman algorithm
+	 */
+	public static SmithWaterman getInstance() {
+		if (instance == null) {
+			instance = new SmithWaterman();
+		}
 
-        return instance;
-    }
+		return instance;
+	}
 
-    /**
-     * @return Name of this implementation
-     */
-    @Override
-    public String getName() {
-        return "smithwaterman";
-    }
+	/**
+	 * @return Name of this implementation
+	 */
+	@Override
+	public String getName() {
+		return "smithwaterman";
+	}
 
-    /**
-     * @return Default token type to be used for this similarity detector
-     */
-    @Override
-    public TokenType getDefaultTokenType() {
-        return TokenType.WHITESPACE;
-    }
+	/**
+	 * @return Default token type to be used for this similarity detector
+	 */
+	@Override
+	public TokenType getDefaultTokenType() {
+		return TokenType.WHITESPACE;
+	}
 
-    /**
-     * Apply the Smith-Waterman algorithm to determine the similarity between two submissions.
-     *
-     * Token list types of A and B must match
-     *
-     * @param a First submission to apply to
-     * @param b Second submission to apply to
-     * @return Similarity results of comparing submissions A and B
-     * @throws TokenTypeMismatchException Thrown on comparing submissions with mismatched token types
-     * @throws InternalAlgorithmError Thrown on internal error
-     */
-    @Override
-    public AlgorithmResults detectSimilarity(Submission a, Submission b)
-            throws TokenTypeMismatchException, InternalAlgorithmError {
-        checkNotNull(a);
-        checkNotNull(b);
+	/**
+	 * Apply the Smith-Waterman algorithm to determine the similarity between two
+	 * submissions.
+	 *
+	 * Token list types of A and B must match
+	 *
+	 * @param a First submission to apply to
+	 * @param b Second submission to apply to
+	 * @return Similarity results of comparing submissions A and B
+	 * @throws TokenTypeMismatchException Thrown on comparing submissions with
+	 *                                    mismatched token types
+	 * @throws InternalAlgorithmError     Thrown on internal error
+	 */
+	@Override
+	public AlgorithmResults detectSimilarity(Submission a, Submission b)
+			throws TokenTypeMismatchException, InternalAlgorithmError {
+		checkNotNull(a);
+		checkNotNull(b);
 
-        // Test for token type mismatch
-        if(!a.getTokenType().equals(b.getTokenType())) {
-            throw new TokenTypeMismatchException("Token list type mismatch: submission " + a.getName() + " has type " +
-                    a.getTokenType().toString() + ", while submission " + b.getName() + " has type "
-                    + b.getTokenType().toString());
-        }
+		// Test for token type mismatch
+		if (!a.getTokenType().equals(b.getTokenType())) {
+			throw new TokenTypeMismatchException("Token list type mismatch: submission " + a.getName() + " has type " +
+					a.getTokenType().toString() + ", while submission " + b.getName() + " has type "
+					+ b.getTokenType().toString());
+		}
 
-        // Handle a 0-token submission (no similarity)
-        if(a.getNumTokens() == 0 || b.getNumTokens() == 0) {
-            return new AlgorithmResults(a, b, a.getContentAsTokens(), b.getContentAsTokens());
-        } else if(a.equals(b)) {
-            // Handle identical submissions
-            TokenList aInval = TokenList.cloneTokenList(a.getContentAsTokens());
-            aInval.stream().forEach((token) -> token.setValid(false));
-            return new AlgorithmResults(a, b, aInval, aInval);
-        }
+		// Handle a 0-token submission (no similarity)
+		if (a.getNumTokens() == 0 || b.getNumTokens() == 0) {
+			return new AlgorithmResults(a, b, a.getContentAsTokens(), b.getContentAsTokens());
+		} else if (a.equals(b)) {
+			// Handle identical submissions
+			TokenList aInval = TokenList.cloneTokenList(a.getContentAsTokens());
+			aInval.stream().forEach((token) -> token.setValid(false));
+			return new AlgorithmResults(a, b, aInval, aInval);
+		}
 
-        // Alright, easy cases taken care of. Generate an instance to perform the actual algorithm
-        SmithWatermanAlgorithm algorithm = new SmithWatermanAlgorithm(a.getContentAsTokens(), b.getContentAsTokens());
+		// Alright, easy cases taken care of. Generate an instance to perform the actual
+		// algorithm
+		SmithWatermanAlgorithm algorithm = new SmithWatermanAlgorithm(a.getContentAsTokens(), b.getContentAsTokens());
 
-        Pair<TokenList, TokenList> endLists = algorithm.computeSmithWatermanAlignmentExhaustive();
+		Pair<TokenList, TokenList> endLists = algorithm.computeSmithWatermanAlignmentExhaustive();
 
-        return new AlgorithmResults(a, b, endLists.getLeft(), endLists.getRight());
-    }
+		return new AlgorithmResults(a, b, endLists.getLeft(), endLists.getRight());
+	}
 
-    @Override
-    public String toString() {
-        return "Singleton instance of Smith-Waterman Algorithm";
-    }
+	@Override
+	public String toString() {
+		return "Singleton instance of Smith-Waterman Algorithm";
+	}
 
-    @Override
-    public int hashCode() {
-        return this.getName().hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return this.getName().hashCode();
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        return other instanceof SmithWaterman;
-    }
+	@Override
+	public boolean equals(Object other) {
+		return other instanceof SmithWaterman;
+	}
 }

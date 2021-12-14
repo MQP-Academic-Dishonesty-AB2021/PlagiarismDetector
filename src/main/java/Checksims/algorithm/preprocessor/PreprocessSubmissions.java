@@ -32,29 +32,34 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Apply a preprocessor (maps Submission to Submission) to a given list of submissions.
+ * Apply a preprocessor (maps Submission to Submission) to a given list of
+ * submissions.
  */
 public final class PreprocessSubmissions {
-    private PreprocessSubmissions() {}
+	private PreprocessSubmissions() {
+	}
 
-    /**
-     * Apply a given mapping function to each submission in a list of submissions.
-     *
-     * Is NOT expected to preserve tokenization validity, as these are to be applied before that is significant
-     *
-     * @param preprocessor Preprocessor to apply. SHOULD NOT MUTATE THE EXISTING TOKENS
-     * @param submissions Input list of submissions to apply to
-     * @return New list formed by applying the mapping function to each submission. Retains order of input list.
-     */
-    public static Set<Submission> process(SubmissionPreprocessor preprocessor, Set<Submission> submissions)
-            throws ChecksimsException {
-        checkNotNull(preprocessor);
-        checkNotNull(submissions);
+	/**
+	 * Apply a given mapping function to each submission in a list of submissions.
+	 *
+	 * Is NOT expected to preserve tokenization validity, as these are to be applied
+	 * before that is significant
+	 *
+	 * @param preprocessor Preprocessor to apply. SHOULD NOT MUTATE THE EXISTING
+	 *                     TOKENS
+	 * @param submissions  Input list of submissions to apply to
+	 * @return New list formed by applying the mapping function to each submission.
+	 *         Retains order of input list.
+	 */
+	public static Set<Submission> process(SubmissionPreprocessor preprocessor, Set<Submission> submissions)
+			throws ChecksimsException {
+		checkNotNull(preprocessor);
+		checkNotNull(submissions);
 
-        Logger logs = LoggerFactory.getLogger(PreprocessSubmissions.class);
+		Logger logs = LoggerFactory.getLogger(PreprocessSubmissions.class);
 
-        logs.info("Preprocessing " + submissions.size() + " submissions with preprocessor " + preprocessor.getName());
+		logs.info("Preprocessing " + submissions.size() + " submissions with preprocessor " + preprocessor.getName());
 
-        return ParallelAlgorithm.parallelSubmissionPreprocessing(preprocessor, submissions);
-    }
+		return ParallelAlgorithm.parallelSubmissionPreprocessing(preprocessor, submissions);
+	}
 }
