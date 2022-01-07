@@ -20,8 +20,12 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import javafx.event.ActionEvent;
+
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -63,6 +67,22 @@ public class MenuController implements Initializable {
 		scene = new Scene(root);
 		stage.setScene(scene);
 	}
+
+	public void openDefaultBrowser(ActionEvent event) throws IOException {
+		try {
+			String absDir = System.getProperty("user.dir");
+			String arrDir[] = absDir.split("\\\\");
+			String dir = arrDir[arrDir.length-1];
+			String newURL = "http://localhost:63342/" + dir + "/PlagarismDetector/matrixVis/matrix.html?sha=0&shb=0";
+
+			Desktop.getDesktop().browse(new URI(newURL));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} catch (URISyntaxException e1) {
+			e1.printStackTrace();
+		}
+	}
+
 	// public void switchToResults(ActionEvent event) throws IOException{
 	// Parent root =
 	// FXMLLoader.load(getClass().getResource("/partials/resultsPartial.fxml"));
