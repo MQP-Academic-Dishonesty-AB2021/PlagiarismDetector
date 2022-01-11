@@ -22,13 +22,16 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 
 public class Comparison {
+
 	public enum Method {
 		TreeSimilarity,
 		Checksims
 	};
+
 	private ConcurrentHashMap<ComparisonPair, Double> values;
 	private ArrayList<String> fileList;
 	public static int numThreads = 4;
@@ -242,5 +245,9 @@ public class Comparison {
 			csv.write("\n");
 		}
 		csv.close();
+	}
+
+	public ArrayList<String> getFiles() {
+		return this.fileList;
 	}
 }
