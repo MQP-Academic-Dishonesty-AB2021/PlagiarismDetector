@@ -65,7 +65,7 @@ public abstract class RacketExpression {
 
 	/**
 	 * Generate a similarity value between this expression and another
-	 * This number is about equivilent to the height of the tree that both are a
+	 * This number is about equivalent to the height of the tree that both are a
 	 * part of
 	 * 
 	 * @param other The other expression to compare to

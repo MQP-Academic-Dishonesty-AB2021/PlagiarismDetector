@@ -30,7 +30,7 @@ hs_err_pid*
 /target
 
 /rm_file.sh
-/**.csv
+**/*.csv
 
 # Eclipse things (sorry its due to my vim plugins using eclipse ls)
 .classpath

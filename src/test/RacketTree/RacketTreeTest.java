@@ -57,7 +57,7 @@ public class RacketTreeTest {
 				if (assignment.isFile()) {
 					continue;
 				}
-				Comparison submissions = new Comparison(assignment.getPath(), "Checksims");
+				Comparison submissions = new Comparison(assignment.getPath(), Comparison.Method.Checksims);
 				System.out.println(assignment.getName());
 				submissions.toCSV(assignment.getName() + "Checksims");
 			}
@@ -68,7 +68,7 @@ public class RacketTreeTest {
 
 	@Test
 	void TestOrderedListInRightOrder() {
-		Comparison test = new Comparison("test_files/assign2", "TreeSimilarity");
+		Comparison test = new Comparison("test_files/assign2", Comparison.Method.TreeSimilarity);
 		ArrayList<ImmutablePair<ComparisonPair, Double>> list = test.getOrderedList();
 		for (int i = 1; i < list.size(); i++) {
 			assertTrue(list.get(i - 1).getValue() >= list.get(i).getValue());

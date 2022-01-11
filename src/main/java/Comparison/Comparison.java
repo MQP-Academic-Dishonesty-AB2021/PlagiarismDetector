@@ -23,7 +23,12 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 
+
 public class Comparison {
+	public enum Method {
+		TreeSimilarity,
+		Checksims
+	};
 	private ConcurrentHashMap<ComparisonPair, Double> values;
 	private ArrayList<String> fileList;
 	public static int numThreads = 4;
@@ -44,12 +49,12 @@ public class Comparison {
 	 * @param directory The directory
 	 * @param method    The method
 	 */
-	public Comparison(String directory, String method) {
+	public Comparison(String directory, Method method) {
 		switch (method) {
-			case "TreeSimilarity":
+			case TreeSimilarity:
 				this.generateRacketTreeComparison(directory);
 				break;
-			case "Checksims":
+			case Checksims:
 			default:
 				this.generateChecksimsComparison(directory);
 		}
