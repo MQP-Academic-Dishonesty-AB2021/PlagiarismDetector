@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
-public class RacketTree {
+public class  RacketTree {
 	static public String function_open = "([{";
 	static public String function_close = ")]}";
 	static public String string_chars = "\"";

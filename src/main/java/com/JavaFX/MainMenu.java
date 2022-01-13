@@ -11,10 +11,19 @@ public class MainMenu extends Application {
 	double x, y = 0;
 	MenuController controller;
 	private static Parent dashPane;
+	private static Stage primaryStage;
 
 	public void loadPartials() throws Exception {
 		// Pane dashPane =
 		// FXMLLoader.load(MainMenu.class.getResource("/dashboard.fxml"));
+	}
+
+	public static Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
+	private void setPrimaryStage(Stage primaryStage) {
+		MainMenu.primaryStage = primaryStage;
 	}
 
 	@Override

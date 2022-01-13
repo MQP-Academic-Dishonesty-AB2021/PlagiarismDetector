@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXRadioButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-width: 5;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.JavaFX.SetupController">
    <children>
-      <JFXButton fx:id="databaseFiles" buttonType="RAISED" layoutX="247.0" layoutY="200.0" onAction="#openFileDialogDatabase" style="-fx-border-width: 10px; -fx-background-color: pink;" text="Select file location..." />
-      <JFXButton fx:id="testFiles" buttonType="RAISED" layoutX="247.0" layoutY="293.0" onAction="#openFileDialogTested" style="-fx-border-width: 10px; -fx-background-color: pink;" text="Select file location..." />
-      <JFXRadioButton layoutX="198.0" layoutY="332.0" text="Make this the default install location" />
-      <Text layoutX="257.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Setup">
+      <JFXButton fx:id="databaseFiles" buttonType="RAISED" layoutX="240.0" layoutY="175.0" onAction="#openFileDialogDatabase" style="-fx-border-width: 10px; -fx-background-color: AC2B37;" text="Select file location..." />
+      <JFXButton fx:id="testFiles" buttonType="RAISED" layoutX="240.0" layoutY="273.0" onAction="#openFileDialogTested" style="-fx-border-width: 10px; -fx-background-color: AC2B37;" text="Select file location..." />
+      <Text layoutX="249.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Setup">
          <font>
             <Font size="40.0" />
          </font>
       </Text>
-      <Text layoutX="84.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please select the directory containing the database of files to be cross referenced:" />
-      <Text layoutX="120.0" layoutY="269.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please select the directory containing the assignment files to be TESTED:" />
-      <JFXButton fx:id="doneButton" buttonType="RAISED" layoutX="278.0" layoutY="361.0" onAction="#goToResults" style="-fx-border-width: 10px; -fx-background-color: pink;" text="Done" />
+      <Text layoutX="48.0" layoutY="153.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please select the folder containing the database of PAST assignments to be cross referenced:">
+         <font>
+            <Font size="13.0" />
+         </font></Text>
+      <Text layoutX="73.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please select the folder containing the CURRENT assignment files to be TESTED:">
+         <font>
+            <Font size="13.0" />
+         </font></Text>
+      <JFXButton fx:id="doneButton" buttonType="RAISED" layoutX="278.0" layoutY="338.0" onAction="#goToResults" style="-fx-border-width: 10px; -fx-background-color: AC2B37;" text="Done" />
+      <ImageView fx:id="exit" fitHeight="25.0" fitWidth="38.0" layoutX="574.0" layoutY="2.0" onMouseClicked="#goToResults" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/exit.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

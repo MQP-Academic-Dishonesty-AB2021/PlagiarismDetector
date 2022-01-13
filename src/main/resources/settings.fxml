@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-border-width: 5;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.JavaFX.SettingsController">
+   <children>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Accordion layoutY="88.0">
+              <panes>
+                <TitledPane animated="false" prefHeight="147.0" prefWidth="605.0" text="Database Directory">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="135.0" prefWidth="603.0">
+                           <children>
+                              <Text layoutX="36.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please select the folder containing the database of PAST assignments to be cross referenced:">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Text>
+                              <JFXButton fx:id="databaseFiles" buttonType="RAISED" layoutX="241.0" layoutY="90.0" onAction="#openFileDialogDatabase" style="-fx-border-width: 10px; -fx-background-color: AC2B37;" text="Select file location..." />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
+                <TitledPane animated="false" prefHeight="214.0" prefWidth="605.0" text="Current Assignment Directory">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="44.0" prefWidth="603.0">
+                           <children>
+                              <Text layoutX="74.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please select the folder containing the CURRENT assignment files to be TESTED:">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Text>
+                              <JFXButton fx:id="testFiles" buttonType="RAISED" layoutX="241.0" layoutY="117.0" onAction="#openFileDialogTested" style="-fx-border-width: 10px; -fx-background-color: AC2B37;" text="Select file location..." />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
+                <TitledPane animated="false" text="Detector Parameters">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="603.0">
+                           <children>
+                              <Text layoutX="246.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Default Leaf Depth ">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Text>
+                              <Slider layoutX="232.0" layoutY="76.0" majorTickUnit="1.0" max="5.0" minorTickCount="1" showTickLabels="true" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
+              </panes>
+            </Accordion>
+         </children>
+      </AnchorPane>
+      <Text layoutX="229.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings">
+         <font>
+            <Font size="40.0" />
+         </font>
+      </Text>
+      <JFXButton fx:id="doneButton" buttonType="RAISED" layoutX="278.0" layoutY="361.0" onAction="#returnToMainMenu" style="-fx-border-width: 10px; -fx-background-color: AC2B37;" text="Done" />
+      <ImageView fx:id="exit" fitHeight="25.0" fitWidth="38.0" layoutX="574.0" layoutY="2.0" onMouseClicked="#returnToMainMenu" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/exit.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

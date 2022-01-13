@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -20,8 +21,11 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import javafx.event.ActionEvent;
-import java.awt.event.MouseEvent;
+
+import java.awt.*;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -46,8 +50,20 @@ public class MenuController implements Initializable {
 	private Parent root;
 
 	public void switchToSetup(ActionEvent event) throws IOException {
-		if (firstTimeSetup == false) {
+		if (!firstTimeSetup) {
 			Parent root = FXMLLoader.load(getClass().getResource("/setup.fxml"));
+			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			scene = new Scene(root);
+			stage.setScene(scene);
+			firstTimeSetup = true;
+		} else {
+			// switchToResults(event);
+		}
+	}
+
+	public void switchToSettings(ActionEvent event) throws IOException {
+		if (firstTimeSetup == false) {
+			Parent root = FXMLLoader.load(getClass().getResource("/settings.fxml"));
 			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 			scene = new Scene(root);
 			stage.setScene(scene);
@@ -62,6 +78,16 @@ public class MenuController implements Initializable {
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setScene(scene);
+	}
+
+	public void openDefaultBrowser(ActionEvent event) throws IOException {
+		try {
+			Desktop.getDesktop().browse(new URI("http://localhost:63342/PD1214/PlagarismDetector/matrixVis/matrix.html?sha=0&shb=0"));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} catch (URISyntaxException e1) {
+			e1.printStackTrace();
+		}
 	}
 	// public void switchToResults(ActionEvent event) throws IOException{
 	// Parent root =

@@ -16,7 +16,7 @@ module com.plagiarismdetector {
 	requires commons.codec;
 	requires velocity;
 
-	opens com.JavaFX to javafx.fxml;
+    opens com.JavaFX to javafx.fxml;
 
 	exports com.JavaFX;
 }
