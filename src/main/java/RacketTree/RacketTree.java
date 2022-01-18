@@ -33,7 +33,8 @@ public class  RacketTree {
 	 *                                tree
 	 */
 	public RacketTree(String filename) throws java.io.IOException,
-			InvalidFormatException {
+			InvalidFormatException,
+			InterruptedException {
 		// TODO: Check if buffered reader is actually better for efficiency
 		File fin = new File(filename);
 		if (fin.isFile()) {

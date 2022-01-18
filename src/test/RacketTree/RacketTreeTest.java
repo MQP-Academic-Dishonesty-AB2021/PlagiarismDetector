@@ -39,7 +39,7 @@ public class RacketTreeTest {
 				if (assignment.isFile()) {
 					continue;
 				}
-				Comparison submissions = new Comparison(assignment.getPath());
+				Comparison submissions = new Comparison(assignment.getPath(), Comparison.Method.TreeSimilarity);
 				System.out.println(assignment.getName());
 				submissions.toCSV(assignment.getName());
 			}
@@ -72,6 +72,18 @@ public class RacketTreeTest {
 		ArrayList<ImmutablePair<ComparisonPair, Double>> list = test.getOrderedList();
 		for (int i = 1; i < list.size(); i++) {
 			assertTrue(list.get(i - 1).getValue() >= list.get(i).getValue());
+		}
+		assertTrue(true);
+	}
+
+	@Test
+	void RacketAnonymizerTest() {
+		File badFile = new File("./test_files/checksims_test");
+		try {
+			File goodFile = RacketAnonymizer.anonymizeFile(badFile);
+		}
+		catch (Exception e) {
+			fail();
 		}
 		assertTrue(true);
 	}
