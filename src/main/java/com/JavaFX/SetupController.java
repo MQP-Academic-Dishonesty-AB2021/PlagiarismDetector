@@ -20,7 +20,9 @@ import javafx.stage.Stage;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -65,11 +67,31 @@ public class SetupController implements Initializable {
 		Comparison.numThreads = 4;
 		Comparison submissions = new Comparison(selectedFile2.getAbsolutePath());
 		ArrayList<ImmutablePair<ComparisonPair, Double>> ordered_list = submissions.getOrderedList();
+
+		// Construct csv data:
+		StringBuilder dat = new StringBuilder();
+		dat.append("group,variable,value");
+
 		for (ImmutablePair<ComparisonPair, Double> comp : ordered_list) {
-			System.out.print("Base: " + comp.left.getBaseFile());
-			System.out.print(" Compared: " + comp.left.getComparedFile());
-			System.out.println(" Value: " + comp.right);
+			String compBase = comp.left.getBaseFile();
+			String compCompared = comp.left.getComparedFile();
+			double compValue = comp.right;
+
+			System.out.print("Base: " + compBase);
+			System.out.print(" Compared: " + compCompared);
+			System.out.println(" Value: " + compValue);
+
+			dat.append("\n" + compBase + "," + compCompared + "," + compValue);
 		}
+
+		// Write dat to csv:
+		try (PrintWriter w = new PrintWriter("matrixdata.csv")) {
+			w.write(dat.toString());
+			System.out.println("Csv written without errors");
+		} catch (FileNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
+
 
 	}
 
