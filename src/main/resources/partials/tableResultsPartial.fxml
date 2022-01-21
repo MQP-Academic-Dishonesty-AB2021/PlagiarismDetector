@@ -18,7 +18,7 @@
                   <Font size="20.0" />
                </font>
             </Text>
-            <Text layoutX="6.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student2Assignment1" textAlignment="CENTER" wrappingWidth="297.400390625">
+            <Text fx:id="assignment2" layoutX="6.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student2Assignment1" textAlignment="CENTER" wrappingWidth="297.400390625">
                <font>
                   <Font size="20.0" />
                </font>
@@ -32,7 +32,7 @@
                   <Font size="20.0" />
                </font>
             </Text>
-            <Text layoutX="6.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student1Assignment1" textAlignment="CENTER" wrappingWidth="297.400390625">
+            <Text fx:id="assignment1" layoutX="6.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student1Assignment1" textAlignment="CENTER" wrappingWidth="297.400390625">
                <font>
                   <Font size="20.0" />
                </font>

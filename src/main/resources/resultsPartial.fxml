@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="457.0" prefWidth="826.0" style="-fx-background-color: A9B0B7;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.JavaFX.quickstartresultsController">
+   <children>
+      <AnchorPane layoutX="531.0" layoutY="74.0" prefHeight="78.0" prefWidth="304.0" />
+      <AnchorPane layoutX="36.0" layoutY="74.0" prefHeight="88.0" prefWidth="335.0" />
+      <AnchorPane layoutX="-13.0" layoutY="-14.0" prefHeight="88.0" prefWidth="848.0" style="-fx-background-color: AC2B37;">
+         <children>
+            <Label fx:id="drawerImage" layoutX="7.0" layoutY="7.0" />
+            <ImageView fx:id="exit" fitHeight="24.0" fitWidth="24.0" layoutX="822.0" layoutY="18.0" onMouseClicked="#returnToMainMenu" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/exit.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="275.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Results" textAlignment="CENTER" wrappingWidth="297.400390625">
+               <font>
+                  <Font size="48.0" />
+               </font>
+            </Text>
+            <Button fx:id="loadButton" layoutX="56.0" layoutY="41.0" mnemonicParsing="false" onMouseClicked="#receiveData" text="Load" />
+         </children>
+      </AnchorPane>
+      <TableView fx:id="tableView" layoutX="4.0" layoutY="74.0" prefHeight="378.0" prefWidth="829.0">
+        <columns>
+          <TableColumn fx:id="assignmentACol" prefWidth="276.0" text="Assignment A" />
+          <TableColumn fx:id="assignmentBCol" prefWidth="276.0" text="Assignment B" />
+            <TableColumn fx:id="nodeCol" prefWidth="276.0" text="Similarity Value" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

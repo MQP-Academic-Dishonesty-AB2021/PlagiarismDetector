@@ -62,7 +62,7 @@ public class SettingsController implements Initializable {
 
 	// returns to main menu
 	public void goToResults(ActionEvent event) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("/partials/resultsPartial.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/resultsPartial.fxml"));
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setScene(scene);

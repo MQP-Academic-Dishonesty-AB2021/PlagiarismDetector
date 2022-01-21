@@ -89,13 +89,7 @@ public class MenuController implements Initializable {
 			e1.printStackTrace();
 		}
 	}
-	// public void switchToResults(ActionEvent event) throws IOException{
-	// Parent root =
-	// FXMLLoader.load(getClass().getResource("/partials/resultsPartial.fxml"));
-	// stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-	// scene = new Scene(root);
-	// stage.setScene(scene);
-	// }
+
 
 	@FXML
 	public Pane mainPane;
