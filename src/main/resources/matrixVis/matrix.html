@@ -20,8 +20,8 @@
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     //Read the data
-    //d3.csv("./files/testmatrix.csv", function (data) { // this one doesnt work because chrome blocks loading csvs from disk
-    d3.csv("https://raw.githubusercontent.com/FISH-HAT/Matrix-Display/main/files/testmatrix.csv", function (data) { // this one requires the github link to work
+    d3.csv("./../../../../matrixdata.csv", function (data) { // this one doesnt work because chrome blocks loading csvs from disk
+    //d3.csv("https://raw.githubusercontent.com/FISH-HAT/Matrix-Display/main/files/testmatrix.csv", function (data) { // this one requires the github link to work
 
         // Build color scale
         var arr = data.map(d => d.value)

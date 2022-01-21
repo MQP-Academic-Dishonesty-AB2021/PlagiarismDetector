@@ -13,6 +13,7 @@ import Checksims.util.PairGenerator;
 import Checksims.util.threading.ParallelAlgorithm;
 import RacketTree.RacketTree;
 import RacketTree.InvalidFormatException;
+import RacketTree.RacketAnonymizer;
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -104,7 +105,15 @@ public class Comparison {
 	 * @param assignment The directory
 	 */
 	private void generateRacketTreeComparison(String assignment) {
-		File dir = new File(assignment);
+		File dir;
+		try {
+			dir = RacketAnonymizer.anonymizeFile(new File(assignment));
+		}
+		catch (Exception e) {
+			System.err.println("Could not anonymize files");
+			e.printStackTrace();
+			return;
+		}
 		HashMap<String, RacketTree> assignmentMap = new HashMap<String, RacketTree>();
 		this.values = new ConcurrentHashMap<>();
 		try {
