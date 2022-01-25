@@ -4,6 +4,8 @@ import Comparison.Comparison;
 import Comparison.ComparisonPair;
 import RacketTree.RacketTree;
 import com.jfoenix.controls.JFXSlider;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,6 +19,7 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
@@ -70,10 +73,52 @@ public class quickstartresultsController implements Initializable {
 		stage.setScene(scene);
 	}
 
-	// returns to main menu
+	// returns to table results
+	public void returnToTable(MouseEvent event) throws IOException {
+		Parent root = FXMLLoader.load(getClass().getResource("/resultsPartial.fxml"));
+		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		scene = new Scene(root);
+		stage.setScene(scene);
+	}
+
+	// opens detail view of a case
+	public void openDetailView(MouseEvent event) throws IOException {
+		if(tableView.getSelectionModel().getSelectedItem() != null) {
+			Parent root = FXMLLoader.load(getClass().getResource("/tableResultsPartial.fxml"));
+			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			scene = new Scene(root);
+			stage.setScene(scene);
+		}
+	}
+
+	/*@FXML
+	private void sendDataDetailView(ActionEvent event, Case aCase) {
+		// Step 1
+		Case aDetailCase = aCase;
+		// Step 2
+		Node node = (Node) event.getSource();
+		// Step 3
+		Stage stage = (Stage) node.getScene().getWindow();
+		stage.close();
+		try {
+			// Step 4
+			Parent root = FXMLLoader.load(getClass().getResource("/resultsPartial.fxml"));
+			// Step 5
+			stage.setUserData(aCase);
+			// Step 6
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			// Step 7
+			stage.show();
+		} catch (IOException e) {
+			System.err.println(String.format("Error: %s", e.getMessage()));
+		}
+	}*/
+
 	public void runComparison(Comparison submissions) throws IOException {
 
 	}
+
 
 	@FXML
 	private void receiveData(MouseEvent event) {
@@ -103,8 +148,6 @@ public class quickstartresultsController implements Initializable {
 			);
 
 			tableView.getItems().addAll(aCase.listOfCases);
-			//tableView.getItems().add(new Object[]{assignmentA, assignmentB, val});
-
 		}
 
 	}

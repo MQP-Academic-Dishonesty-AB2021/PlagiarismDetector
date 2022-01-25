@@ -28,6 +28,7 @@
                </font>
             </Text>
             <Button fx:id="loadButton" layoutX="56.0" layoutY="41.0" mnemonicParsing="false" onMouseClicked="#receiveData" text="Load" />
+            <Button fx:id="detailButton" layoutX="645.0" layoutY="41.0" mnemonicParsing="false" text="Open a Case in detail view" />
          </children>
       </AnchorPane>
       <TableView fx:id="tableView" layoutX="4.0" layoutY="74.0" prefHeight="378.0" prefWidth="829.0">

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXSlider?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -13,7 +14,7 @@
          <font>
             <Font size="13.0" />
          </font></Text>
-      <JFXButton fx:id="testFiles" buttonType="RAISED" layoutX="237.0" layoutY="175.0" onAction="#openFileDialogTested" style="-fx-border-width: 10px; -fx-background-color: AC2B37;" text="Select file location..." />
+      <JFXButton fx:id="testFiles" buttonType="RAISED" layoutX="237.0" layoutY="175.0" onAction="#openFileDialogTested" style="-fx-border-width: 10px; -fx-background-color: AC2B37;" text="Select folder location..." />
       <Text layoutX="249.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Setup">
          <font>
             <Font size="40.0" />
@@ -36,5 +37,6 @@
       </Text>
       <JFXSlider fx:id="leafSlider" blockIncrement="1.0" layoutX="106.0" layoutY="273.0" majorTickUnit="1.0" max="5.0" showTickLabels="true" snapToTicks="true" value="3.0" />
       <JFXSlider fx:id="threadSlider" blockIncrement="1.0" layoutX="297.0" layoutY="273.0" majorTickUnit="1.0" max="12.0" min="1.0" prefHeight="33.0" prefWidth="194.0" showTickLabels="true" snapToTicks="true" value="2.0" />
+      <JFXCheckBox fx:id="checkBox" layoutX="373.0" layoutY="342.0" text="Use Checksims Algorithm" />
    </children>
 </AnchorPane>

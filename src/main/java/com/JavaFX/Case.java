@@ -14,6 +14,7 @@ public class Case {
     String fileB;
     double val;
     ArrayList<Case> listOfCases;
+    boolean checkBox;
 
     public Case(String fileA, String fileB, double val) {
         this.fileA = fileA;
@@ -41,16 +42,29 @@ public class Case {
         return val;
     }
 
-    public static ArrayList createListOfCases(File selectedFile2) {
-        Comparison submissions = new Comparison(selectedFile2.getAbsolutePath());
+    public static ArrayList createListOfCases(File selectedFile2, boolean checkBox) {
+        if(checkBox){
+            Comparison submissions = new Comparison(selectedFile2.getAbsolutePath(), Comparison.Method.Checksims);
 
-        ArrayList<ImmutablePair<ComparisonPair, Double>> ordered_list = submissions.getOrderedList();
-        ArrayList<Case> storedCases = new ArrayList<Case>();
-        for (ImmutablePair<ComparisonPair, Double> comp : ordered_list) {
-            Case aCase = new Case(comp.left.getBaseFile(), comp.left.getComparedFile(), comp.right);
-            storedCases.add(aCase);
+            ArrayList<ImmutablePair<ComparisonPair, Double>> ordered_list = submissions.getOrderedList();
+            ArrayList<Case> storedCases = new ArrayList<Case>();
+            for (ImmutablePair<ComparisonPair, Double> comp : ordered_list) {
+                Case aCase = new Case(comp.left.getBaseFile(), comp.left.getComparedFile(), comp.right);
+                storedCases.add(aCase);
+            }
+            return storedCases;
         }
-        return storedCases;
+        else {
+            Comparison submissions = new Comparison(selectedFile2.getAbsolutePath());
+
+            ArrayList<ImmutablePair<ComparisonPair, Double>> ordered_list = submissions.getOrderedList();
+            ArrayList<Case> storedCases = new ArrayList<Case>();
+            for (ImmutablePair<ComparisonPair, Double> comp : ordered_list) {
+                Case aCase = new Case(comp.left.getBaseFile(), comp.left.getComparedFile(), comp.right);
+                storedCases.add(aCase);
+            }
+            return storedCases;
+        }
     }
 }
 

@@ -2,6 +2,7 @@ package com.JavaFX;
 
 import Comparison.Comparison;
 
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXSlider;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,6 +43,9 @@ public class SetupController implements Initializable {
 	@FXML
 	private JFXSlider threadSlider;
 
+	@FXML
+	private JFXCheckBox checkBox;
+
 
 	DirectoryChooser directoryChooser1 = new DirectoryChooser();
 	DirectoryChooser directoryChooser2 = new DirectoryChooser();
@@ -54,6 +58,7 @@ public class SetupController implements Initializable {
 	public File selectedFile2;
 
 	int cores;
+
 
 
 
@@ -79,11 +84,10 @@ public class SetupController implements Initializable {
 		stage.setScene(scene);
 	}
 
-    //TODO add checkbox for checksims
 	@FXML
 	private void sendData(ActionEvent event) {
-		Comparison.numThreads = (int) threadSlider.getValue();
-		ArrayList createdList = Case.createListOfCases(selectedFile2);
+		checkBox.selectedProperty().set(false);
+		ArrayList createdList = Case.createListOfCases(selectedFile2,true);
 		// Step 1
 		Case aCase = new Case(createdList);
 		// Step 2
@@ -119,13 +123,7 @@ public class SetupController implements Initializable {
 		stage.setScene(scene);
 
 
-//		ArrayList<ImmutablePair<ComparisonPair, Double>> ordered_list = submissions.getOrderedList();
-//		for (ImmutablePair<ComparisonPair, Double> comp : ordered_list) {
-//
-//			tableView.getItems().add(new Object[]{comp.left.getBaseFile(), comp.left.getComparedFile(), comp.right});
-//
-//
-//		}
+
 
 
 	}
