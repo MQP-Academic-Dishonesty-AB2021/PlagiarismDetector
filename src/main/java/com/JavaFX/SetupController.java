@@ -1,20 +1,25 @@
 package com.JavaFX;
 
 import Comparison.Comparison;
-
+import RacketTree.RacketTree;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXSlider;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.InputEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +49,13 @@ public class SetupController implements Initializable {
 	private JFXSlider threadSlider;
 
 	@FXML
-	private JFXCheckBox checkBox;
+	private JFXCheckBox useChecksims;
+
+	@FXML
+	private JFXButton doneButton;
+
+	@FXML
+	private TextField TestingPath;
 
 
 	DirectoryChooser directoryChooser1 = new DirectoryChooser();
@@ -54,25 +65,20 @@ public class SetupController implements Initializable {
 	private Scene scene;
 	private Parent root;
 
-	public File selectedFile1;
-	public File selectedFile2;
-
-	int cores;
-
-
-
-
+	public File databaseDirectory;
+	public File testingDirectory;
 
 	// Opens dialog to select database of files to be cross referenced
 	public void openFileDialogDatabase(ActionEvent event) throws IOException {
 		File selectedFile = directoryChooser1.showDialog(((Node) event.getTarget()).getScene().getWindow());
-		selectedFile1 = selectedFile;
+		databaseDirectory = selectedFile;
 	}
 
 	// Opens dialog to select database of files to be tested
 	public void openFileDialogTested(ActionEvent event) throws IOException {
 		File selectedFile = directoryChooser1.showDialog(((Node) event.getTarget()).getScene().getWindow());
-		selectedFile2 = selectedFile;
+		if (selectedFile == null) { return; }
+		TestingPath.textProperty().set(selectedFile.getAbsolutePath());
 	}
 
 	// returns to main menu
@@ -86,10 +92,18 @@ public class SetupController implements Initializable {
 
 	@FXML
 	private void sendData(ActionEvent event) {
-		checkBox.selectedProperty().set(false);
-		ArrayList createdList = Case.createListOfCases(selectedFile2,true);
-		// Step 1
-		Case aCase = new Case(createdList);
+		Comparison results;
+		Comparison.numThreads = (int)Math.round(threadSlider.getValue());
+		if (!useChecksims.selectedProperty().getValue()) {
+			System.out.println("Using Tree Similarity");
+			RacketTree.defaultLeafDepth = (int)Math.round(leafSlider.getValue());
+			results = new Comparison(testingDirectory.getAbsolutePath(),
+					Comparison.Method.TreeSimilarity);
+		}
+		else {
+			System.out.println("Using Checksims");
+			results = new Comparison(testingDirectory.getAbsolutePath(), Comparison.Method.Checksims);
+		}
 		// Step 2
 		Node node = (Node) event.getSource();
 		// Step 3
@@ -99,7 +113,7 @@ public class SetupController implements Initializable {
 			// Step 4
 			Parent root = FXMLLoader.load(getClass().getResource("/resultsPartial.fxml"));
 			// Step 5
-			stage.setUserData(aCase);
+			stage.setUserData(results);
 			// Step 6
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
@@ -110,33 +124,23 @@ public class SetupController implements Initializable {
 		}
 	}
 
-
-
-
 	// returns to main menu
 	public void goToResults(ActionEvent event) throws IOException {
-
-
 		Parent root = FXMLLoader.load(getClass().getResource("/resultsPartial.fxml"));
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setScene(scene);
-
-
-
-
-
 	}
-
 
 	public void detectAvailableCores() throws IOException {
 		int cores = Runtime.getRuntime().availableProcessors();
 		threadSlider.setValue(cores);
 	}
 
-	//TODO make the slider change the cores from defaulting to max
-	public void changeAvailableCores() throws IOException {
-		threadSlider.setValue(cores);
+	@FXML
+	public void PathChanged(Event e) {
+		testingDirectory = new File(TestingPath.getText());
+		doneButton.setDisable(!(testingDirectory.isDirectory() && testingDirectory.exists()));
 	}
 
 	@Override
@@ -148,6 +152,5 @@ public class SetupController implements Initializable {
 		catch(IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 }

@@ -2,10 +2,7 @@ package com.JavaFX;
 
 import Comparison.Comparison;
 import Comparison.ComparisonPair;
-import RacketTree.RacketTree;
 import com.jfoenix.controls.JFXSlider;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,19 +10,16 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import java.io.IOException;
 import java.net.URL;
@@ -126,29 +120,31 @@ public class quickstartresultsController implements Initializable {
 		Node node = (Node) event.getSource();
 		Stage stage = (Stage) node.getScene().getWindow();
 		// Step 2
-		Case aCase = (Case) stage.getUserData();
-		// Step 3
-		ArrayList<Case> ordered_list = aCase.listOfCases;
-		for (int i = 0; i < ordered_list.size(); i++) {
-			Case aCase2 = aCase.listOfCases.get(i);
-			Case assignmentA = aCase.listOfCases.get(i);
-			Case assignmentB = aCase.listOfCases.get(i);
-			Case val = aCase.listOfCases.get(i);
+		Comparison comparisonData = (Comparison) stage.getUserData();
+		ArrayList<ImmutablePair<ComparisonPair, Double>> pairs = comparisonData.getOrderedList();
+		assignmentACol.setCellValueFactory(
+				new PropertyValueFactory<>("left")
+		);
 
-			assignmentACol.setCellValueFactory(
-					new PropertyValueFactory<>("fileA")
-			);
+		assignmentBCol.setCellValueFactory(
+				new PropertyValueFactory<>("middle")
+		);
 
-			assignmentBCol.setCellValueFactory(
-					new PropertyValueFactory<>("fileB")
-			);
-
-			nodeCol.setCellValueFactory(
-					new PropertyValueFactory<>("val")
-			);
-
-			tableView.getItems().addAll(aCase.listOfCases);
+		nodeCol.setCellValueFactory(
+				new PropertyValueFactory<>("right")
+		);
+		for (ImmutablePair<ComparisonPair, Double> pair : pairs) {
+			tableView.getItems().add(new ImmutableTriple<String, String, Double>(pair.left.getBaseFile(), pair.left.getComparedFile(), pair.right));
 		}
+//		for (ImmutablePair<ComparisonPair, Double> pair : comparisons) {
+//			pair.left.
+//			Case aCase2 = aCase.listOfCases.get(i);
+//			Case assignmentA = aCase.listOfCases.get(i);
+//			Case assignmentB = aCase.listOfCases.get(i);
+//			Case val = aCase.listOfCases.get(i);
+//
+//
+//		}
 
 	}
 
@@ -156,9 +152,42 @@ public class quickstartresultsController implements Initializable {
 	@Override
 	@FXML
 	public void initialize(URL location, ResourceBundle resources) {
+		assignmentACol.setCellValueFactory(
+				new PropertyValueFactory<>("left")
+		);
 
+		assignmentBCol.setCellValueFactory(
+				new PropertyValueFactory<>("middle")
+		);
 
+		nodeCol.setCellValueFactory(
+				new PropertyValueFactory<>("right")
+		);
 
+		nodeCol.setCellFactory(c -> new TableCell<String, Double>() {
+			@Override
+			protected void updateItem(Double balance, boolean empty) {
+				super.updateItem(balance, empty);
+				if (balance == null || empty) {
+					setText(null);
+				}
+				else {
+					setText(String.format("%.2f", balance));
+				}
+			}
+		});
 
+		tableView.sceneProperty().addListener(((observableValue, oldScene, newScene) -> {
+			if (oldScene == null && newScene != null) {
+				newScene.windowProperty().addListener(((observableWindow, oldWindow, newWindow) -> {
+					Stage stage = (Stage) newWindow;
+					Comparison comparisonData = (Comparison) stage.getUserData();
+					ArrayList<ImmutablePair<ComparisonPair, Double>> pairs = comparisonData.getOrderedList();
+					for (ImmutablePair<ComparisonPair, Double> pair : pairs) {
+						tableView.getItems().add(new ImmutableTriple<String, String, Double>(pair.left.getBaseFile(), pair.left.getComparedFile(), pair.right));
+					}
+				}));
+			}
+		}));
 	}
 }

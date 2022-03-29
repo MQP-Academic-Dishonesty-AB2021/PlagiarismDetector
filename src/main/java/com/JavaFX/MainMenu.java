@@ -34,7 +34,7 @@ public class MainMenu extends Application {
 		System.out.println(fxmlLoader.getLocation());
 		Parent root = fxmlLoader.load();
 
-		primaryStage.initStyle(StageStyle.UNDECORATED);
+		primaryStage.initStyle(StageStyle.DECORATED);
 
 		root.setOnMousePressed(event -> {
 			x = event.getSceneX();

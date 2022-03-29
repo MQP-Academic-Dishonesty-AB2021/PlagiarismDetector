@@ -1,26 +1,26 @@
 package Comparison;
 
 public class ComparisonPair {
-	private String file1;
-	private String file2;
+	private String baseFile;
+	private String comparedFile;
 
 	public String getBaseFile() {
-		return this.file1;
+		return this.baseFile;
 	}
 
 	public String getComparedFile() {
-		return this.file2;
+		return this.comparedFile;
 	}
 
-	public ComparisonPair(String file1, String file2) {
-		this.file1 = file1;
-		this.file2 = file2;
+	public ComparisonPair(String baseFile, String comparedFile) {
+		this.baseFile = baseFile;
+		this.comparedFile = comparedFile;
 	}
 
 	@Override
 	public int hashCode() {
 		// Multiplying by two to avoid collisions
-		return file1.hashCode() + 2 * file2.hashCode();
+		return baseFile.hashCode() + 2 * comparedFile.hashCode();
 	}
 
 	public boolean equals(Object o) {
@@ -28,6 +28,6 @@ public class ComparisonPair {
 			return false;
 		}
 		ComparisonPair other = (ComparisonPair) o;
-		return (this.file1.equals(other.file1) && this.file2.equals(other.file2));
+		return (this.baseFile.equals(other.baseFile) && this.comparedFile.equals(other.comparedFile));
 	}
 }
