@@ -1,7 +1,6 @@
 package com.JavaFX;
 
 import Comparison.Comparison;
-
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXSlider;
 import javafx.event.ActionEvent;
@@ -44,7 +43,7 @@ public class SetupController implements Initializable {
 	private JFXSlider threadSlider;
 
 	@FXML
-	private JFXCheckBox checkBox;
+	private JFXCheckBox useChecksims;
 
 
 	DirectoryChooser directoryChooser1 = new DirectoryChooser();
@@ -54,25 +53,21 @@ public class SetupController implements Initializable {
 	private Scene scene;
 	private Parent root;
 
-	public File selectedFile1;
-	public File selectedFile2;
+	public File databaseDirectory;
+	public File testingDirectory;
 
 	int cores;
-
-
-
-
 
 	// Opens dialog to select database of files to be cross referenced
 	public void openFileDialogDatabase(ActionEvent event) throws IOException {
 		File selectedFile = directoryChooser1.showDialog(((Node) event.getTarget()).getScene().getWindow());
-		selectedFile1 = selectedFile;
+		databaseDirectory = selectedFile;
 	}
 
 	// Opens dialog to select database of files to be tested
 	public void openFileDialogTested(ActionEvent event) throws IOException {
 		File selectedFile = directoryChooser1.showDialog(((Node) event.getTarget()).getScene().getWindow());
-		selectedFile2 = selectedFile;
+		testingDirectory = selectedFile;
 	}
 
 	// returns to main menu
@@ -86,10 +81,9 @@ public class SetupController implements Initializable {
 
 	@FXML
 	private void sendData(ActionEvent event) {
-		checkBox.selectedProperty().set(false);
-		ArrayList createdList = Case.createListOfCases(selectedFile2,true);
-		// Step 1
-		Case aCase = new Case(createdList);
+		useChecksims.selectedProperty().set(false);
+		Comparison results = new Comparison(testingDirectory.getAbsolutePath(),
+				useChecksims.selectedProperty().getValue() ? Comparison.Method.Checksims : Comparison.Method.TreeSimilarity);
 		// Step 2
 		Node node = (Node) event.getSource();
 		// Step 3
@@ -99,7 +93,7 @@ public class SetupController implements Initializable {
 			// Step 4
 			Parent root = FXMLLoader.load(getClass().getResource("/resultsPartial.fxml"));
 			// Step 5
-			stage.setUserData(aCase);
+			stage.setUserData(results);
 			// Step 6
 			Scene scene = new Scene(root);
 			stage.setScene(scene);
