@@ -106,17 +106,19 @@ public class SetupController implements Initializable {
 		Node node = (Node) event.getSource();
 		// Step 3
 		Stage stage = (Stage) node.getScene().getWindow();
-		stage.close();
 		try {
 			// Step 4
-			Parent root = FXMLLoader.load(getClass().getResource("/resultsPartial.fxml"));
+//			Parent root = FXMLLoader.load(getClass().getResource("/resultsPartial.fxml"));
+			FXMLLoader resultsLoader = new FXMLLoader(getClass().getResource("/resultsPartial.fxml"));
+			Parent root = resultsLoader.load();
+			ResultsController resultsController = resultsLoader.getController();
 			// Step 5
 			stage.setUserData(results);
 			// Step 6
-			Scene scene = new Scene(root);
-			stage.setScene(scene);
+//			Scene scene = new Scene(root);
+			stage.getScene().setRoot(root);
+			resultsController.receiveData();
 			// Step 7
-			stage.show();
 		} catch (IOException e) {
 			System.err.println(String.format("Error: %s", e.getMessage()));
 		}

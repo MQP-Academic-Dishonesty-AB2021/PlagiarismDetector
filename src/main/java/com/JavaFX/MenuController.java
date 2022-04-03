@@ -44,17 +44,11 @@ public class MenuController implements Initializable {
 	private JFXButton visualizationsText;
 
 	public boolean firstTimeSetup;
-
-	private Stage stage;
-	private Scene scene;
-	private Parent root;
-
 	public void switchToSetup(ActionEvent event) throws IOException {
 		if (!firstTimeSetup) {
 			Parent root = FXMLLoader.load(getClass().getResource("/setup.fxml"));
-			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-			scene = new Scene(root);
-			stage.setScene(scene);
+			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			stage.getScene().setRoot(root);
 			firstTimeSetup = true;
 		} else {
 			// switchToResults(event);
@@ -64,9 +58,8 @@ public class MenuController implements Initializable {
 	public void switchToSettings(ActionEvent event) throws IOException {
 		if (firstTimeSetup == false) {
 			Parent root = FXMLLoader.load(getClass().getResource("/settings.fxml"));
-			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-			scene = new Scene(root);
-			stage.setScene(scene);
+			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			stage.getScene().setRoot(root);
 			firstTimeSetup = true;
 		} else {
 			// switchToResults(event);
@@ -75,9 +68,9 @@ public class MenuController implements Initializable {
 
 	public void switchToVisualizations(ActionEvent event) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("/partials/heatmapPartial.fxml"));
-		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
+		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		stage.getScene().setRoot(root);
+		firstTimeSetup = true;
 	}
 
 	public void openDefaultBrowser(ActionEvent event) throws IOException {

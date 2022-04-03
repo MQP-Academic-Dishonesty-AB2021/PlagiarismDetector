@@ -3,21 +3,20 @@ package com.JavaFX;
 import Comparison.Comparison;
 import Comparison.ComparisonPair;
 import com.jfoenix.controls.JFXSlider;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
@@ -26,17 +25,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class quickstartresultsController implements Initializable {
+public class ResultsController implements Initializable {
 
 	@FXML
 	private ImageView exit;
 
 	@FXML
 	private Text resultValue;
-
-	private Stage stage;
-	private Scene scene;
-	private Parent root;
 
 	@FXML
 	public TableView tableView;
@@ -62,26 +57,23 @@ public class quickstartresultsController implements Initializable {
 	// returns to main menu
 	public void returnToMainMenu(MouseEvent event) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("/menuBar.fxml"));
-		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
+		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		stage.getScene().setRoot(root);
 	}
 
 	// returns to table results
 	public void returnToTable(MouseEvent event) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("/resultsPartial.fxml"));
-		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
+		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		stage.getScene().setRoot(root);
 	}
 
 	// opens detail view of a case
-	public void openDetailView(MouseEvent event) throws IOException {
+	public void openDetailView(ImmutableTriple<String, String, Double> item) throws IOException {
 		if(tableView.getSelectionModel().getSelectedItem() != null) {
 			Parent root = FXMLLoader.load(getClass().getResource("/tableResultsPartial.fxml"));
-			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-			scene = new Scene(root);
-			stage.setScene(scene);
+			Stage stage = (Stage) tableView.getScene().getWindow();
+			stage.getScene().setRoot(root);
 		}
 	}
 
@@ -115,13 +107,32 @@ public class quickstartresultsController implements Initializable {
 
 
 	@FXML
-	private void receiveData(MouseEvent event) {
+	public void receiveData() {
 		// Step 1
-		Node node = (Node) event.getSource();
-		Stage stage = (Stage) node.getScene().getWindow();
+		Stage stage = (Stage) tableView.getScene().getWindow();
 		// Step 2
 		Comparison comparisonData = (Comparison) stage.getUserData();
 		ArrayList<ImmutablePair<ComparisonPair, Double>> pairs = comparisonData.getOrderedList();
+		tableView.setRowFactory(new Callback<TableView<ImmutableTriple<String, String, Double>>, TableRow<ImmutableTriple<String, String, Double>>>() {
+			@Override
+			public TableRow<ImmutableTriple<String, String, Double>> call(TableView<ImmutableTriple<String, String, Double>> view) {
+				final TableRow<ImmutableTriple<String, String, Double>>	row = new TableRow<>();
+				final ContextMenu rowMenu = new ContextMenu();
+				MenuItem detailView = new MenuItem("Open Detailed View");
+				detailView.setOnAction(e -> {
+					try {
+						openDetailView(row.getItem());
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
+				});
+				rowMenu.getItems().add(detailView);
+				row.contextMenuProperty().bind(
+						Bindings.when(row.emptyProperty()).then((ContextMenu) null).otherwise(rowMenu)
+				);
+				return row;
+			}
+		});
 		assignmentACol.setCellValueFactory(
 				new PropertyValueFactory<>("left")
 		);
