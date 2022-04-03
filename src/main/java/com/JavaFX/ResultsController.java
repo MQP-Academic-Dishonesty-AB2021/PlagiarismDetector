@@ -130,6 +130,15 @@ public class ResultsController implements Initializable {
 				row.contextMenuProperty().bind(
 						Bindings.when(row.emptyProperty()).then((ContextMenu) null).otherwise(rowMenu)
 				);
+				row.setOnMouseClicked(event -> {
+					if (event.getClickCount() == 2 && (!row.isEmpty())) {
+						try {
+							openDetailView(row.getItem());
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				});
 				return row;
 			}
 		});
