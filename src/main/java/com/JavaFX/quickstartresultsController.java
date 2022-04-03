@@ -10,8 +10,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -136,15 +136,6 @@ public class quickstartresultsController implements Initializable {
 		for (ImmutablePair<ComparisonPair, Double> pair : pairs) {
 			tableView.getItems().add(new ImmutableTriple<String, String, Double>(pair.left.getBaseFile(), pair.left.getComparedFile(), pair.right));
 		}
-//		for (ImmutablePair<ComparisonPair, Double> pair : comparisons) {
-//			pair.left.
-//			Case aCase2 = aCase.listOfCases.get(i);
-//			Case assignmentA = aCase.listOfCases.get(i);
-//			Case assignmentB = aCase.listOfCases.get(i);
-//			Case val = aCase.listOfCases.get(i);
-//
-//
-//		}
 
 	}
 
