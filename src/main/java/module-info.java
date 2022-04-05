@@ -6,17 +6,17 @@ module com.plagiarismdetector {
 	requires java.desktop;
 	requires javafx.web;
 	requires commons.cli;
-	requires slf4j.api;
 	requires commons.collections4;
 	requires commons.io;
-	requires slf4j.simple;
 	requires guava;
 	requires commons.lang3;
-	requires reflections;
 	requires commons.codec;
 	requires velocity;
+	requires slf4j.api;
+	requires reflections;
+	requires slf4j.simple;
 
-    opens com.JavaFX to javafx.fxml;
+	opens com.JavaFX to javafx.fxml;
 
 	exports com.JavaFX;
 }

@@ -7,6 +7,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static org.slf4j.impl.SimpleLogger.LOG_FILE_KEY;
+
 public class MainMenu extends Application {
 	double x, y = 0;
 	MenuController controller;
@@ -28,6 +33,8 @@ public class MainMenu extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		String dateString = new SimpleDateFormat("yyyy.MM.dd.hh.mm").format(new java.util.Date());
+		System.setProperty(LOG_FILE_KEY, "PlagiarismDetector-" + dateString + ".log");
 		loadPartials();
 
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/menuBar.fxml"));

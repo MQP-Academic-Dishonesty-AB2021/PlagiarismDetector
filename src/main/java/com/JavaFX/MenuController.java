@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -32,7 +33,10 @@ import java.util.ResourceBundle;
 public class MenuController implements Initializable {
 
 	@FXML
-	private AnchorPane opacityPane, drawerPane;
+	private AnchorPane opacityPane;
+
+	@FXML
+	private GridPane drawerPane;
 
 	@FXML
 	private Label drawerImage;
@@ -87,17 +91,10 @@ public class MenuController implements Initializable {
 	@FXML
 	public Pane mainPane;
 
-	@FXML
-	private ImageView exit;
 
 	@Override
 	@FXML
 	public void initialize(URL location, ResourceBundle resources) {
-
-		exit.setOnMouseClicked(event -> {
-			System.exit(0);
-		});
-
 		opacityPane.setVisible(false);
 
 		FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.5), opacityPane);

@@ -18,13 +18,17 @@ import com.google.common.collect.ImmutableSet;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import RacketTree.RacketExpression;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 
 public class Comparison {
+	private static Logger logger = LoggerFactory.getLogger(Comparison.class);
 
 	public enum Method {
 		TreeSimilarity,
@@ -122,11 +126,18 @@ public class Comparison {
 						!submission.getName().substring(submission.getName().length() - 4).equals(".rkt")) {
 					continue;
 				}
-				RacketTree assignmentTree = new RacketTree(submission.getPath());
-				// skip non rkt projects in the directory
-				if (assignmentTree.numLeaves != 0) {
-					assignmentMap.put(submission.getName(), assignmentTree);
-					this.fileList.add(submission.getName());
+				try {
+					RacketTree assignmentTree = new RacketTree(submission.getPath());
+					// skip non rkt projects in the directory
+					if (assignmentTree.numLeaves != 0) {
+						assignmentMap.put(submission.getName(), assignmentTree);
+						this.fileList.add(submission.getName());
+					}
+				}
+				catch (InvalidFormatException e) {
+					logger.error(e.getMessage());
+					logger.debug("Errored File:");
+					logger.debug(new String(Files.readAllBytes(submission.toPath())));
 				}
 			}
 
@@ -156,7 +167,7 @@ public class Comparison {
 							this.values.put(new ComparisonPair(filenameI, filenameJ), simValI);
 						}
 					})).get();
-		} catch (IOException | NullPointerException | InvalidFormatException e) {
+		} catch (IOException | NullPointerException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
