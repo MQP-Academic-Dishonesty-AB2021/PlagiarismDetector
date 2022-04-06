@@ -4,7 +4,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="webPane" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.JavaFX.heatmapController">
+<AnchorPane fx:id="webPane" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.JavaFX.HeatmapController">
    <children>
       <ImageView fx:id="exit" fitHeight="34.0" fitWidth="36.0" layoutX="763.0" layoutY="1.0" onMouseClicked="#returnToMainMenu" pickOnBounds="true" preserveRatio="true">
          <image>

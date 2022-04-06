@@ -8,13 +8,12 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static org.slf4j.impl.SimpleLogger.LOG_FILE_KEY;
 
 public class MainMenu extends Application {
 	double x, y = 0;
-	MenuController controller;
+	MainMenuController controller;
 	private static Parent dashPane;
 	private static Stage primaryStage;
 
@@ -37,7 +36,7 @@ public class MainMenu extends Application {
 		System.setProperty(LOG_FILE_KEY, "PlagiarismDetector-" + dateString + ".log");
 		loadPartials();
 
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/menuBar.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mainMenu.fxml"));
 		System.out.println(fxmlLoader.getLocation());
 		Parent root = fxmlLoader.load();
 

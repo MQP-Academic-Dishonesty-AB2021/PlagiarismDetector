@@ -56,7 +56,7 @@ public class ResultsController implements Initializable {
 
 	// returns to main menu
 	public void returnToMainMenu(MouseEvent event) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("/menuBar.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/mainMenu.fxml"));
 		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		stage.getScene().setRoot(root);
 	}

@@ -1,38 +1,26 @@
 package com.JavaFX;
 
-import com.google.common.collect.ImmutableMap;
 import javafx.concurrent.Worker;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Accordion;
-import javafx.scene.control.Button;
-import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.*;
 import javafx.stage.Stage;
-import org.apache.velocity.texen.util.FileUtil;
 import org.w3c.dom.Document;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 
 
-public class heatmapController implements Initializable {
+public class HeatmapController implements Initializable {
 
 	@FXML
 	private ImageView exit;
@@ -52,12 +40,12 @@ public class heatmapController implements Initializable {
 
 
 
-	public heatmapController() throws IOException {
+	public HeatmapController() throws IOException {
 	}
 
 	// returns to main menu
 	public void returnToMainMenu(MouseEvent event) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("/menuBar.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("/mainMenu.fxml"));
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setScene(scene);
