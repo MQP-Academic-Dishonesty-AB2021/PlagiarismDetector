@@ -47,22 +47,24 @@ public class ComparisonPromise extends Thread {
         }
         this.numExpected.setValue(submissions.length);
         ForkJoinPool pool = new ForkJoinPool(Comparison.numThreads);
-        for (File submission : submissions) {
-            if (this.isInterrupted()) {
-                return;
-            }
-            if (submission.isFile() &&
-                !submission.getName().substring(submission.getName().length() - 4).equals(".rkt")) {
-                synchronized (this.comparison) {
-                    this.numFinished.setValue(this.numFinished.get() + 1);
+        pool.submit(() -> Arrays.stream(submissions).parallel().forEach(
+                (submission) -> {
+                    if (this.isInterrupted()) {
+                        return;
+                    }
+                    if (submission.isFile() &&
+                            !submission.getName().substring(submission.getName().length() - 4).equals(".rkt")) {
+                        synchronized (this.comparison) {
+                            this.numFinished.setValue(this.numFinished.get() + 1);
+                        }
+                        return;
+                    }
+                    this.comparison.addSubmission(submission);
+                    synchronized (this.comparison) {
+                        this.numFinished.setValue(this.numFinished.get() + 1);
+                    }
                 }
-                continue;
-            }
-            this.comparison.addSubmission(submission);
-            synchronized (this.comparison) {
-                this.numFinished.setValue(this.numFinished.get() + 1);
-            }
-        }
+        ));
     }
 
     public ComparisonPromise(String directory, Comparison.Method method) {
