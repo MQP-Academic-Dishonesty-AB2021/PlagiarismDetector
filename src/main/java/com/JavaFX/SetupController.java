@@ -1,10 +1,15 @@
 package com.JavaFX;
 
 import Comparison.Comparison;
+import Comparison.ComparisonPromise;
 import RacketTree.RacketTree;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXSlider;
+import javafx.beans.binding.NumberBinding;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -13,11 +18,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +35,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SetupController implements Initializable {
-
+	public static Logger logger = LoggerFactory.getLogger(SetupController.class);
 	double x, y = 0;
 
 	@FXML
@@ -87,18 +97,55 @@ public class SetupController implements Initializable {
 
 	@FXML
 	private void sendData(ActionEvent event) {
-		Comparison results;
 		Comparison.numThreads = (int)Math.round(threadSlider.getValue());
-		if (!useChecksims.selectedProperty().getValue()) {
-			System.out.println("Using Tree Similarity");
-			RacketTree.defaultLeafDepth = (int)Math.round(leafSlider.getValue());
-			results = new Comparison(testingDirectory.getAbsolutePath(),
-					Comparison.Method.TreeSimilarity);
+		RacketTree.defaultLeafDepth = (int)Math.round(leafSlider.getValue());
+		Comparison.Method method = useChecksims.selectedProperty().getValue() ?
+				Comparison.Method.Checksims :
+				Comparison.Method.TreeSimilarity;
+		ComparisonPromise promise = new ComparisonPromise(testingDirectory.getAbsolutePath(), method);
+		promise.start();
+
+		try {
+			FXMLLoader progressLoader = new FXMLLoader(getClass().getResource("/loadingPane.fxml"));
+			Parent root = progressLoader.load();
+			LoadingBarController barController = progressLoader.getController();
+			barController.bindCompletion(promise.getPercentCompletion());
+			NumberBinding test = promise.getPercentCompletion();
+			test.addListener(new ChangeListener<Number>() {
+				@Override
+				public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+					System.out.println(t1);
+				}
+			});
+			Stage stage = new Stage();
+			stage.initOwner(((Node)event.getSource()).getScene().getWindow());
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.setResizable(false);
+			stage.initStyle(StageStyle.UTILITY);
+			Scene scene = new Scene(root);
+			stage.setScene(scene);
+			stage.setAlwaysOnTop(true);
+			stage.showAndWait();
 		}
-		else {
-			System.out.println("Using Checksims");
-			results = new Comparison(testingDirectory.getAbsolutePath(), Comparison.Method.Checksims);
+		catch (IOException e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
 		}
+		try {
+			promise.join();
+		}
+		catch (InterruptedException e){
+			return;
+		}
+
+		Comparison results = null;
+		try {
+			results = promise.getComparison();
+		}
+		catch (InterruptedException e) {
+
+		}
+		if (results == null) { return; }
 		// Step 2
 		Node node = (Node) event.getSource();
 		// Step 3

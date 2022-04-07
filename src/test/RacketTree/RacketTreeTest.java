@@ -1,6 +1,7 @@
 package RacketTree;
 
 import Comparison.Comparison;
+import Comparison.ComparisonPromise;
 import Comparison.ComparisonPair;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,8 @@ public class RacketTreeTest {
 				if (assignment.isFile()) {
 					continue;
 				}
-				Comparison submissions = new Comparison(assignment.getPath(), Comparison.Method.TreeSimilarity);
+				ComparisonPromise promise = new ComparisonPromise(assignment.getAbsolutePath(), Comparison.Method.TreeSimilarity);
+				Comparison submissions = promise.getComparison();
 				System.out.println(assignment.getName());
 				submissions.toCSV(assignment.getName());
 			}
@@ -57,7 +59,8 @@ public class RacketTreeTest {
 				if (assignment.isFile()) {
 					continue;
 				}
-				Comparison submissions = new Comparison(assignment.getPath(), Comparison.Method.Checksims);
+				ComparisonPromise promise = new ComparisonPromise(assignment.getAbsolutePath(), Comparison.Method.Checksims);
+				Comparison submissions = promise.getComparison();
 				System.out.println(assignment.getName());
 				submissions.toCSV(assignment.getName() + "Checksims");
 			}
@@ -67,8 +70,10 @@ public class RacketTreeTest {
 	}
 
 	@Test
-	void TestOrderedListInRightOrder() {
-		Comparison test = new Comparison("test_files/assign2", Comparison.Method.TreeSimilarity);
+	void TestOrderedListInRightOrder() throws InterruptedException {
+		ComparisonPromise promise = new ComparisonPromise("test_files/assign2", Comparison.Method.TreeSimilarity);
+		promise.start();
+		Comparison test = promise.getComparison();
 		ArrayList<ImmutablePair<ComparisonPair, Double>> list = test.getOrderedList();
 		for (int i = 1; i < list.size(); i++) {
 			assertTrue(list.get(i - 1).getValue() >= list.get(i).getValue());

@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import static org.slf4j.impl.SimpleLogger.LOG_FILE_KEY;
 
 public class MainMenu extends Application {
-	double x, y = 0;
 	MainMenuController controller;
 	private static Parent dashPane;
 	private static Stage primaryStage;
@@ -41,16 +40,6 @@ public class MainMenu extends Application {
 		Parent root = fxmlLoader.load();
 
 		primaryStage.initStyle(StageStyle.DECORATED);
-
-		root.setOnMousePressed(event -> {
-			x = event.getSceneX();
-			y = event.getSceneY();
-		});
-
-		root.setOnMouseDragged(event -> {
-			primaryStage.setX(event.getScreenX() - x);
-			primaryStage.setY(event.getScreenY() - y);
-		});
 
 		primaryStage.setScene(new Scene(root, 800, 500));
 		primaryStage.show();

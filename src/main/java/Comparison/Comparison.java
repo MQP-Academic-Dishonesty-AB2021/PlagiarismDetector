@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 
-public class Comparison {
+public abstract class Comparison {
 	private static Logger logger = LoggerFactory.getLogger(Comparison.class);
 
 	public enum Method {
@@ -35,34 +35,33 @@ public class Comparison {
 		Checksims
 	};
 
-	private ConcurrentHashMap<ComparisonPair, Double> values;
-	private ArrayList<String> fileList;
+	protected ConcurrentHashMap<ComparisonPair, Double> values;
+	protected ArrayList<String> fileList;
+	private final Object listLock = new Object();
+	private Method method;
 	public static int numThreads = 4;
 
-	/**
-	 * Calculate a Racket Tree comparison of all projects in a directory
-	 * 
-	 * @param directory The directory
-	 */
-	public Comparison(String directory) {
-		this.generateRacketTreeComparison(directory);
+	Comparison() {
+		this.values = new ConcurrentHashMap<ComparisonPair, Double>();
+		this.fileList = new ArrayList<>();
 	}
 
-	/**
-	 * Calculate a comparison of all projects in a directory with a given method
-	 * Defaults to Checksims
-	 * 
-	 * @param directory The directory
-	 * @param method    The method
-	 */
-	public Comparison(String directory, Method method) {
+	public int addSubmission(File submission) {
+		int index = -1;
+		synchronized (this.listLock) {
+			index = this.fileList.size();
+			this.fileList.add(submission.getName());
+		}
+		return index;
+	}
+
+	static Comparison generateComparison(Method method) {
 		switch (method) {
 			case TreeSimilarity:
-				this.generateRacketTreeComparison(directory);
-				break;
+				return new TreeSimilarityComparison();
 			case Checksims:
 			default:
-				this.generateChecksimsComparison(directory);
+				return new ChecksimsComparison();
 		}
 	}
 
@@ -74,17 +73,6 @@ public class Comparison {
 	 */
 	public double getValue(ComparisonPair pair) {
 		return this.values.get(pair);
-	}
-
-	/**
-	 * Get the value of a comparison between two projects
-	 * 
-	 * @param base     The base project
-	 * @param compared The project the base was compared too
-	 * @return the value of the comparison
-	 */
-	public double getValue(String base, String compared) {
-		return this.values.get(new ComparisonPair(base, compared));
 	}
 
 	/**
@@ -102,130 +90,14 @@ public class Comparison {
 	}
 
 	/**
-	 * Generate a RacketTree comparison between all projects in a directory
+	 * Get the value of a comparison between two projects
 	 * 
-	 * @param assignment The directory
+	 * @param base     The base project
+	 * @param compared The project the base was compared too
+	 * @return the value of the comparison
 	 */
-	private void generateRacketTreeComparison(String assignment) {
-		File dir;
-		try {
-			dir = RacketAnonymizer.anonymizeFile(new File(assignment));
-		}
-		catch (Exception e) {
-			System.err.println("Could not anonymize files");
-			e.printStackTrace();
-			return;
-		}
-		HashMap<String, RacketTree> assignmentMap = new HashMap<String, RacketTree>();
-		this.values = new ConcurrentHashMap<>();
-		try {
-			this.fileList = new ArrayList<>();
-			for (File submission : dir.listFiles()) {
-				// Skip any extraneous files
-				if (submission.isFile() &&
-						!submission.getName().substring(submission.getName().length() - 4).equals(".rkt")) {
-					continue;
-				}
-				try {
-					RacketTree assignmentTree = new RacketTree(submission.getPath());
-					// skip non rkt projects in the directory
-					if (assignmentTree.numLeaves != 0) {
-						assignmentMap.put(submission.getName(), assignmentTree);
-						this.fileList.add(submission.getName());
-					}
-				}
-				catch (InvalidFormatException e) {
-					logger.error(e.getMessage());
-					logger.debug("Errored File:");
-					logger.debug(new String(Files.readAllBytes(submission.toPath())));
-				}
-			}
-
-			HashMap<String, Integer> numTimes = new HashMap<>();
-			for (Map.Entry<String, RacketTree> sub : assignmentMap.entrySet()) {
-				for (Map.Entry<RacketExpression, ArrayList<RacketExpression>> leaf : sub.getValue().leavesHash
-						.entrySet()) {
-					numTimes.merge(leaf.getKey().toString(), leaf.getValue().size(), Integer::sum);
-				}
-			}
-			ArrayList<ImmutablePair<String, Integer>> sortedNum = new ArrayList<>();
-			for (Map.Entry<String, Integer> x : numTimes.entrySet()) {
-				sortedNum.add(new ImmutablePair<>(x.getKey(), x.getValue()));
-			}
-			sortedNum.sort((x, y) -> Integer.compare(y.getValue(), x.getValue()));
-
-			ForkJoinPool myPool = new ForkJoinPool(numThreads);
-			myPool.submit(() -> fileList.parallelStream().forEach(
-					(filenameI) -> {
-						RacketTree treeI = assignmentMap.get(filenameI);
-						for (String filenameJ : fileList) {
-							if (filenameI.equals(filenameJ)) {
-								continue;
-							}
-							RacketTree treeJ = assignmentMap.get(filenameJ);
-							double simValI = treeI.similarityValue(treeJ);
-							this.values.put(new ComparisonPair(filenameI, filenameJ), simValI);
-						}
-					})).get();
-		} catch (IOException | NullPointerException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Perform a checksims comparison between all projects in a directory
-	 * 
-	 * @param assignment the directory
-	 */
-	private void generateChecksimsComparison(String assignment) {
-		String[] args = { "-s", assignment, "-o", "csv", "-j", Integer.toString(numThreads) };
-		this.values = new ConcurrentHashMap<>();
-		this.fileList = new ArrayList<>();
-		try {
-			// All in this scope are copy and pasted from checksims with unused items
-			// removed (logging)
-			ChecksimsConfig config = ChecksimsCommandLine.generateFinalConfig(args);
-			int threads = config.getNumThreads();
-			ParallelAlgorithm.setThreadCount(threads);
-
-			System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "" + threads);
-
-			ImmutableSet<Submission> submissions = config.getSubmissions();
-
-			ImmutableSet<Submission> archiveSubmissions = config.getArchiveSubmissions();
-
-			// Apply all preprocessors
-			for (SubmissionPreprocessor p : config.getPreprocessors()) {
-				submissions = ImmutableSet.copyOf(PreprocessSubmissions.process(p, submissions));
-
-				if (!archiveSubmissions.isEmpty()) {
-					archiveSubmissions = ImmutableSet.copyOf(PreprocessSubmissions.process(p, archiveSubmissions));
-				}
-			}
-
-			// Apply algorithm to submissions
-			Set<Pair<Submission, Submission>> allPairs = PairGenerator.generatePairsWithArchive(submissions,
-					archiveSubmissions);
-			Set<AlgorithmResults> results = AlgorithmRunner.runAlgorithm(allPairs, config.getAlgorithm());
-			SimilarityMatrix resultsMatrix = SimilarityMatrix.generateMatrix(submissions, archiveSubmissions, results);
-
-			for (int i = 0; i < resultsMatrix.getXSubmissions().size(); i++) {
-				Submission xsub = resultsMatrix.getXSubmission(i);
-				this.fileList.add(xsub.getName());
-				for (int j = 0; j < resultsMatrix.getYSubmissions().size(); j++) {
-					if (i == j) {
-						continue;
-					}
-					MatrixEntry result = resultsMatrix.getEntryFor(i, j);
-					this.values.put(new ComparisonPair(result.getBase().getName(), result.getComparedTo().getName()),
-							result.getSimilarityPercent());
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public double getValue(String base, String compared) {
+		return this.values.get(new ComparisonPair(base, compared));
 	}
 
 	/**

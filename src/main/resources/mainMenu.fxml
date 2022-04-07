@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/18" fx:controller="com.JavaFX.MainMenuController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.JavaFX.MainMenuController">
   <columnConstraints>
     <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" />
     <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
@@ -52,12 +52,12 @@
       </GridPane>
       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: AC2B37;">
          <children>
-            <Label fx:id="drawerImage">
+            <Label fx:id="drawerImage" onMouseClicked="#openDrawer">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
                <graphic>
-                  <ImageView fitHeight="46.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="46.0" fitWidth="32.0" onMouseClicked="#openDrawer" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@images/burger.png" />
                      </image>
@@ -136,7 +136,7 @@
             </Pane>
          </children>
       </GridPane>
-      <AnchorPane fx:id="opacityPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #000;" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <AnchorPane fx:id="opacityPane" onMouseClicked="#closeDrawer" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #000;" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <GridPane fx:id="drawerPane" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: f4f4f4;" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -180,6 +180,9 @@
                      </GridPane.margin>
                   </JFXButton>
                </children>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
             </GridPane>
             <GridPane GridPane.rowIndex="2">
               <columnConstraints>
@@ -195,6 +198,10 @@
                      </GridPane.margin>
                   </JFXButton>
                </children>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
             </GridPane>
          </children>
       </GridPane>
