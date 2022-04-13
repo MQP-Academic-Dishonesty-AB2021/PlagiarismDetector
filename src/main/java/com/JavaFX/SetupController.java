@@ -66,10 +66,6 @@ public class SetupController implements Initializable {
 	DirectoryChooser directoryChooser1 = new DirectoryChooser();
 	DirectoryChooser directoryChooser2 = new DirectoryChooser();
 
-	private Stage stage;
-	private Scene scene;
-	private Parent root;
-
 	public File databaseDirectory;
 	public File testingDirectory;
 
@@ -90,9 +86,8 @@ public class SetupController implements Initializable {
 
 	public void returnToMainMenu(ActionEvent event) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("/mainMenu.fxml"));
-		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
+		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		stage.getScene().setRoot(root);
 	}
 
 	@FXML
@@ -105,75 +100,39 @@ public class SetupController implements Initializable {
 		ComparisonPromise promise = new ComparisonPromise(testingDirectory.getAbsolutePath(), method);
 		promise.start();
 
+		// create the loading bar
 		try {
-			FXMLLoader progressLoader = new FXMLLoader(getClass().getResource("/loadingPane.fxml"));
-			Parent root = progressLoader.load();
-			LoadingBarController barController = progressLoader.getController();
-			barController.bindCompletion(promise.getPercentCompletion());
-			NumberBinding test = promise.getPercentCompletion();
-			test.addListener(new ChangeListener<Number>() {
-				@Override
-				public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-					System.out.println(t1);
-				}
-			});
-			Stage stage = new Stage();
-			stage.initOwner(((Node)event.getSource()).getScene().getWindow());
-			stage.initModality(Modality.APPLICATION_MODAL);
-			stage.setResizable(false);
-			stage.initStyle(StageStyle.UTILITY);
-			Scene scene = new Scene(root);
-			stage.setScene(scene);
-			stage.setAlwaysOnTop(true);
-			stage.showAndWait();
+			new LoadingBar(((Node)event.getSource()).getScene().getWindow(),
+					promise.getNumFinished(),
+					promise.getNumExpected());
 		}
-		catch (IOException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
-		}
-		try {
-			promise.join();
-		}
-		catch (InterruptedException e){
+		// If it was cancelled, interrupt the task and return
+		catch (LoadingCancelledError e) {
+			promise.interrupt();
 			return;
 		}
 
-		Comparison results = null;
+		Comparison results;
 		try {
 			results = promise.getComparison();
 		}
 		catch (InterruptedException e) {
-
+			return;
 		}
-		if (results == null) { return; }
-		// Step 2
+
 		Node node = (Node) event.getSource();
-		// Step 3
 		Stage stage = (Stage) node.getScene().getWindow();
 		try {
-			// Step 4
-//			Parent root = FXMLLoader.load(getClass().getResource("/resultsPartial.fxml"));
 			FXMLLoader resultsLoader = new FXMLLoader(getClass().getResource("/resultsPartial.fxml"));
 			Parent root = resultsLoader.load();
 			ResultsController resultsController = resultsLoader.getController();
-			// Step 5
 			stage.setUserData(results);
-			// Step 6
-//			Scene scene = new Scene(root);
 			stage.getScene().setRoot(root);
 			resultsController.receiveData();
-			// Step 7
-		} catch (IOException e) {
-			System.err.println(String.format("Error: %s", e.getMessage()));
 		}
-	}
-
-	// returns to main menu
-	public void goToResults(ActionEvent event) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("/resultsPartial.fxml"));
-		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
+		catch (IOException e) {
+			logger.error(String.format("Error: %s", e.getMessage()));
+		}
 	}
 
 	public void detectAvailableCores() throws IOException {
@@ -194,7 +153,7 @@ public class SetupController implements Initializable {
 			detectAvailableCores();
 		}
 		catch(IOException e) {
-			e.printStackTrace();
+			threadSlider.setValue(1);
 		}
 	}
 }

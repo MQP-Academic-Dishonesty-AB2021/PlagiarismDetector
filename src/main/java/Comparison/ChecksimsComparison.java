@@ -8,6 +8,7 @@ import Checksims.submission.Submission;
 import Checksims.token.TokenType;
 import Checksims.token.tokenizer.Tokenizer;
 import Checksims.util.threading.SimilarityDetectionWorker;
+import RacketTree.RacketSubmission;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +31,10 @@ public class ChecksimsComparison extends Comparison {
     }
 
     @Override
-    public int addSubmission(File submission) {
+    public int addSubmission(RacketSubmission submission) {
         Submission csSubmission = null;
         try {
-            csSubmission = Submission.submissionFromDir(submission,
+            csSubmission = Submission.submissionFromDir(submission.regular(),
                     "*.rkt",
                     Tokenizer.getTokenizer(tokenization),
                     true);

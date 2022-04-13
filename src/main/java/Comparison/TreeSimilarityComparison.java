@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import RacketTree.InvalidFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import RacketTree.RacketSubmission;
 
 public class TreeSimilarityComparison extends Comparison {
     private static Logger logger = LoggerFactory.getLogger(TreeSimilarityComparison.class);
@@ -21,10 +22,10 @@ public class TreeSimilarityComparison extends Comparison {
     }
 
     @Override
-    public int addSubmission(File submission) {
+    public int addSubmission(RacketSubmission submission) {
         RacketTree assignmentTree = null;
         try {
-            assignmentTree = new RacketTree(submission.getPath());
+            assignmentTree = new RacketTree(submission.anonymized().getPath());
         }
         catch (IOException | InterruptedException e) {
             logger.error(e.getMessage());
@@ -33,7 +34,7 @@ public class TreeSimilarityComparison extends Comparison {
             logger.error(e.getMessage());
             logger.debug("Errored File:");
             try {
-                logger.debug(new String(Files.readAllBytes(submission.toPath())));
+                logger.debug(new String(Files.readAllBytes(submission.anonymized().toPath())));
             }
             catch (Exception e2) {}
             return -1;

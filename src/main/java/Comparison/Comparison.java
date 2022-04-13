@@ -20,6 +20,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import RacketTree.RacketExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import RacketTree.RacketSubmission;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -46,7 +47,7 @@ public abstract class Comparison {
 		this.fileList = new ArrayList<>();
 	}
 
-	public int addSubmission(File submission) {
+	public int addSubmission(RacketSubmission submission) {
 		int index = -1;
 		synchronized (this.listLock) {
 			index = this.fileList.size();

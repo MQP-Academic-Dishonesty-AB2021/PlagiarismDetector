@@ -21,11 +21,11 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <TableView fx:id="tableView" prefHeight="378.0" prefWidth="829.0" GridPane.rowIndex="1">
+      <TableView fx:id="tableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="378.0" prefWidth="829.0" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
          <columns>
-            <TableColumn fx:id="assignmentACol" prefWidth="276.0" text="Assignment A" />
-            <TableColumn fx:id="assignmentBCol" prefWidth="276.0" text="Assignment B" />
-            <TableColumn fx:id="nodeCol" prefWidth="276.0" text="Similarity Value" />
+            <TableColumn fx:id="assignmentACol" minWidth="-1.0" prefWidth="276.0" text="Assignment A" />
+            <TableColumn fx:id="assignmentBCol" minWidth="-1.0" prefWidth="276.0" text="Assignment B" />
+            <TableColumn fx:id="nodeCol" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="276.0" text="Similarity Value" />
          </columns>
       </TableView>
       <GridPane style="-fx-background-color: AC2B37 AC2B37;">

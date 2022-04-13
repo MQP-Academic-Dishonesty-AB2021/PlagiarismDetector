@@ -1,6 +1,7 @@
 package Comparison;
 
 import RacketTree.RacketAnonymizer;
+import RacketTree.RacketSubmission;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.NumberBinding;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
@@ -24,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ComparisonPromise extends Thread {
     private static Logger logger = LoggerFactory.getLogger(ComparisonPromise.class);
     private final File originalDirectory;
-    private File anonymizedDirectory;
+    private RacketAnonymizer anonymizer;
     private boolean anonymized;
     private DoubleProperty numFinished;
     private DoubleProperty numExpected;
@@ -33,30 +35,23 @@ public class ComparisonPromise extends Thread {
     @Override
     public void run() {
         try {
-            this.anonymizedDirectory = RacketAnonymizer.anonymizeFile(this.originalDirectory);
+            this.anonymizer = new RacketAnonymizer(this.originalDirectory);
         } catch (IOException | InterruptedException e) {
             logger.error(e.getMessage());
             logger.error(e.getStackTrace().toString());
             return;
         }
         this.anonymized = true;
-        File[] submissions = anonymizedDirectory.listFiles();
+        ArrayList<RacketSubmission> submissions = anonymizer.getSubmissions();
         if (submissions == null) {
             logger.error("Invalid File Path: " + this.originalDirectory.getAbsolutePath());
             return;
         }
-        this.numExpected.setValue(submissions.length);
+        this.numExpected.setValue(submissions.size());
         ForkJoinPool pool = new ForkJoinPool(Comparison.numThreads);
-        pool.submit(() -> Arrays.stream(submissions).parallel().forEach(
+        pool.submit(() -> submissions.stream().parallel().forEach(
                 (submission) -> {
                     if (this.isInterrupted()) {
-                        return;
-                    }
-                    if (submission.isFile() &&
-                            !submission.getName().substring(submission.getName().length() - 4).equals(".rkt")) {
-                        synchronized (this.comparison) {
-                            this.numFinished.setValue(this.numFinished.get() + 1);
-                        }
                         return;
                     }
                     this.comparison.addSubmission(submission);
@@ -82,6 +77,9 @@ public class ComparisonPromise extends Thread {
     public boolean isAnonymized() {
         return this.anonymized;
     }
+
+    public DoubleProperty getNumFinished() { return this.numFinished; }
+    public DoubleProperty getNumExpected() { return this.numExpected; }
 
     public NumberBinding getPercentCompletion() {
         return Bindings.divide(this.numFinished, this.numExpected);
