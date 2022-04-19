@@ -2,14 +2,15 @@ package com.JavaFX;
 
 import Comparison.Comparison;
 import Comparison.ComparisonPair;
+import RacketTree.RacketSubmission;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -23,9 +24,12 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ResultsController implements Initializable {
+
+	private Comparison comparison;
 
 	@FXML
 	private ImageView exit;
@@ -69,12 +73,16 @@ public class ResultsController implements Initializable {
 	}
 
 	// opens detail view of a case
-	public void openDetailView(ImmutableTriple<String, String, Double> item) throws IOException {
-		if(tableView.getSelectionModel().getSelectedItem() != null) {
-			Parent root = FXMLLoader.load(getClass().getResource("/tableResultsPartial.fxml"));
-			Stage stage = (Stage) tableView.getScene().getWindow();
-			stage.getScene().setRoot(root);
-		}
+	public void openDetailView(ImmutableTriple<RacketSubmission, RacketSubmission, Double> item) throws IOException {
+		ObservableList list = this.tableView.getItems();
+		Integer currentIndex = list.indexOf(item);
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/detailedView.fxml"));
+		Parent root = loader.load();
+		Stage stage = (Stage) tableView.getScene().getWindow();
+		stage.getScene().setRoot(root);
+		stage.setUserData(new ImmutableTriple<Comparison, ObservableList, Integer>(this.comparison, list, currentIndex));
+		DetailedViewController controller = loader.getController();
+		controller.receiveData();
 	}
 
 	/*@FXML
@@ -111,12 +119,14 @@ public class ResultsController implements Initializable {
 		// Step 1
 		Stage stage = (Stage) tableView.getScene().getWindow();
 		// Step 2
-		Comparison comparisonData = (Comparison) stage.getUserData();
-		ArrayList<ImmutablePair<ComparisonPair, Double>> pairs = comparisonData.getOrderedList();
-		tableView.setRowFactory(new Callback<TableView<ImmutableTriple<String, String, Double>>, TableRow<ImmutableTriple<String, String, Double>>>() {
+		this.comparison = (Comparison) stage.getUserData();
+		ArrayList<ImmutablePair<ComparisonPair, Double>> pairs = this.comparison.getOrderedList();
+		tableView.setRowFactory(new Callback<TableView<ImmutableTriple<RacketSubmission, RacketSubmission, Double>>,
+				TableRow<ImmutableTriple<RacketSubmission, RacketSubmission, Double>>>() {
 			@Override
-			public TableRow<ImmutableTriple<String, String, Double>> call(TableView<ImmutableTriple<String, String, Double>> view) {
-				final TableRow<ImmutableTriple<String, String, Double>>	row = new TableRow<>();
+			public TableRow<ImmutableTriple<RacketSubmission, RacketSubmission, Double>>
+			call(TableView<ImmutableTriple<RacketSubmission, RacketSubmission, Double>> view) {
+				final TableRow<ImmutableTriple<RacketSubmission, RacketSubmission, Double>>	row = new TableRow<>();
 				final ContextMenu rowMenu = new ContextMenu();
 				MenuItem detailView = new MenuItem("Open Detailed View");
 				detailView.setOnAction(e -> {
@@ -154,7 +164,8 @@ public class ResultsController implements Initializable {
 				new PropertyValueFactory<>("right")
 		);
 		for (ImmutablePair<ComparisonPair, Double> pair : pairs) {
-			tableView.getItems().add(new ImmutableTriple<String, String, Double>(pair.left.getBaseFile(), pair.left.getComparedFile(), pair.right));
+			tableView.getItems().add(new ImmutableTriple<RacketSubmission, RacketSubmission, Double>(pair.left.getBaseFile(),
+					pair.left.getComparedFile(), pair.right));
 		}
 
 	}
@@ -192,10 +203,12 @@ public class ResultsController implements Initializable {
 			if (oldScene == null && newScene != null) {
 				newScene.windowProperty().addListener(((observableWindow, oldWindow, newWindow) -> {
 					Stage stage = (Stage) newWindow;
-					Comparison comparisonData = (Comparison) stage.getUserData();
-					ArrayList<ImmutablePair<ComparisonPair, Double>> pairs = comparisonData.getOrderedList();
+					this.comparison = (Comparison) stage.getUserData();
+					ArrayList<ImmutablePair<ComparisonPair, Double>> pairs = this.comparison.getOrderedList();
 					for (ImmutablePair<ComparisonPair, Double> pair : pairs) {
-						tableView.getItems().add(new ImmutableTriple<String, String, Double>(pair.left.getBaseFile(), pair.left.getComparedFile(), pair.right));
+						tableView.getItems().add(
+								new ImmutableTriple<RacketSubmission, RacketSubmission, Double>
+										(pair.left.getBaseFile(), pair.left.getComparedFile(), pair.right));
 					}
 				}));
 			}

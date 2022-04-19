@@ -15,7 +15,7 @@ import RacketTree.RacketSubmission;
 public class TreeSimilarityComparison extends Comparison {
     private static Logger logger = LoggerFactory.getLogger(TreeSimilarityComparison.class);
 
-    private ConcurrentHashMap<String, RacketTree> assignmentMap;
+    private ConcurrentHashMap<RacketSubmission, RacketTree> assignmentMap;
 
     TreeSimilarityComparison() {
         this.assignmentMap = new ConcurrentHashMap<>();
@@ -44,15 +44,14 @@ public class TreeSimilarityComparison extends Comparison {
         if (assignmentTree.numLeaves == 0) {
             return -1;
         }
-        assignmentMap.put(submission.getName(), assignmentTree);
-        this.fileList.add(submission.getName());
         int currentIndex = super.addSubmission(submission);
+        assignmentMap.put(submission, assignmentTree);
         for (int i = 0; i < currentIndex; i++) {
-            String otherName = this.fileList.get(i);
-            RacketTree otherTree = assignmentMap.get(otherName);
-            this.values.put(new ComparisonPair(submission.getName(), otherName),
+            RacketSubmission otherSubmission = this.fileList.get(i);
+            RacketTree otherTree = assignmentMap.get(otherSubmission);
+            this.values.put(new ComparisonPair(submission, otherSubmission),
                     assignmentTree.similarityValue(otherTree));
-            this.values.put(new ComparisonPair(otherName, submission.getName()),
+            this.values.put(new ComparisonPair(otherSubmission, submission),
                     otherTree.similarityValue(assignmentTree));
         }
         return currentIndex;

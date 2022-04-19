@@ -2,6 +2,7 @@ package com.JavaFX;
 
 import Comparison.Comparison;
 import Comparison.ComparisonPair;
+import RacketTree.RacketSubmission;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -55,10 +56,10 @@ public class TextResultsController implements Initializable {
 	private JFXSlider threadSlider;
 
 	@FXML
-	private TableColumn assignmentACol;
+	private TableColumn<Object, Object> assignmentACol;
 
 	@FXML
-	private TableColumn assignmentBCol;
+	private TableColumn<Object, Object> assignmentBCol;
 
 	@FXML
 	private Button loadButton;
@@ -180,7 +181,7 @@ public class TextResultsController implements Initializable {
 				new PropertyValueFactory<>("right")
 		);
 		for (ImmutablePair<ComparisonPair, Double> pair : pairs) {
-			tableView.getItems().add(new ImmutableTriple<String, String, Double>(pair.left.getBaseFile(), pair.left.getComparedFile(), pair.right));
+			tableView.getItems().add(new ImmutableTriple<RacketSubmission, RacketSubmission, Double>(pair.left.getBaseFile(), pair.left.getComparedFile(), pair.right));
 		}
 
 	}
@@ -221,7 +222,8 @@ public class TextResultsController implements Initializable {
 					Comparison comparisonData = (Comparison) stage.getUserData();
 					ArrayList<ImmutablePair<ComparisonPair, Double>> pairs = comparisonData.getOrderedList();
 					for (ImmutablePair<ComparisonPair, Double> pair : pairs) {
-						tableView.getItems().add(new ImmutableTriple<String, String, Double>(pair.left.getBaseFile(), pair.left.getComparedFile(), pair.right));
+						tableView.getItems().add(new ImmutableTriple<RacketSubmission, RacketSubmission, Double>
+								(pair.left.getBaseFile(), pair.left.getComparedFile(), pair.right));
 					}
 				}));
 			}

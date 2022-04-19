@@ -37,10 +37,11 @@ public abstract class Comparison {
 	};
 
 	protected ConcurrentHashMap<ComparisonPair, Double> values;
-	protected ArrayList<String> fileList;
+	protected ArrayList<RacketSubmission> fileList;
 	private final Object listLock = new Object();
-	private Method method;
 	public static int numThreads = 4;
+
+	private RacketAnonymizer anonymizer;
 
 	Comparison() {
 		this.values = new ConcurrentHashMap<ComparisonPair, Double>();
@@ -51,7 +52,7 @@ public abstract class Comparison {
 		int index = -1;
 		synchronized (this.listLock) {
 			index = this.fileList.size();
-			this.fileList.add(submission.getName());
+			this.fileList.add(submission);
 		}
 		return index;
 	}
@@ -98,8 +99,13 @@ public abstract class Comparison {
 	 * @return the value of the comparison
 	 */
 	public double getValue(String base, String compared) {
-		return this.values.get(new ComparisonPair(base, compared));
+		return this.values.get(
+				new ComparisonPair(
+						new RacketSubmission(this.anonymizer, base),
+						new RacketSubmission(this.anonymizer, compared)
+				));
 	}
+
 
 	/**
 	 * Write the results of the comparison to a csv file
@@ -118,17 +124,17 @@ public abstract class Comparison {
 		}
 		csv.write("\n");
 		for (int i = 0; i < fileList.size(); i++) {
-			String filenameI = this.fileList.get(i);
-			csv.write(filenameI + ",");
+			RacketSubmission submissionI = this.fileList.get(i);
+			csv.write(submissionI + ",");
 			for (int j = 0; j < fileList.size(); j++) {
-				String filenameJ = this.fileList.get(j);
+				RacketSubmission submissionJ = this.fileList.get(j);
 				if (i == j) {
 					if (j != this.fileList.size() - 1) {
 						csv.write(",");
 					}
 					continue;
 				}
-				csv.write(Double.toString(this.values.get(new ComparisonPair(filenameI, filenameJ))));
+				csv.write(Double.toString(this.values.get(new ComparisonPair(submissionI, submissionJ))));
 				if (j != this.fileList.size() - 1) {
 					csv.write(",");
 				}
@@ -138,7 +144,7 @@ public abstract class Comparison {
 		csv.close();
 	}
 
-	public ArrayList<String> getFiles() {
+	public ArrayList<RacketSubmission> getSubmissions() {
 		return this.fileList;
 	}
 }

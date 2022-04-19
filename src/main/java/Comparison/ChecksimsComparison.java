@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ChecksimsComparison extends Comparison {
     public static Logger logger = LoggerFactory.getLogger(ChecksimsComparison.class);
-    private ConcurrentHashMap<String, Submission> assignmentMap;
+    private ConcurrentHashMap<RacketSubmission, Submission> assignmentMap;
     private SimilarityDetector algorithm;
     private TokenType tokenization;
 
@@ -44,15 +44,17 @@ public class ChecksimsComparison extends Comparison {
         }
         if (csSubmission == null) { return -1; }
         int currentIndex = super.addSubmission(submission);
-        this.assignmentMap.put(submission.getName(), csSubmission);
+        this.assignmentMap.put(submission, csSubmission);
         for (int i = 0; i < currentIndex; i++) {
-            String otherSubmission = this.fileList.get(i);
+            RacketSubmission otherSubmission = this.fileList.get(i);
             Submission otherCsSubmission = this.assignmentMap.get(otherSubmission);
             try {
                 AlgorithmResults results = new SimilarityDetectionWorker(this.algorithm,
                         new ImmutablePair<>(csSubmission, otherCsSubmission)).call();
-                this.values.put(new ComparisonPair(submission.getName(), otherSubmission), results.percentMatchedA());
-                this.values.put(new ComparisonPair(otherSubmission, submission.getName()), results.percentMatchedB());
+                this.values.put(new ComparisonPair(submission,
+                        otherSubmission), results.percentMatchedA());
+                this.values.put(new ComparisonPair(otherSubmission,
+                        submission), results.percentMatchedB());
             }
             catch (Exception e) {
                 logger.error(e.getMessage());

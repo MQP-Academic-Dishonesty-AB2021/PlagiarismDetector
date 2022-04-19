@@ -1,18 +1,27 @@
 package Comparison;
 
-public class ComparisonPair {
-	private String baseFile;
-	private String comparedFile;
+import RacketTree.RacketSubmission;
 
-	public String getBaseFile() {
+public class ComparisonPair {
+	private RacketSubmission baseFile;
+	private RacketSubmission comparedFile;
+
+	public RacketSubmission getBaseFile() {
 		return this.baseFile;
 	}
 
-	public String getComparedFile() {
+	public RacketSubmission getComparedFile() {
 		return this.comparedFile;
 	}
+	public String getBaseFilename() {
+		return this.baseFile.getName();
+	}
 
-	public ComparisonPair(String baseFile, String comparedFile) {
+	public String getComparedFilename() {
+		return this.comparedFile.getName();
+	}
+
+	public ComparisonPair(RacketSubmission baseFile, RacketSubmission comparedFile) {
 		this.baseFile = baseFile;
 		this.comparedFile = comparedFile;
 	}
@@ -20,7 +29,7 @@ public class ComparisonPair {
 	@Override
 	public int hashCode() {
 		// Multiplying by two to avoid collisions
-		return baseFile.hashCode() + 2 * comparedFile.hashCode();
+		return baseFile.getName().hashCode() + 2 * comparedFile.getName().hashCode();
 	}
 
 	public boolean equals(Object o) {

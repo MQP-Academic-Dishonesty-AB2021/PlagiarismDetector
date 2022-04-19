@@ -6,7 +6,7 @@ public class RacketSubmission {
     private RacketAnonymizer parent;
     private String projectName;
     
-    RacketSubmission(RacketAnonymizer parent, String projectName) {
+    public RacketSubmission(RacketAnonymizer parent, String projectName) {
         this.parent = parent;
         this.projectName = projectName;
     }
@@ -21,5 +21,18 @@ public class RacketSubmission {
     
     public File regular() {
         return parent.final_path.resolve("regular").resolve(projectName).toFile();
+    }
+
+    public boolean equals(Object o) {
+        if (o.getClass() != this.getClass()) {
+            return false;
+        }
+        RacketSubmission other = (RacketSubmission) o;
+        return this.parent == other.parent &&
+                this.projectName.equals(other.projectName);
+    }
+
+    public String toString() {
+        return this.projectName;
     }
 }
