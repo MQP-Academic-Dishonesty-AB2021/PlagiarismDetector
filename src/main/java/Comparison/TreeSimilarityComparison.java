@@ -30,11 +30,19 @@ public class TreeSimilarityComparison extends Comparison {
         catch (IOException | InterruptedException e) {
             logger.error(e.getMessage());
         }
-        catch (InvalidFormatException e) {
-            logger.error(e.getMessage());
+        catch (InvalidFormatException racketTreeError) {
+            logger.error(racketTreeError.toString());
             try {
                 logger.info("Errored File:");
-                logger.info(new String(Files.readString(submission.anonymized().toPath())));
+                StringBuilder erroredText = new StringBuilder();
+                Files.walk(submission.anonymized().toPath())
+                        .filter(Files::isRegularFile)
+                        .forEach(p -> {
+                            try {
+                                erroredText.append(Files.readString(p));
+                            } catch (IOException e) {}
+                        });
+                logger.info(erroredText.toString());
             }
             catch (Exception e2) {}
             return -1;

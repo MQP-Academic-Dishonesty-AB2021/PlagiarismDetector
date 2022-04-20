@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.stream.Stream;
 
 public class  RacketTree {
@@ -45,13 +46,9 @@ public class  RacketTree {
 			Stream<Path> files = Files.find(Paths.get(fin.getAbsolutePath()), 999,
 					(p, bfa) -> p.getFileName().toString().matches(".*\\.rkt"));
 			this.children = new ArrayList<RacketExpression>();
-			files.forEach((file) -> {
-				try {
-					this.children.addAll(this.generateChildren(new PushbackReader(new FileReader(file.toFile()))));
-				} catch (IOException | InvalidFormatException e) {
-					e.printStackTrace();
-				}
-			});
+			for (Iterator<Path> it = files.iterator(); it.hasNext();) {
+				this.children.addAll(this.generateChildren(new PushbackReader(new FileReader(it.next().toFile()))))	;
+			}
 		}
 		this.leavesHash = this.generateLeavesHash(defaultLeafDepth);
 	}
