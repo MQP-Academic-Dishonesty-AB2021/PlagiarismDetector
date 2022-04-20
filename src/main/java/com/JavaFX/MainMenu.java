@@ -6,9 +6,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 
+import static org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY;
 import static org.slf4j.impl.SimpleLogger.LOG_FILE_KEY;
 
 public class MainMenu extends Application {
@@ -33,6 +36,7 @@ public class MainMenu extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		String dateString = new SimpleDateFormat("yyyy.MM.dd.hh.mm").format(new java.util.Date());
 		System.setProperty(LOG_FILE_KEY, "PlagiarismDetector-" + dateString + ".log");
+//		System.setProperty(DEFAULT_LOG_LEVEL_KEY, "error");
 		loadPartials();
 
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mainMenu.fxml"));

@@ -54,7 +54,12 @@ public class ComparisonPromise extends Thread {
                     if (this.isInterrupted()) {
                         return;
                     }
-                    this.comparison.addSubmission(submission);
+                    try {
+                        this.comparison.addSubmission(submission);
+                    }
+                    catch (Error e) {
+                        logger.error(e.getMessage());
+                    }
                     synchronized (this.comparison) {
                         this.numFinished.setValue(this.numFinished.get() + 1);
                     }

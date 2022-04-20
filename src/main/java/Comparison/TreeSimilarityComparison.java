@@ -32,9 +32,9 @@ public class TreeSimilarityComparison extends Comparison {
         }
         catch (InvalidFormatException e) {
             logger.error(e.getMessage());
-            logger.debug("Errored File:");
             try {
-                logger.debug(new String(Files.readAllBytes(submission.anonymized().toPath())));
+                logger.info("Errored File:");
+                logger.info(new String(Files.readString(submission.anonymized().toPath())));
             }
             catch (Exception e2) {}
             return -1;
