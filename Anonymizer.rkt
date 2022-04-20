@@ -55,6 +55,13 @@
 			  (char=? char2 #\#)) #\space]
 		[else (skip-block-comment txt-port char2 (read-char txt-port))]))
 
+(define (get-string txt-port)
+  (local [(define char (read-char txt-port))]
+		 (cond 
+		   [(char=? #\" char) "\""]
+		   [(char=? #\\ char) (string-append (string #\\) (string (read-char txt-port)) (get-string txt-port))]
+		   [else (string-append (string char) (get-string txt-port))])))
+
 (define (anonymize-txt-port txt-port)
   (local 
 	[(define char (read-char txt-port))]
@@ -79,6 +86,7 @@
 	   (local [(define next-next-char (skip-line-comment txt-port (read-char txt-port) #f))]
 			  (if (eof-object? next-next-char) "" 
 				(string-append (string next-next-char) (anonymize-txt-port txt-port))))]
+	  [(char=? char #\") (string-append (string char) (get-string txt-port) (anonymize-txt-port txt-port))]
 	  [else (string-append (string char) (anonymize-txt-port txt-port))])))
 
 ; str -> str -> void

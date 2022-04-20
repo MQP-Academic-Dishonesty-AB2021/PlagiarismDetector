@@ -65,6 +65,7 @@ public class ComparisonPromise extends Thread {
                     }
                 }
         ));
+        this.numFinished.setValue(this.numExpected.getValue());
     }
 
     public ComparisonPromise(String directory, Comparison.Method method) {

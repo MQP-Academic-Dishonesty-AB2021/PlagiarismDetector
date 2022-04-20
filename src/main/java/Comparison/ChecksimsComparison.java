@@ -42,7 +42,7 @@ public class ChecksimsComparison extends Comparison {
             logger.error(e.getMessage());
             return -1;
         }
-        if (csSubmission == null) { return -1; }
+//        if (csSubmission.getNumTokens() == 0) { return -1; }
         int currentIndex = super.addSubmission(submission);
         this.assignmentMap.put(submission, csSubmission);
         for (int i = 0; i < currentIndex; i++) {
