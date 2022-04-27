@@ -56,10 +56,16 @@ public class RacketList extends RacketExpression {
 				this.items.add(RacketExpression.generateAtom(fin, this));
 			}
 		}
-		// Calculate the height from the maximum height of its children
-		super.height = this.items.stream().reduce(0,
-				(max, next) -> Integer.max(max, next.height),
-				(Integer::max)) + 1;
+		this.height = 0;
+		this.size = 0;
+		for (RacketExpression child : this.items) {
+			this.size += child.size;
+			if (child.height >= this.height) { this.height = child.height + 1; }
+		}
+//		// Calculate the height from the maximum height of its children
+//		super.height = this.items.stream().reduce(0,
+//				(max, next) -> Integer.max(max, next.height),
+//				(Integer::max)) + 1;
 	}
 
 	/**
@@ -101,7 +107,7 @@ public class RacketList extends RacketExpression {
 			}
 			for (RacketExpression otherChild : other.items) {
 				if (child.equals(otherChild)) {
-					num++;
+					num += otherChild.size;
 				}
 			}
 		}
@@ -117,8 +123,8 @@ public class RacketList extends RacketExpression {
 	 * @return The sum of the similarity value of its children and itself
 	 */
 	@Override
-	int similarityValue(HashMap<RacketExpression, ArrayList<RacketExpression>> leavesMap) {
-		int sum = super.similarityValue(leavesMap);
+	double similarityValue(HashMap<RacketExpression, ArrayList<RacketExpression>> leavesMap) {
+		double sum = super.similarityValue(leavesMap);
 		for (RacketExpression child : this.items) {
 			sum += child.similarityValue(leavesMap);
 		}
@@ -136,6 +142,7 @@ public class RacketList extends RacketExpression {
 			return false;
 		}
 		RacketList otherList = (RacketList) other;
+		// TODO see if list.equals works like I think
 		return this.items.equals(otherList.items);
 	}
 

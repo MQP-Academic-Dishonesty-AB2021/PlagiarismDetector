@@ -27,6 +27,7 @@ public class ChecksimsComparison extends Comparison {
     ChecksimsComparison() {
         this.assignmentMap = new ConcurrentHashMap<>();
         this.algorithm = AlgorithmRegistry.getInstance().getDefaultImplementation();
+        this.algorithm = Checksims.algorithm.smithwaterman.SmithWaterman.getInstance();
         this.tokenization = this.algorithm.getDefaultTokenType();
     }
 

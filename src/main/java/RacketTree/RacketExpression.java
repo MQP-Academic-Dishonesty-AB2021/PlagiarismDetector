@@ -8,6 +8,7 @@ import java.util.HashMap;
 public abstract class RacketExpression {
 	protected RacketList parent;
 	protected int height = 1;
+	protected int size = 1;
 
 	/**
 	 * Generates an expression from the current position in a file
@@ -76,14 +77,16 @@ public abstract class RacketExpression {
 		int value = 1;
 		RacketList otherParent = other.parent;
 		RacketList parent = this.parent;
+		RacketExpression child = this;
 		while (parent != null && otherParent != null) {
 			// requiring consecutive matches decreased time by a lot
 			// while almost not change to output
-			int numMatches = otherParent.numberOfMatchingChildren(parent, this);
+			int numMatches = parent.numberOfMatchingChildren(otherParent, child);
 			if (numMatches == 0) {
 				break;
 			}
 			value += numMatches;
+			child = parent;
 			parent = parent.parent;
 			otherParent = otherParent.parent;
 		}
@@ -98,7 +101,7 @@ public abstract class RacketExpression {
 	 * @return The sum of similarity values between this expression and the
 	 *         expressions in the map
 	 */
-	int similarityValue(HashMap<RacketExpression, ArrayList<RacketExpression>> map) {
+	double similarityValue(HashMap<RacketExpression, ArrayList<RacketExpression>> map) {
 		ArrayList<RacketExpression> list = map.get(this);
 
 		if (list == null) {
@@ -108,6 +111,6 @@ public abstract class RacketExpression {
 		for (RacketExpression leaf : list) {
 			sum += this.similarityValue(leaf);
 		}
-		return sum;
+		return sum / list.size();
 	}
 }

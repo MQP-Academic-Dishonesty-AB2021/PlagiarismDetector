@@ -124,11 +124,11 @@ public class  RacketTree {
 	 *         number of leaves it has
 	 */
 	private double similarityValue(HashMap<RacketExpression, ArrayList<RacketExpression>> leavesMap) {
-		int sum = 0;
+		double sum = 0;
 		for (RacketExpression child : this.children) {
 			sum += child.similarityValue(leavesMap);
 		}
-		return (double) sum / this.numLeaves;
+		return sum / this.numLeaves;
 	}
 
 	/**

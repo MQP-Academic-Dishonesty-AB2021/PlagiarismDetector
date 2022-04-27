@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ComparisonPromise extends Thread {
@@ -48,6 +49,7 @@ public class ComparisonPromise extends Thread {
             return;
         }
         this.numExpected.setValue(submissions.size());
+        this.numFinished.setValue(0);
         ForkJoinPool pool = new ForkJoinPool(Comparison.numThreads);
         pool.submit(() -> submissions.stream().parallel().forEach(
                 (submission) -> {
@@ -65,6 +67,12 @@ public class ComparisonPromise extends Thread {
                     }
                 }
         ));
+        try {
+            pool.shutdown();
+            pool.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         this.numFinished.setValue(this.numExpected.getValue());
     }
 
@@ -72,6 +80,11 @@ public class ComparisonPromise extends Thread {
         this.originalDirectory = new File(directory);
         this.comparison = Comparison.generateComparison(method);
         this.numFinished = new SimpleDoubleProperty(0);
+//        this.numFinished.addListener((obs, oldVal, newVal) -> {
+//            System.out.print(oldVal);
+//            System.out.print(" ");
+//            System.out.println(newVal);
+//        });
         this.numExpected = new SimpleDoubleProperty(1);
     }
 

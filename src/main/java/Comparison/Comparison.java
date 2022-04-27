@@ -119,28 +119,20 @@ public abstract class Comparison {
 			csvFile.createNewFile();
 		}
 		FileWriter csv = new FileWriter(filename + ".csv");
-		for (int i = 0; i < fileList.size(); i++) {
-			csv.write("," + this.fileList.get(i));
-		}
-		csv.write("\n");
-		for (int i = 0; i < fileList.size(); i++) {
-			RacketSubmission submissionI = this.fileList.get(i);
-			csv.write(submissionI + ",");
-			for (int j = 0; j < fileList.size(); j++) {
-				RacketSubmission submissionJ = this.fileList.get(j);
-				if (i == j) {
-					if (j != this.fileList.size() - 1) {
-						csv.write(",");
-					}
-					continue;
-				}
-				csv.write(Double.toString(this.values.get(new ComparisonPair(submissionI, submissionJ))));
-				if (j != this.fileList.size() - 1) {
-					csv.write(",");
-				}
+		csv.write("BaseFilename,ComparedFilename,Value\n");
+		this.values.forEach((pair, val) -> {
+			try {
+				csv.write(pair.getBaseFilename());
+				csv.write(",");
+				csv.write(pair.getComparedFilename());
+				csv.write(",");
+				csv.write(Double.toString(val));
+				csv.write("\n");
 			}
-			csv.write("\n");
-		}
+			catch (IOException e) {
+				System.out.println("bruh wtf");
+			}
+		});
 		csv.close();
 	}
 

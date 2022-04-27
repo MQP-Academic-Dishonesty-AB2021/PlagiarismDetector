@@ -71,10 +71,10 @@
 	   (local [(define next-char (read-char txt-port))]
 			  (cond [(eof-object? next-char) ""]
 					[(char=? next-char #\;) 
-					 (begin (read txt-port) (anonymize-txt-port txt-port))]
-					; (local [(define next-next-char (skip-atom txt-port (skip-spaces txt-port)))]
-					;   (if (eof-object? next-next-char) "" 
-					;       (string-append (string next-next-char) (anonymize-txt-port txt-port))))]
+					 (begin 
+					   (with-handlers ([exn:fail? (lambda (exn) (void))])
+									  (read txt-port))
+					   (anonymize-txt-port txt-port))]
 					[(char=? next-char #\|) (begin (skip-block-comment txt-port (read-char txt-port) (read-char txt-port))
 												   (anonymize-txt-port txt-port))]
 					[(char=? next-char #\!) 

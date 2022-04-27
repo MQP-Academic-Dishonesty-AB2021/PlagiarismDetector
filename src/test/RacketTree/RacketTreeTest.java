@@ -3,6 +3,9 @@ package RacketTree;
 import Comparison.Comparison;
 import Comparison.ComparisonPromise;
 import Comparison.ComparisonPair;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +44,7 @@ public class RacketTreeTest {
 					continue;
 				}
 				ComparisonPromise promise = new ComparisonPromise(assignment.getAbsolutePath(), Comparison.Method.TreeSimilarity);
+				promise.start();
 				Comparison submissions = promise.getComparison();
 				System.out.println(assignment.getName());
 				submissions.toCSV(assignment.getName());
@@ -60,6 +64,8 @@ public class RacketTreeTest {
 					continue;
 				}
 				ComparisonPromise promise = new ComparisonPromise(assignment.getAbsolutePath(), Comparison.Method.Checksims);
+				promise.start();
+				promise.join();
 				Comparison submissions = promise.getComparison();
 				System.out.println(assignment.getName());
 				submissions.toCSV(assignment.getName() + "Checksims");
